@@ -34,8 +34,8 @@ class _NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Color(0Xff634099),
-      statusBarIconBrightness: Brightness.light,
+      statusBarColor: Color(0XffFDF9FF),
+      statusBarIconBrightness: Brightness.dark,
 
     ));
 

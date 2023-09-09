@@ -10,7 +10,8 @@ import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Model/User.dart';
 import '../Util/Constants.dart';
-import 'CustomSheetResetPassword.dart';
+import '../CustomDialogues/CustomSheetResetPassword.dart';
+import 'Navigation.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -281,6 +282,13 @@ class _LoginState extends State<Login> {
       SharedPreferencesHelper.saveData(TSF_USER_ACCESS_TOKEN, commonResponse.token.toString());
       SharedPreferencesHelper.saveData(TSF_USER_EMAIL, user.email.toString());
       SharedPreferencesHelper.saveData(TSF_USER_PHONE, user.phone.toString());
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Navigation(),
+        ),
+      );
 
       //showSnackBar("Please enter the password");
 

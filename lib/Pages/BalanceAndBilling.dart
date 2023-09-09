@@ -1,9 +1,7 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
+import 'package:skip_n_call/CustomDialogues/AddFundDialog.dart';
 
 class BalanceAndBilling extends StatefulWidget {
   const BalanceAndBilling({super.key});
@@ -41,7 +39,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                       borderSide: const BorderSide(
                           width: 1.5, color: Color(0Xff634099)),
                     ),
-                    hintText: 'Find Your Zip',
+                    hintText: 'Search',
                     prefixIcon: const Icon(Icons.search,
                         size: 30.0, color: Color(0Xff634099)),
                     suffixIcon: IconButton(
@@ -354,7 +352,17 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          paymentGateway();
+
+          showDialog(context: context,
+              builder: (BuildContext context){
+                return const AddFundDialog(
+                  title: "Add Fund [ Min: \$50 ]",
+                  descriptions: "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
+                  text: "Ok",
+                );
+              }
+          );
+
         },
         backgroundColor: const Color(0xfffff4f1),
         icon: const Icon(Icons.add, color: Color(0Xff452b2e)),
@@ -364,58 +372,6 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     );
   }
 
-  Future<void> paymentGateway() async {
-
-
-
-    try{
-
-      Map<String, dynamic> body = {
-        'amount' : "10000",
-        'currency' : "USD",
-      };
-
-      var response = await http.post(
-
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization': 'Bearer sk_test_51NFbbYF3o6sX72VgKjh0yjG2a9LspATzl280JELMoWyOvmnkRvBAzitUbxlqgnl17rq2oNehGuINy9rTLOekrPdP00ZjagohUo',
-          'Content-type':'application/x-www-form-urlencoded'
-        },
-        body: body
-
-      );
-
-      paymentIntent = json.decode(response.body);
-
-    }catch(error){
-      throw Exception(error);
-    }
-
-    await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: paymentIntent!['client_secret'],
-        style: ThemeMode.light,
-        merchantDisplayName: 'skipNcall',
-
-
-    )).then((value) => {
-
-    });
-
-
-
-
-    try{
-      await Stripe.instance.presentPaymentSheet().then((value) => {
-
-        print("Payment successful")
-
-      });
-    }catch(error){
-
-    }
-
-  }
 
 
 }
