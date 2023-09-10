@@ -278,7 +278,7 @@ class _LoginState extends State<Login> {
       SharedPreferencesHelper.saveData(TSF_USER_USERID, user.userId.toString());
       SharedPreferencesHelper.saveData(TSF_USER_FIRSTNAME, user.firstName.toString());
       SharedPreferencesHelper.saveData(TSF_USER_LASTNAME, user.lastName.toString());
-      SharedPreferencesHelper.saveData(TSF_USER_PROFILE_PICTURE, user.proPic.toString());
+      //SharedPreferencesHelper.saveData(TSF_USER_PROFILE_PICTURE, user.proPic.toString());
       SharedPreferencesHelper.saveData(TSF_USER_ACCESS_TOKEN, commonResponse.token.toString());
       SharedPreferencesHelper.saveData(TSF_USER_EMAIL, user.email.toString());
       SharedPreferencesHelper.saveData(TSF_USER_PHONE, user.phone.toString());

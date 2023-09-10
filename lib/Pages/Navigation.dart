@@ -52,7 +52,7 @@ class _NavigationState extends State<Navigation> {
           backgroundColor: Colors.white,
           selectedIndex: index,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          animationDuration: const Duration(seconds: 1),
+          //animationDuration: const Duration(seconds: 1),
           onDestinationSelected: (index) => {
             setState(() => {this.index = index})
           },

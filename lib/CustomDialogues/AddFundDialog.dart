@@ -113,7 +113,7 @@ class _AddFundDialogState extends State<AddFundDialog> {
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              10.0), // Adjust the radius as needed
+                              10.0),
                         ),
                       ),
                     ),
@@ -122,7 +122,6 @@ class _AddFundDialogState extends State<AddFundDialog> {
                         showSnackBar("Please enter the email or phone");
                         return;
                       }
-                      //debugPrint("Username $username");
 
                       Navigator.of(context).pop();
                       paymentGateway();
@@ -141,8 +140,6 @@ class _AddFundDialogState extends State<AddFundDialog> {
 
   Future<void> paymentGateway() async {
 
-    //saveSuccess();
-
     try {
       Map<String, dynamic> body = {
         'amount': "${usernameController.text}00",
@@ -152,50 +149,35 @@ class _AddFundDialogState extends State<AddFundDialog> {
       var response = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
           headers: {
-            'Authorization':
-                'Bearer sk_test_51NFbbYF3o6sX72VgKjh0yjG2a9LspATzl280JELMoWyOvmnkRvBAzitUbxlqgnl17rq2oNehGuINy9rTLOekrPdP00ZjagohUo',
-            'Content-type': 'application/x-www-form-urlencoded'
+            'Authorization': 'Bearer ${Constants.STRIPE_SECRET_KEY}',
+            'Content-type': 'application/x-www-form-urlencoded',
+
           },
-          body: body);
+          body: body
+      );
 
       paymentIntent = json.decode(response.body);
 
-      await Stripe.instance
-          .initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
+      await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
 
             paymentIntentClientSecret: paymentIntent!['client_secret'],
             style: ThemeMode.light,
             merchantDisplayName: 'skipNcall',
 
-
           )
       ).then((value) => {
-      //paymentIntent = null
+
       });
 
-      // await Stripe.instance.intentCreationCallback(
-      //     IntentCreationCallbackParams(clientSecret: body['client_secret']));
-      //saveSuccess();
-
-      await Stripe.instance.presentPaymentSheet()
-          .then((value) => {
-      paymentIntent = null,
+      await Stripe.instance.presentPaymentSheet().then((value) => {
         saveSuccess(),
       });
 
 
     } catch (error) {
-      //throw Exception(error);
+      throw Exception(error);
     }
 
-
-
-
-
-    // try {
-    //
-    // } catch (error) {}
   }
 
   void showSnackBar(String message) {
@@ -213,7 +195,7 @@ class _AddFundDialogState extends State<AddFundDialog> {
         disabledTextColor: Colors.white,
         textColor: Colors.blue,
         onPressed: () {
-          //SnackbarController.closeCurrentSnackbar();
+          SnackbarController.closeCurrentSnackbar();
         },
       ),
     );
@@ -221,30 +203,12 @@ class _AddFundDialogState extends State<AddFundDialog> {
   }
 
   saveSuccess() async {
-    // developer.log('stripe', name: 'success');
-    // debugPrint('success');
-    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //   content: Text("Sending Message"),
-    // ));
 
     var paymentIntentId = paymentIntent!['id'];
-    try {
+    developer.log('stripe', name: 'success');
+    developer.log(paymentIntentId, name: 'success');
 
-      http.Response response = await http.get(
-          Uri.parse(
-              'https://api.stripe.com/v1/charges?payment_intent=$paymentIntent'),
-          headers: {
-            "Authorization": "Bearer sk_test_51NFbbYF3o6sX72VgKjh0yjG2a9LspATzl280JELMoWyOvmnkRvBAzitUbxlqgnl17rq2oNehGuINy9rTLOekrPdP00ZjagohUo",
-            "Content-Type": "application/x-www-form-urlencoded"
-          });
-
-      if (response.statusCode == 200) {
-        var data =json.decode(response.body);
-        debugPrint("Transaction Id ${data['data'][0]['balanceTransaction']}");
-      }
-    } catch (e) {
-      throw Exception(e.toString());
-    }
+    paymentIntent = null;
 
   }
 }
