@@ -1,30 +1,40 @@
-
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:skip_n_call/Helper/SharedPreferencesHelper.dart';
 import '../Util/Constants.dart';
 import 'Constants.dart';
 
 class BaseClient {
-
   var client = http.Client();
 
   Future<dynamic> post(String api, Object data) async {
     var url = Uri.parse(Constants.BASE_URL + api);
 
-    var response = await client.post(
-        url,
+    var response = await client.post(url, body: data);
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {}
+  }
+
+  Future<dynamic> postWithToken(String api, Object data) async {
+    var url = Uri.parse(Constants.BASE_URL + api);
+
+    String? token = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_ACCESS_TOKEN);
+
+    debugPrint('Access_token: $token');
+
+    var response = await client.post(url,
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $TSF_USER_ACCESS_TOKEN',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: data
-    );
+        body: data);
     if (response.statusCode == 200) {
       return response.body;
     } else {
+      debugPrint('Error Status Code: ${response.statusCode}');
+      debugPrint('Error Response Body: ${response.body}');
+      throw Exception('Request failed with status: ${response.statusCode}');
     }
   }
-
-
-
 }

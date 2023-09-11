@@ -275,13 +275,13 @@ class _LoginState extends State<Login> {
 
       User? user = commonResponse.user;
       debugPrint('user_id: ${user!.userId}');
-      SharedPreferencesHelper.saveData(TSF_USER_USERID, user.userId.toString());
-      SharedPreferencesHelper.saveData(TSF_USER_FIRSTNAME, user.firstName.toString());
-      SharedPreferencesHelper.saveData(TSF_USER_LASTNAME, user.lastName.toString());
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_USERID, user.userId.toString());
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_FIRSTNAME, user.firstName.toString());
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_LASTNAME, user.lastName.toString());
       //SharedPreferencesHelper.saveData(TSF_USER_PROFILE_PICTURE, user.proPic.toString());
-      SharedPreferencesHelper.saveData(TSF_USER_ACCESS_TOKEN, commonResponse.token.toString());
-      SharedPreferencesHelper.saveData(TSF_USER_EMAIL, user.email.toString());
-      SharedPreferencesHelper.saveData(TSF_USER_PHONE, user.phone.toString());
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_ACCESS_TOKEN, commonResponse.token.toString());
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, user.email.toString());
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PHONE, user.phone.toString());
 
       Navigator.pushReplacement(
         context,

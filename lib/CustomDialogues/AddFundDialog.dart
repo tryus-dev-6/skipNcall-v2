@@ -1,22 +1,19 @@
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'dart:developer' as developer;
 
-import '../Api/Constants.dart';
 
 class AddFundDialog extends StatefulWidget {
   final String title, descriptions, text;
+  Function(String) onClick;
 
-  const AddFundDialog(
+  AddFundDialog(
       {super.key,
       required this.title,
       required this.descriptions,
-      required this.text});
+      required this.text,
+      required this.onClick});
 
   @override
   State<AddFundDialog> createState() => _AddFundDialogState();
@@ -24,7 +21,6 @@ class AddFundDialog extends StatefulWidget {
 
 class _AddFundDialogState extends State<AddFundDialog> {
   TextEditingController usernameController = TextEditingController();
-  Map<String, dynamic>? paymentIntent;
 
   bool isLoading = false;
   bool isUserNameValidate = false;
@@ -124,7 +120,7 @@ class _AddFundDialogState extends State<AddFundDialog> {
                       }
 
                       Navigator.of(context).pop();
-                      paymentGateway();
+                      widget.onClick(usernameController.text.toString());
                     },
                     child: Text(
                       widget.text,
@@ -138,47 +134,6 @@ class _AddFundDialogState extends State<AddFundDialog> {
     );
   }
 
-  Future<void> paymentGateway() async {
-
-    try {
-      Map<String, dynamic> body = {
-        'amount': "${usernameController.text}00",
-        'currency': "USD",
-      };
-
-      var response = await http.post(
-          Uri.parse('https://api.stripe.com/v1/payment_intents'),
-          headers: {
-            'Authorization': 'Bearer ${Constants.STRIPE_SECRET_KEY}',
-            'Content-type': 'application/x-www-form-urlencoded',
-
-          },
-          body: body
-      );
-
-      paymentIntent = json.decode(response.body);
-
-      await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
-
-            paymentIntentClientSecret: paymentIntent!['client_secret'],
-            style: ThemeMode.light,
-            merchantDisplayName: 'skipNcall',
-
-          )
-      ).then((value) => {
-
-      });
-
-      await Stripe.instance.presentPaymentSheet().then((value) => {
-        saveSuccess(),
-      });
-
-
-    } catch (error) {
-      throw Exception(error);
-    }
-
-  }
 
   void showSnackBar(String message) {
     final snackBar = SnackBar(
@@ -202,13 +157,5 @@ class _AddFundDialogState extends State<AddFundDialog> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  saveSuccess() async {
 
-    var paymentIntentId = paymentIntent!['id'];
-    developer.log('stripe', name: 'success');
-    developer.log(paymentIntentId, name: 'success');
-
-    paymentIntent = null;
-
-  }
 }

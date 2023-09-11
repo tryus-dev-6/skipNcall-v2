@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> getData()async {
-    String? retrievedUserId = await SharedPreferencesHelper.getData(TSF_USER_USERID);
+    String? retrievedUserId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
     userId = retrievedUserId ?? '';
 
     debugPrint("userId: $userId");
