@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -19,6 +18,7 @@ import 'package:shimmer/shimmer.dart';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:swipe_refresh/swipe_refresh.dart';
 
 import '../Util/Tools.dart';
 
@@ -30,14 +30,17 @@ class BalanceAndBilling extends StatefulWidget {
 }
 
 class _BalanceAndBillingState extends State<BalanceAndBilling> {
-
   List<Data> data = [];
   bool isShimmerLoading = true;
   late bool isPaginateLoading = false;
   Map<String, dynamic>? paymentIntent;
   int page = 1;
   int previousPage = 1;
+  final _controller = StreamController<SwipeRefreshState>.broadcast();
   final ScrollController _scrollController = ScrollController();
+
+  Stream<SwipeRefreshState> get _stream => _controller.stream;
+  late String totalAmount = '';
 
   @override
   void initState() {
@@ -45,6 +48,8 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     loadData();
 
     _scrollController.addListener(() {
+      developer.log('${_scrollController.position.pixels}', name: 'OnScroll');
+
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         debugPrint("Scrolled Page : $page Previous Page :$previousPage");
@@ -52,11 +57,26 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
           setState(() {
             isPaginateLoading = true;
           });
-          Timer(const Duration(seconds: 2), () => loadMoreData());
+          loadMoreData();
         }
       }
     });
+  }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _controller.close();
+    super.dispose();
+  }
+
+  Future<void> refresh() async {
+    setState(() {
+      page = 1;
+      previousPage = 1;
+      developer.log('yes', name: 'refreshed');
+      loadData();
+    });
   }
 
   @override
@@ -99,95 +119,96 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                 ),
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        margin: const EdgeInsets.only(
-                            top: 20.0, left: 15.0, right: 15.0),
-                        elevation: 5,
-                        child: Container(
-                          margin: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const Text(
-                                'Balance',
-                                style: TextStyle(
-                                    fontSize: 20, color: Color(0Xff634099)
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 3.0),
-                                child: const Text(
-                                  "Your credits will automatically be replenished with the below amount when your balance reaches \$0.",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Color(0Xff5A5A5A)
+                child: SwipeRefresh.material(
+                  scrollController: _scrollController,
+                  stateStream: _stream,
+                  onRefresh: refresh,
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            margin: const EdgeInsets.only(
+                                top: 20.0, left: 15.0, right: 15.0),
+                            elevation: 5,
+                            child: Container(
+                              margin: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const Text(
+                                    'Balance',
+                                    style: TextStyle(
+                                        fontSize: 20, color: Color(0Xff634099)),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 6.0),
-                                child: const Text(
-                                  "\$50",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 34,
-                                      color: Color(0Xff434141)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 3.0),
+                                    child: const Text(
+                                      "Your credits will automatically be replenished with the below amount when your balance reaches \$0.",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0Xff5A5A5A)),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 6.0),
+                                    child: Text(
+                                      "\$$totalAmount",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 34,
+                                          color: Color(0Xff434141)),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          Container(
+                              padding: const EdgeInsets.only(bottom: 70),
+                              child: isShimmerLoading
+                                  ? ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      itemCount: 10,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return getShimmerLoading();
+                                      })
+                                  : data.isNotEmpty
+                                      ? ListView.builder(
+                                          itemCount: data.length + 1,
+                                          shrinkWrap: true,
+                                          primary: false,
+                                          itemBuilder: (context, index) {
+                                            if (index < data.length) {
+                                              return getSingleItem(data[index]);
+                                            } else if (isPaginateLoading) {
+                                              return Container(
+                                                margin:
+                                                    const EdgeInsets.all(10),
+                                                height: 40,
+                                                alignment: Alignment.center,
+                                                child: LoadingAnimationWidget
+                                                    .staggeredDotsWave(
+                                                  color: Colors.black87,
+                                                  size: 40,
+                                                ),
+                                              );
+                                            }
+                                          })
+                                      : const Card()
+                          ),
+                        ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 70),
-                        child: isShimmerLoading?
-                        ListView.builder(
-                            shrinkWrap: true,
-                            primary: false,
-                            itemCount: 10,
-                            itemBuilder:
-                                (BuildContext context, int index) {
-                              return getShimmerLoading();
-                            })
-                            :data.isNotEmpty? ListView.builder(
-                            itemCount: data.length+1,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index){
-
-
-                              if (index < data.length) {
-                                return getSingleItem(data[index]);
-                              } else if (isPaginateLoading) {
-                                return Container(
-                                  margin: const EdgeInsets.all(10),
-                                  height: 40,
-                                  alignment: Alignment.center,
-                                  child: LoadingAnimationWidget.staggeredDotsWave(
-                                    color: Colors.black87,
-                                    size: 40,
-                                  ),
-                                );
-                              }
-
-
-
-                            })
-                            :const Card()
-                      ),
-
-
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -196,20 +217,19 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-
-          showDialog(context: context,
-              builder: (BuildContext context){
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
                 return AddFundDialog(
                   title: "Add Fund (min: \$50)",
-                  descriptions: "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
+                  descriptions:
+                      "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
                   text: "Ok",
-                  onClick: (String amount){
+                  onClick: (String amount) {
                     paymentGateway(amount);
                   },
                 );
-              }
-          );
-
+              });
         },
         backgroundColor: const Color(0xfffff4f1),
         icon: const Icon(Icons.add, color: Color(0Xff452b2e)),
@@ -219,13 +239,12 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     );
   }
 
-  Card getSingleItem(Data data){
+  Card getSingleItem(Data data) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      margin: const EdgeInsets.only(
-          top: 20.0, left: 20.0, right: 20.0),
+      margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
       elevation: 5,
       child: Container(
         margin: const EdgeInsets.all(10.0),
@@ -248,8 +267,8 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                     "${data.transactionId}",
                     softWrap: true,
                     overflow: TextOverflow.visible,
-                    style: const TextStyle(
-                        fontSize: 16, color: Color(0Xff00A18A)),
+                    style:
+                        const TextStyle(fontSize: 16, color: Color(0Xff00A18A)),
                   ),
                 ),
               ],
@@ -270,9 +289,8 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                   ),
                   Text(
                     "${data.paidAmount}",
-                    style: const TextStyle(
-                        fontSize: 15,
-                        color: Color(0Xff5A5A5A)),
+                    style:
+                        const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A)),
                   ),
                 ],
               ),
@@ -293,9 +311,8 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                   ),
                   Text(
                     parseDate(data.createdAt),
-                    style: const TextStyle(
-                        fontSize: 15,
-                        color: Color(0Xff5A5A5A)),
+                    style:
+                        const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A)),
                   ),
                 ],
               ),
@@ -306,9 +323,13 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     );
   }
 
-  Future<void> loadData()async {
+  Future<void> loadData() async {
+    page = 1;
+    previousPage = 1;
+
     var response;
-    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var transaction = {
       "client_id": userId,
@@ -333,30 +354,31 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
-
-
       List<Data>? listData = allDatum.transactionList?.data;
       setState(() {
+        totalAmount = allDatum.currentBalance!;
+
+        developer.log(totalAmount, name: 'Total amount');
+
         if (allDatum.transactionList?.nextPageUrl != null) {
           Uri nextPageUri = Uri.parse(allDatum.transactionList?.nextPageUrl);
           page = int.tryParse(nextPageUri.queryParameters['page'] ?? '')!;
         }
 
         isPaginateLoading = false;
-        if(data.isNotEmpty) {
+        if (data.isNotEmpty) {
           data.clear();
         }
         data.addAll(listData!);
       });
-
-
     }
 
-
+    _controller.sink.add(SwipeRefreshState.hidden);
   }
 
   Future<void> loadMoreData() async {
-    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     debugPrint("Page $page");
 
@@ -368,7 +390,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     var response;
 
     response = await BaseClient()
-        .postWithToken('filter/data', transaction)
+        .postWithToken('client/balance/transaction/list', transaction)
         .catchError((err) {});
 
     if (response == null) {
@@ -378,23 +400,20 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     var res = json.decode(response);
     debugPrint('successful: $res');
 
-
     CommonResponse allDatum = allDataFromJson(response);
     if (allDatum.status == true) {
       List<Data>? listData = allDatum.transactionList?.data;
       setState(() {
         isPaginateLoading = false;
-
+        totalAmount = allDatum.currentBalance!;
         previousPage = page;
 
         if (allDatum.transactionList?.nextPageUrl != null) {
           Uri nextPageUri = Uri.parse(allDatum.transactionList?.nextPageUrl);
           page = int.tryParse(nextPageUri.queryParameters['page'] ?? '')!;
           if (page != null) {
-            // The 'page' variable now contains the extracted page number.
             print('Page number: $page');
           } else {
-            // Handle the case where 'page' is not a valid integer.
             print('Invalid page number');
           }
         }
@@ -411,8 +430,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        margin: const EdgeInsets.only(
-            top: 20.0, left: 20.0, right: 20.0),
+        margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
         elevation: 5,
         child: Shimmer.fromColors(
           baseColor: Colors.grey[350]!,
@@ -421,7 +439,8 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
             child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -490,18 +509,15 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
         ));
   }
 
-  String parseDate(String? inputDate){
-
-    DateTime dateTime = DateTime.parse(inputDate!);
+  String parseDate(String? inputDate) {
+    DateTime dateTime = DateTime.parse(inputDate!).toLocal();
 
     var outputFormat = DateFormat("d MMMM y 'at' h:mm a");
-
 
     return outputFormat.format(dateTime);
   }
 
   Future<void> paymentGateway(String amount) async {
-
     try {
       Map<String, dynamic> body = {
         'amount': "${amount}00",
@@ -513,54 +529,45 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
           headers: {
             'Authorization': 'Bearer ${Constants.STRIPE_SECRET_KEY}',
             'Content-type': 'application/x-www-form-urlencoded',
-
           },
-          body: body
-      );
+          body: body);
 
       paymentIntent = json.decode(response.body);
 
-      await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
-
-        paymentIntentClientSecret: paymentIntent!['client_secret'],
-        style: ThemeMode.light,
-        merchantDisplayName: 'skipNcall',
-
-      )
-      ).then((value) => {
-
-      });
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntent!['client_secret'],
+            style: ThemeMode.light,
+            merchantDisplayName: 'skipNcall',
+          ))
+          .then((value) => {});
 
       await Stripe.instance.presentPaymentSheet().then((value) => {
-        saveSuccess(amount),
-      });
-
-
+            saveSuccess(amount),
+          });
     } catch (error) {
       throw Exception(error);
     }
-
   }
 
   void saveSuccess(String amount) async {
-
     var paymentIntentId = paymentIntent!['id'];
     developer.log('stripe', name: 'success');
     developer.log(paymentIntentId, name: 'success');
 
     addBalanceItem(paymentIntentId, amount);
-
-
   }
 
   Future<void> addBalanceItem(String paymentIntentId, String amount) async {
     var response;
-    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var addTransaction = {
       "client_id": userId,
       "payment_id": paymentIntentId,
-      "balance":amount,
+      "balance": amount,
     };
 
     response = await BaseClient()
@@ -581,15 +588,18 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
-
       setState(() {
-        showSnackBar("Successfully balance added");
         loadData();
+        showSnackBar("Successfully balance added");
+        Timer(
+            const Duration(seconds: 1),
+            () => _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn)
+        );
       });
-
-
     }
-
 
     paymentIntent = null;
   }
@@ -615,5 +625,4 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-
 }
