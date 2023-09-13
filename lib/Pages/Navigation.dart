@@ -54,7 +54,7 @@ class _NavigationState extends State<Navigation> {
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           //animationDuration: const Duration(seconds: 1),
           onDestinationSelected: (index) => {
-            setState(() => {this.index = index})
+            setState(() => this.index = index)
           },
           destinations: [
             const NavigationDestination(

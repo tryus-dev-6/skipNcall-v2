@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Pages/PurchaseZip.dart';
 
 class Zip extends StatefulWidget {
   const Zip({super.key});
@@ -166,6 +167,13 @@ class _ZipState extends State<Zip> {
 
       floatingActionButton: FloatingActionButton.extended(
         onPressed: (){
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PurchaseZip(),
+            ),
+          );
 
         },
         backgroundColor: const Color(0xfffff4f1),
