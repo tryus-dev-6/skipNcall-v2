@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:skip_n_call/Model/PackageResponse.dart';
+
+import 'ZipDetails.dart';
 import 'TransactionList.dart';
 import 'User.dart';
 
@@ -15,6 +18,8 @@ class CommonResponse {
   String? message;
   String? currentBalance;
   TransactionList? transactionList;
+  Data? data;
+  Package? packageResponse;
 
   CommonResponse(
       {this.status,
@@ -22,7 +27,9 @@ class CommonResponse {
       this.user,
       this.message,
       this.currentBalance,
-      this.transactionList});
+      this.transactionList,
+      this.packageResponse,
+      this.data});
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
       status: json!["status"],
@@ -30,9 +37,9 @@ class CommonResponse {
       token: json!["token"],
       message: json!["message"],
       currentBalance: json!['current_balance'],
-      transactionList: json['transaction_list'] != null
-          ? TransactionList.fromJson(json['transaction_list'])
-          : null);
+      transactionList: json['transaction_list'] != null ? TransactionList.fromJson(json['transaction_list']) : null,
+      packageResponse: json['package'] != null ? Package.fromJson(json['package']) : null,
+      data: json['data'] != null ? Data.fromJson(json['data']) : null);
 
   Map<String, dynamic> toJson() => {
         "status": status,
@@ -40,6 +47,7 @@ class CommonResponse {
         "user": user?.toJson(),
         "message": message,
         "current_balance": currentBalance,
+        "package": packageResponse!.toJson(),
         'transaction_list': transactionList!.toJson()
       };
 }

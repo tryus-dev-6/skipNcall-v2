@@ -110,7 +110,9 @@ class _TransactionState extends State<Transaction> {
                                         );
                                       }
                                     })
-                                : const Card()),
+                                : const Card(
+                          // no data found section
+                          )),
                   ],
                 ),
               ),
@@ -390,6 +392,9 @@ class _TransactionState extends State<Transaction> {
         data.addAll(listData!);
       });
     }
+    else{
+      showSnackBar(allDatum.message!);
+    }
 
     _controller.sink.add(SwipeRefreshState.hidden);
   }
@@ -443,9 +448,35 @@ class _TransactionState extends State<Transaction> {
           }
         }
 
+
         data.addAll(listData!);
       });
     }
+    else{
+      showSnackBar(allDatum.message!);
+    }
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          //SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 }

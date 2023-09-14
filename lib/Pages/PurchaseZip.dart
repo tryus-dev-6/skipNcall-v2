@@ -1,11 +1,17 @@
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Model/Place.dart';
+import 'package:skip_n_call/Model/ZipDetails.dart';
 import 'package:skip_n_call/Pages/ZipCart.dart';
 
+import '../Api/base_client.dart';
+import '../Helper/dialog_helper.dart';
+import '../Model/CommonResponse.dart';
 import 'Dashboard.dart';
-import 'EditProfile.dart';
 
 class PurchaseZip extends StatefulWidget {
   const PurchaseZip({super.key});
@@ -18,6 +24,13 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
 
   SampleItem? selectedMenu;
+  TextEditingController zipSearchController = TextEditingController();
+  String country = '';
+  String state = '';
+  String place = '';
+  String longitude = '';
+  String latitude = '';
+  String status = '';
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +114,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
                              left: 15, right: 5,),
                         child: TextField(
 
+                          controller: zipSearchController,
                           cursorColor: const Color(0Xff634099),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -123,7 +137,9 @@ class _PurchaseZipState extends State<PurchaseZip> {
                                 size: 30.0,
                                 color: Color(0Xff634099),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                zipSearchController.clear();
+                              },
                             ),
                           ),
                         ),
@@ -144,7 +160,10 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
                           ),
 
-                          onPressed: () {},
+                          onPressed: () {
+                            DialogHelper.showLoading();
+                            zipSearch();
+                          },
                           // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                           child: const Text('Search'),
                         ),
@@ -155,130 +174,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
               ),
 
               Container(
-                margin: const EdgeInsets.only(top: 30),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 90,
-                      width: 90,
-                      child: Stack(
-                        children: <Widget>[
-                          const SizedBox(
-                            width: 90,
-                            height: 90,
-                            child: CircleAvatar(
-                              backgroundImage:
-                              AssetImage('assets/images/ic_user2.png'),
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Card(
-                                margin:
-                                const EdgeInsets.only(right: 10, bottom: 10),
-                                color: const Color(0Xff00A18A),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  height: 25,
-                                  width: 25,
-                                  child: SvgPicture.asset(
-                                    'assets/images/ic_edit.svg',
-                                    height: 10,
-                                    width: 10,
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 15),
-                child: const Column(
-                  children: [
-                    Text(
-                      'Abdulla Al Mued',
-                      style: TextStyle(fontSize: 20, color: Color(0Xff434141)),
-                    ),
-                    Text(
-                      'abdullaalmuid101@gmail.com',
-                      style: TextStyle(fontSize: 14, color: Color(0Xff696969)),
-                    ),
-                    Text(
-                      '01831553096',
-                      style: TextStyle(fontSize: 14, color: Color(0Xff696969)),
-                    ),
-                  ],
-                ),
-              ),
-              Card(
-                color: const Color(0Xff634099),
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                elevation: 5,
-                margin: const EdgeInsets.only(
-                    right: 15, left: 15, top: 20, bottom: 15),
-                child: Container(
-                  margin: const EdgeInsets.only(top: 20, bottom: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.all(5),
-                            child: const Text(
-                              'Balance',
-                              style: TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.all(5),
-                            child: const Text(
-                              '\$ 12,2545',
-                              style: TextStyle(fontSize: 20, color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.all(5),
-                            child: const Text(
-                              'Expense',
-                              style: TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.all(5),
-                            child: const Text(
-                              '\$ 12,2545',
-                              style: TextStyle(fontSize: 20, color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10, left: 20),
+                margin: const EdgeInsets.only(top: 30, left: 20),
                 child: Row(
                   children: [
                     Column(
@@ -377,43 +273,43 @@ class _PurchaseZipState extends State<PurchaseZip> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'United States',
-                          style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                        Text(
+                          country,
+                          style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                         ),
                         Container(
                           margin: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'State',
-                            style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          child: Text(
+                            state,
+                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'Place',
-                            style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          child: Text(
+                            place,
+                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'Longitude',
-                            style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          child: Text(
+                            longitude,
+                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'Latitude',
-                            style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          child: Text(
+                            latitude,
+                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'Available',
-                            style: TextStyle(fontSize: 16, color: Color(0Xff00A18A)),
+                          child: Text(
+                            status,
+                            style: status == "Available." ? const TextStyle(fontSize: 16, color: Color(0Xff00A18A)) : const TextStyle(fontSize: 16, color: Colors.red),
                           ),
                         ),
 
@@ -425,7 +321,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
               Container(
                 margin: const EdgeInsets.only(top: 30,bottom: 50, right: 40, left: 40),
-                height: 50,
+                height: 45,
                 child: ElevatedButton(
 
                   style: ButtonStyle(
@@ -445,12 +341,97 @@ class _PurchaseZipState extends State<PurchaseZip> {
                 ),
               ),
 
-
             ],
           ),
         ),
 
       ),
     );
+  }
+
+  Future<void> zipSearch() async {
+
+    String zip = zipSearchController.text.toString();
+
+    if (zip.isEmpty) {
+      showSnackBar("Please enter a zip number");
+      DialogHelper.hideDialog();
+      return;
+    }
+
+    var response;
+
+    var search = {
+      "code": zip
+    };
+
+    response = await BaseClient()
+        .postWithToken('client/zip/search', search)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+
+    if (response == null) {
+      debugPrint('failed to get response');
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      List<Place>? listData = allDatum.data?.places;
+      country = allDatum.data!.country!;
+      status = allDatum.message!;
+      setState(() {
+
+        if(listData!=null && listData.isNotEmpty) {
+          state = listData[0].state!;
+          place = listData[0].placeName!;
+          longitude = listData[0].longitude!;
+          latitude = listData[0].latitude!;
+        }
+
+      });
+    }
+    else{
+      setState(() {
+        status = allDatum.message!;
+        country = '';
+        state = '';
+        place = '';
+        longitude = '';
+        latitude = '';
+      });
+    }
+
+    DialogHelper.hideDialog();
+
+  }
+
+
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          //SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
