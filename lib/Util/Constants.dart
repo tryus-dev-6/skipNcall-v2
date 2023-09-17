@@ -13,6 +13,7 @@ String TSF_USER_NOTIFICATIONS_COUNT = "notifications_count";
 String IMAGE_URL = "https://file.taskntasker.com/uploads/";
 String SKIP_N_CALL_USER_ACCESS_TOKEN = "access_token";
 String SKIP_N_CALL_USER_REFRESH_TOKEN = "refresh_token";
+String SKIP_N_CALL_PURCHASED_PACKAGE = "current_package";
 
 const Color primaryColor = Color(0xFF2967FF);
 const Color grayColor = Color(0xFF8D8D8E);

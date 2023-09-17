@@ -31,6 +31,7 @@ class _PackagesState extends State<Packages> {
   int previousPage = 1;
   final _controller = StreamController<SwipeRefreshState>.broadcast();
   final ScrollController _scrollController = ScrollController();
+  String currentPackageId = '';
 
   Stream<SwipeRefreshState> get _stream => _controller.stream;
 
@@ -44,46 +45,46 @@ class _PackagesState extends State<Packages> {
             children: [
               Expanded(
                   child: SwipeRefresh.material(
-                scrollController: _scrollController,
-                stateStream: _stream,
-                onRefresh: refresh,
-                children: [
-                  Container(
-                      padding: const EdgeInsets.only(bottom: 70),
-                      child: isShimmerLoading
-                          ? ListView.builder(
+                    scrollController: _scrollController,
+                    stateStream: _stream,
+                    onRefresh: refresh,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.only(bottom: 70),
+                          child: isShimmerLoading
+                              ? ListView.builder(
                               shrinkWrap: true,
                               primary: false,
                               itemCount: 10,
                               itemBuilder: (BuildContext context, int index) {
                                 return getShimmerLoading();
                               })
-                          : data.isNotEmpty
+                              : data.isNotEmpty
                               ? ListView.builder(
-                                  itemCount: data.length + 1,
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  itemBuilder: (context, index) {
-                                    if (index < data.length) {
-                                      return getSingleItem(data[index]);
-                                    } else if (isPaginateLoading) {
-                                      return Container(
-                                        margin: const EdgeInsets.all(10),
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        child: LoadingAnimationWidget
-                                            .staggeredDotsWave(
-                                          color: Colors.black87,
-                                          size: 40,
-                                        ),
-                                      );
-                                    }
-                                  })
+                              itemCount: data.length + 1,
+                              shrinkWrap: true,
+                              primary: false,
+                              itemBuilder: (context, index) {
+                                if (index < data.length) {
+                                  return getSingleItem(data[index]);
+                                } else if (isPaginateLoading) {
+                                  return Container(
+                                    margin: const EdgeInsets.all(10),
+                                    height: 40,
+                                    alignment: Alignment.center,
+                                    child: LoadingAnimationWidget
+                                        .staggeredDotsWave(
+                                      color: Colors.black87,
+                                      size: 40,
+                                    ),
+                                  );
+                                }
+                              })
                               : const Card(
-                                  // no data found section
-                                  )),
-                ],
-              )),
+                            // no data found section
+                          )),
+                    ],
+                  )),
             ],
           ),
         ),
@@ -192,7 +193,8 @@ class _PackagesState extends State<Packages> {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 4, bottom: 4),
+                                  margin: const EdgeInsets.only(
+                                      top: 4, bottom: 4),
                                   color: Colors.white,
                                   child: SizedBox(
                                     width: Tools.getSize(0.3, context),
@@ -212,7 +214,8 @@ class _PackagesState extends State<Packages> {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 4, bottom: 4),
+                                  margin: const EdgeInsets.only(
+                                      top: 4, bottom: 4),
                                   color: Colors.white,
                                   child: SizedBox(
                                     width: Tools.getSize(0.3, context),
@@ -291,7 +294,7 @@ class _PackagesState extends State<Packages> {
                                 Container(
                                   alignment: Alignment.center,
                                   margin:
-                                      const EdgeInsets.only(top: 5, bottom: 5),
+                                  const EdgeInsets.only(top: 5, bottom: 5),
                                   child: Container(
                                     color: Colors.white,
                                     child: SizedBox(
@@ -318,7 +321,7 @@ class _PackagesState extends State<Packages> {
                                 Container(
                                   alignment: Alignment.topCenter,
                                   margin:
-                                      const EdgeInsets.only(top: 5, bottom: 5),
+                                  const EdgeInsets.only(top: 5, bottom: 5),
                                   child: Container(
                                     color: Colors.white,
                                     child: SizedBox(
@@ -408,7 +411,7 @@ class _PackagesState extends State<Packages> {
                     margin: const EdgeInsets.only(top: 10, bottom: 20),
                     decoration: BoxDecoration(
                       borderRadius:
-                          BorderRadius.circular(5.0), // Set border radius
+                      BorderRadius.circular(5.0), // Set border radius
                     ),
                     child: ElevatedButton(
                       onPressed: () {},
@@ -433,341 +436,347 @@ class _PackagesState extends State<Packages> {
 
   Card getSingleItem(Data data) {
     return Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+      elevation: 5,
+      child: Container(
+        margin: const EdgeInsets.only(top: 20.0),
+        child: Column(
+          children: [
+        Column(
+        children: [
+        Text(
+        '${data.packageName}',
+          style:
+          const TextStyle(fontSize: 20, color: Color(0Xff434141)),
         ),
-        margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-        elevation: 5,
-        child: Container(
-          margin: const EdgeInsets.only(top: 20.0),
-          child: Column(
-            children: [
-              Column(
+        Container(
+          margin: const EdgeInsets.only(top: 3.0),
+          child: Text(
+            '${data.minZip}-${data.maxZip} Zips',
+            style: const TextStyle(
+                fontSize: 18, color: Color(0Xff434141)),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 6.0),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "\$${data.packagePrice}",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 34,
+                      color: Color(0Xff434141)),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 8.0),
+                  child: const Text(
+                    '/Month',
+                    style: TextStyle(
+                        fontSize: 14, color: Color(0Xff434141)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ],
+      ),
+      Container(
+        margin: const EdgeInsets.only(
+            left: 10.0, right: 10.0, top: 10.0, bottom: 5.0),
+        decoration: BoxDecoration(
+            border: Border.all(color: const Color(0XffD9D9D9)),
+            borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              child: const Text(
+                'Home Owner Verified',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Color(0Xff634099)),
+              ),
+            ),
+            Container(
+              color: const Color(0XffD9D9D9),
+              height: 1,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Phone Number',
+                        style: TextStyle(
+                            fontSize: 14, color: Color(0Xff434141)),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
+                      child: const Text(
+                        'Mailing Address',
+                        style: TextStyle(
+                            fontSize: 14, color: Color(0Xff434141)),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Email Address',
+                        style: TextStyle(
+                            fontSize: 14, color: Color(0Xff434141)),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
+                      child: const Text(
+                        'Verified Owner',
+                        style: TextStyle(
+                            fontSize: 14, color: Color(0Xff434141)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Container(
+              color: const Color(0XffD9D9D9),
+              height: 1,
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${data.packageName}',
-                    style:
-                        const TextStyle(fontSize: 20, color: Color(0Xff434141)),
+                    "\$${data.hovLeadPrice}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Color(0Xff434141)),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 3.0),
-                    child: Text(
-                      '${data.minZip}-${data.maxZip} Zips',
-                      style: const TextStyle(
-                          fontSize: 18, color: Color(0Xff434141)),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 6.0),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "\$${data.packagePrice}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 34,
-                                color: Color(0Xff434141)),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 8.0),
-                            child: const Text(
-                              '/Month',
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0Xff434141)),
-                            ),
-                          ),
-                        ],
-                      ),
+                    margin: const EdgeInsets.only(top: 5),
+                    child: const Text(
+                      '/lead',
+                      style: TextStyle(
+                          fontSize: 14, color: Color(0Xff434141)),
                     ),
                   ),
                 ],
               ),
-              Container(
-                margin: const EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 10.0, bottom: 5.0),
-                decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0XffD9D9D9)),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
+            ),
+          ],
+        ),
+      ),
+      Container(
+        margin: const EdgeInsets.only(
+            left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+        decoration: BoxDecoration(
+            border: Border.all(color: const Color(0XffD9D9D9)),
+            borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              child: const Text(
+                'Warm Lead',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Color(0Xff634099)),
+              ),
+            ),
+            Container(
+              color: const Color(0XffD9D9D9),
+              height: 1,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
                   children: [
                     Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 10, bottom: 10),
+                      margin: const EdgeInsets.only(top: 5),
                       child: const Text(
-                        'Home Owner Verified',
+                        'Phone Number',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Color(0Xff634099)),
+                            fontSize: 14, color: Color(0Xff434141)),
                       ),
                     ),
-                    Container(
-                      color: const Color(0XffD9D9D9),
-                      height: 1,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text(
-                                'Phone Number',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5, bottom: 5),
-                              child: const Text(
-                                'Mailing Address',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text(
-                                'Email Address',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5, bottom: 5),
-                              child: const Text(
-                                'Verified Owner',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      color: const Color(0XffD9D9D9),
-                      height: 1,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 5, bottom: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "\$${data.hovLeadPrice}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Color(0Xff434141)),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            child: const Text(
-                              '/lead',
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0Xff434141)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0XffD9D9D9)),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
-                  children: [
                     Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 10, bottom: 10),
+                      margin: const EdgeInsets.only(top: 5),
                       child: const Text(
-                        'Warm Lead',
+                        'Mailing Address',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Color(0Xff634099)),
+                            fontSize: 14, color: Color(0Xff434141)),
                       ),
                     ),
                     Container(
-                      color: const Color(0XffD9D9D9),
-                      height: 1,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text(
-                                'Phone Number',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text(
-                                'Mailing Address',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top: 5, bottom: 5),
-                              child: const Text(
-                                'Full Questionnaires',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.topCenter,
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text(
-                                'Email Address',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.topCenter,
-                              margin: const EdgeInsets.only(top: 5, bottom: 5),
-                              child: const Text(
-                                'Verified Owner',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0Xff434141)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      color: const Color(0XffD9D9D9),
-                      height: 1,
-                    ),
-                    Container(
+                      alignment: Alignment.center,
                       margin: const EdgeInsets.only(top: 5, bottom: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "\$${data.warmLeadPrice}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Color(0Xff434141)),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            child: const Text(
-                              '/lead',
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0Xff434141)),
-                            ),
-                          ),
-                        ],
+                      child: const Text(
+                        'Full Questionnaires',
+                        style: TextStyle(
+                            fontSize: 14, color: Color(0Xff434141)),
                       ),
                     ),
                   ],
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0XffD9D9D9)),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
+                Column(
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 10.0),
+                      alignment: Alignment.topCenter,
+                      margin: const EdgeInsets.only(top: 5),
                       child: const Text(
-                        "Skip Tracing",
+                        'Email Address',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Color(0Xff634099)),
+                            fontSize: 14, color: Color(0Xff434141)),
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 5, bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "\$5",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Color(0Xff434141)),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            child: const Text(
-                              '/lead',
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0Xff434141)),
-                            ),
-                          ),
-                        ],
+                      alignment: Alignment.topCenter,
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
+                      child: const Text(
+                        'Verified Owner',
+                        style: TextStyle(
+                            fontSize: 14, color: Color(0Xff434141)),
                       ),
                     ),
                   ],
                 ),
+              ],
+            ),
+            Container(
+              color: const Color(0XffD9D9D9),
+              height: 1,
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "\$${data.warmLeadPrice}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Color(0Xff434141)),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 5),
+                    child: const Text(
+                      '/lead',
+                      style: TextStyle(
+                          fontSize: 14, color: Color(0Xff434141)),
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0), // Set border radius
-                ),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 12.0,
-                      backgroundColor: const Color(0Xff634099),
-                      textStyle: const TextStyle(color: Colors.white)),
-                  child: const Text('Purchase'),
-                ),
+            ),
+          ],
+        ),
+      ),
+      Container(
+        margin: const EdgeInsets.only(
+            left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+        decoration: BoxDecoration(
+            border: Border.all(color: const Color(0XffD9D9D9)),
+            borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 10.0),
+              child: const Text(
+                "Skip Tracing",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Color(0Xff634099)),
               ),
-            ],
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "\$5",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Color(0Xff434141)),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 5),
+                    child: const Text(
+                      '/lead',
+                      style: TextStyle(
+                          fontSize: 14, color: Color(0Xff434141)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      Container(
+          margin: const EdgeInsets.only(top: 10, bottom: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0), // Set border radius
           ),
-        ));
-  }
+          child: ElevatedButton(
+
+              onPressed: () {
+                purchasePackage(data.packageId);
+              },
+              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+              style: ElevatedButton.styleFrom(
+                  elevation: 12.0,
+                  backgroundColor: currentPackageId == data.packageId? const Color(0Xff00A18A) : const Color(0Xff634099),
+                  textStyle: const TextStyle(color: Colors.white)),
+              child: currentPackageId == data.packageId? const Text('Purchased') : const Text('Purchase'),
+    ),
+    ),
+    ],
+    ),
+    ));
+    }
 
   Future<void> loadData() async {
     page = 1;
     previousPage = 1;
 
+    String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
+    currentPackageId = currentPackage;
+
     var response;
     String? userId =
-        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var package = {
       "client_id": userId,
@@ -806,7 +815,7 @@ class _PackagesState extends State<Packages> {
         data.addAll(listData!);
       });
     }
-    else{
+    else {
       showSnackBar(allDatum.message!);
     }
 
@@ -814,8 +823,8 @@ class _PackagesState extends State<Packages> {
   }
 
   Future<void> loadMoreData() async {
-    String? userId =
-        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId = await SharedPreferencesHelper.getData(
+        SKIP_N_CALL_USER_USERID);
 
     debugPrint("Page $page");
 
@@ -857,11 +866,44 @@ class _PackagesState extends State<Packages> {
         data.addAll(listData!);
       });
     }
-    else{
+    else {
       showSnackBar(allDatum.message!);
     }
   }
 
+  Future<void> purchasePackage(String? packageId) async {
+    String? userId = await SharedPreferencesHelper.getData(
+        SKIP_N_CALL_USER_USERID);
+
+    var purchasePackageBody = {
+      "client_id": userId,
+      "payment_id": "122",
+      "package_id": packageId,
+    };
+
+    var response;
+
+    response = await BaseClient()
+        .postWithToken('client/purchase/package', purchasePackageBody)
+        .catchError((err) {});
+
+    if (response == null) {
+      debugPrint('failed');
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+    if (allDatum.status == true) {
+      setState(() {
+        currentPackageId = packageId!;
+        SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, packageId);
+      });
+    }
+
+    showSnackBar(allDatum.message!);
+  }
 
   void showSnackBar(String message) {
     final snackBar = SnackBar(
@@ -899,8 +941,8 @@ class MySVG extends AssetBundle {
   }
 
   @override
-  Future<T> loadStructuredData<T>(
-      String key, Future<T> Function(String value) parser) {
+  Future<T> loadStructuredData<T>(String key,
+      Future<T> Function(String value) parser) {
     // TODO: implement loadStructuredData
     throw UnimplementedError();
   }

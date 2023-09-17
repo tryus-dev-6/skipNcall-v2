@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Helper/SharedPreferencesHelper.dart';
+import 'package:skip_n_call/Pages/Login.dart';
 import 'dart:async';
 
+import '../Util/Constants.dart';
 import 'NotificationScreen.dart';
 import 'Profile.dart';
 
@@ -110,6 +113,16 @@ class _DashboardState extends State<Dashboard> {
                                         MaterialPageRoute(
                                           builder: (context) =>
                                           const Profile(),
+                                        ),
+                                      );
+                                    }
+                                    if (item.index == 1) {
+                                      SharedPreferencesHelper.removeData(SKIP_N_CALL_USER_USERID);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                          const Login(),
                                         ),
                                       );
                                     }

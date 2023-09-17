@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Pages/SignUp.dart';
 
 import '../Api/base_client.dart';
 import '../Helper/SharedPreferencesHelper.dart';
@@ -209,13 +210,26 @@ class _LoginState extends State<Login> {
                           ),
                         ),
 
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: const Text(
-                            "Sign Up",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0Xff623E99),
+                        GestureDetector(
+
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                const SignUp(),
+                              ),
+                            );
+                          },
+
+                          child: Container(
+                            padding: const EdgeInsets.only(right: 20, top: 15, bottom: 15, left: 10),
+                            child: const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0Xff623E99),
+                              ),
                             ),
                           ),
                         ),
@@ -283,12 +297,7 @@ class _LoginState extends State<Login> {
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, user.email.toString());
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PHONE, user.phone.toString());
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Navigation(),
-        ),
-      );
+      logInSuccess();
 
       //showSnackBar("Please enter the password");
 
@@ -319,5 +328,14 @@ class _LoginState extends State<Login> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void logInSuccess() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Navigation(),
+      ),
+    );
   }
 }
