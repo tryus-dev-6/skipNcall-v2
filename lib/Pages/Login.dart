@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Pages/PasswordSet.dart';
 import 'package:skip_n_call/Pages/SignUp.dart';
 
 import '../Api/base_client.dart';
@@ -11,7 +12,6 @@ import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Model/User.dart';
 import '../Util/Constants.dart';
-import '../CustomDialogues/CustomSheetResetPassword.dart';
 import 'Navigation.dart';
 
 class Login extends StatefulWidget {
@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
                         child: GestureDetector(
 
                           onTap: () {
-                            showCustomButtonSheet(context);
+                            forgetPassword();
                           },
 
                           child: const Text(
@@ -338,4 +338,14 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+
+  void forgetPassword() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PasswordSet(),
+      ),
+    );
+  }
+
 }
