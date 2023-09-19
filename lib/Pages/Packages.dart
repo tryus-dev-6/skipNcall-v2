@@ -752,7 +752,12 @@ class _PackagesState extends State<Packages> {
           child: ElevatedButton(
 
               onPressed: () {
-                purchasePackage(data.packageId);
+                if(data.packageId != null) {
+                  purchasePackage(data.packageId);
+                }
+                else{
+                  showSnackBar("Package id not found");
+                }
               },
               // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
               style: ElevatedButton.styleFrom(
@@ -773,10 +778,10 @@ class _PackagesState extends State<Packages> {
 
     String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
     currentPackageId = currentPackage;
+    debugPrint('current package: $currentPackageId');
 
     var response;
-    String? userId =
-    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var package = {
       "client_id": userId,
@@ -799,6 +804,10 @@ class _PackagesState extends State<Packages> {
     debugPrint('successful: $res');
 
     CommonResponse allDatum = allDataFromJson(response);
+
+    if(currentPackageId != allDatum.purchasedPackage!){
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, allDatum.purchasedPackage!);
+    }
 
     if (allDatum.status == true) {
       List<Data>? listData = allDatum.packageResponse?.data;
@@ -872,8 +881,7 @@ class _PackagesState extends State<Packages> {
   }
 
   Future<void> purchasePackage(String? packageId) async {
-    String? userId = await SharedPreferencesHelper.getData(
-        SKIP_N_CALL_USER_USERID);
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var purchasePackageBody = {
       "client_id": userId,
@@ -895,6 +903,7 @@ class _PackagesState extends State<Packages> {
     debugPrint('successful: $res');
 
     CommonResponse allDatum = allDataFromJson(response);
+
     if (allDatum.status == true) {
       setState(() {
         currentPackageId = packageId!;
@@ -912,7 +921,7 @@ class _PackagesState extends State<Packages> {
         style: const TextStyle(
             fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
       ),
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
       backgroundColor: const Color(0Xff1E1E1E),
       behavior: SnackBarBehavior.floating,
       action: SnackBarAction(

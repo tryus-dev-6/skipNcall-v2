@@ -3,15 +3,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../Components/custom_button.dart';
-import '../Components/custom_button2.dart';
-import '../api/base_client.dart';
-import '../helper/dialog_helper.dart';
+import 'package:skip_n_call/Pages/Login.dart';
+
+import '../Api/base_client.dart';
+import '../Helper/SharedPreferencesHelper.dart';
+import '../Helper/dialog_helper.dart';
+import '../Model/CommonResponse.dart';
+import '../Util/Constants.dart';
+
 
 class PasswordSet extends StatefulWidget {
-  const PasswordSet({super.key});
+
+  final String user;
+
+  const PasswordSet({super.key, required this.user});
 
   @override
   State<PasswordSet> createState() => _PasswordSetState();
@@ -28,11 +33,15 @@ class _PasswordSetState extends State<PasswordSet> {
 
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
+  late String user;
+
 
   @override
   void initState() {
     super.initState();
     isPasswordVisible = true;
+    isConfirmPasswordVisible = true;
+    user = widget.user;
   }
 
   @override
@@ -60,34 +69,23 @@ class _PasswordSetState extends State<PasswordSet> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.transparent, // Set status bar color
-      statusBarIconBrightness: Brightness.dark, // Change icon color
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: Color(0Xff634099),
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white
     ));
 
-    final Map<String, dynamic>? args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    // final String username = args?['username'];
-
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0XffFDF9FF),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Column(
+                const Column(
                   children: [
-                    const SizedBox(height: 20),
-                    CustomButton2(
-                        icon: Icons.arrow_back_ios_new,
-                        onPressed: () {
-                          if (Navigator.canPop(context)) {
-                            Navigator.pop(
-                                context); // Navigate back to the previous page
-                          }
-                        }),
+                    SizedBox(height: 20),
                   ],
                 ),
                 const SizedBox(
@@ -109,14 +107,21 @@ class _PasswordSetState extends State<PasswordSet> {
                         // ),
                       ],
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 15),
                     const Text(
-                        "Please enter verification code and password to set new password. Check your email inbox or spam box for email.",
+                        "Please enter verification code and password to set new password. Check your email inbox or spam box for email. code will expire after 3 minutes",
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.black,
                         )),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 15),
+                    const Text(
+                        "code will expire after 3 minutes",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.red,
+                        )),
+                    const SizedBox(height: 40),
                     TextField(
                       controller: otpController,
                       focusNode: otpFocusNode,
@@ -209,71 +214,61 @@ class _PasswordSetState extends State<PasswordSet> {
                       keyboardType: TextInputType.visiblePassword,
                       textInputAction: TextInputAction.done,
                     ),
-                    const SizedBox(height: 30),
-                    // CustomButton(
-                    //   text: 'Set Password',
-                    //   icon: Icons.arrow_forward,
-                    //   onPressed: () async {
-                    //     String otp = otpController.text;
-                    //     String password = passwordController.text;
-                    //     String confirmPassword = confirmPasswordController.text;
-                    //
-                    //     if (otp.isEmpty) {
-                    //       DialogHelper.showSnackBar(context,
-                    //           "Please enter the verification code", "Okay", 1);
-                    //       return;
-                    //     }
-                    //
-                    //     if (password.isEmpty) {
-                    //       DialogHelper.showSnackBar(
-                    //           context, "Please enter the password", "Okay", 1);
-                    //       return;
-                    //     }
-                    //
-                    //     if (confirmPassword.isEmpty) {
-                    //       DialogHelper.showSnackBar(context,
-                    //           "Please enter the confirm password", "Okay", 1);
-                    //       return;
-                    //     }
-                    //
-                    //     if (password != confirmPassword) {
-                    //       DialogHelper.showSnackBar(
-                    //           context,
-                    //           "Confirm password doesn't match with password",
-                    //           "Okay",
-                    //           1);
-                    //       return;
-                    //     }
-                    //
-                    //     var userData = {
-                    //       "code": otp,
-                    //       "username": username,
-                    //       "new_password": password
-                    //     };
-                    //
-                    //     hideKeyboard();
-                    //     DialogHelper.showLoading();
-                    //     var response = await BaseClient()
-                    //         .post('check/v/code', userData)
-                    //         .catchError((err) {});
-                    //     if (response == null) {
-                    //       debugPrint('failed');
-                    //       DialogHelper.hideDialog();
-                    //       return;
-                    //     }
-                    //     var res = json.decode(response);
-                    //     DialogHelper.showSnackBar(
-                    //         context, res["message"], "Okay", 5);
-                    //
-                    //     DialogHelper.hideDialog();
-                    //     debugPrint('successful: $res');
-                    //     if (res["status"] == true) {
-                    //       Timer(
-                    //           const Duration(seconds: 1),
-                    //           () => Get.offAllNamed('/dashboard'));
-                    //     }
-                    //   },
-                    // ),
+                    const SizedBox(height: 40),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: const MaterialStatePropertyAll(Color(0Xff634099)),
+
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.0), // Adjust the radius as needed
+                            ),
+                          ),
+
+                        ),
+                        onPressed: () {
+                          passwordSet();
+                        },
+                        child: const Text(
+                          'Submit',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                            "Didn't received?",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            )),
+                        GestureDetector(
+
+                          onTap: (){
+                            sendOtp(user);
+                          },
+
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: const Text(
+                                "Resend ",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0Xff634099),
+                                )),
+                          ),
+                        ),
+                      ],
+                    )
+
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -283,6 +278,150 @@ class _PasswordSetState extends State<PasswordSet> {
         ),
       ),
     );
-    ;
   }
+
+  Future<void> sendOtp(String email) async {
+
+
+
+    var sendOtp = {
+      "email": email
+    };
+
+    hideKeyboard();
+    DialogHelper.showLoading();
+    var response = await BaseClient()
+        .post('user/reset/password', sendOtp)
+        .catchError((err) {
+      DialogHelper.hideDialog();
+      showSnackBar(err.toString());
+    });
+    if (response == null) {
+      debugPrint('failed');
+      DialogHelper.hideDialog();
+      return;
+    }
+    var res = json.decode(response);
+    DialogHelper.hideDialog();
+    debugPrint('successful: $res');
+    CommonResponse commonResponse = allDataFromJson(response);
+    if (commonResponse.status == true) {
+
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_ACCESS_TOKEN, commonResponse.token.toString());
+
+      showSnackBar(commonResponse.message!);
+
+      // Timer(
+      //     const Duration(seconds: 1),
+      //         () => Get.offAllNamed('/home'));
+    }else{
+      showSnackBar(commonResponse.message!);
+    }
+
+  }
+
+  Future<void> passwordSet() async {
+
+    String code = otpController.text;
+    String password = passwordController.text;
+    String confirmPassword = confirmPasswordController.text;
+
+
+    if (code.isEmpty) {
+      showSnackBar("Please enter the otp");
+      return;
+    }
+    if (password.isEmpty) {
+      showSnackBar("Please enter the password");
+      return;
+    }
+    if (password.length<8) {
+      showSnackBar("password At least 8 characters required");
+      return;
+    }
+    if (confirmPassword.isEmpty) {
+      showSnackBar("Please enter confirmation password");
+      return;
+    }
+    if (confirmPassword != password) {
+      showSnackBar("Password unmatched");
+      return;
+    }
+
+
+
+    var resetPassword = {
+      "email": user,
+      "code": code,
+      "new_password": password
+    };
+
+    hideKeyboard();
+    DialogHelper.showLoading();
+    var response = await BaseClient()
+        .postWithToken('user/check/code', resetPassword)
+        .catchError((err) {
+      DialogHelper.hideDialog();
+      showSnackBar(err.toString());
+    });
+    if (response == null) {
+      debugPrint('failed');
+      DialogHelper.hideDialog();
+      return;
+    }
+    var res = json.decode(response);
+
+    DialogHelper.hideDialog();
+    debugPrint('successful: $res');
+    CommonResponse commonResponse = allDataFromJson(response);
+    if (commonResponse.status == true) {
+
+      successSetPassword();
+
+      showSnackBar(commonResponse.message!);
+
+      // Timer(
+      //     const Duration(seconds: 1),
+      //         () => Get.offAllNamed('/home'));
+    }else{
+      showSnackBar(commonResponse.message!);
+    }
+
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          //SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void successSetPassword() {
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ),
+      );
+    });
+  }
+
+
+
 }

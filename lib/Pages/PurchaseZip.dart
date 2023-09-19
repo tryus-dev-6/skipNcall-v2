@@ -9,8 +9,10 @@ import 'package:skip_n_call/Model/ZipDetails.dart';
 import 'package:skip_n_call/Pages/ZipCart.dart';
 
 import '../Api/base_client.dart';
+import '../Helper/SharedPreferencesHelper.dart';
 import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
+import '../Util/Constants.dart';
 import 'Dashboard.dart';
 
 class PurchaseZip extends StatefulWidget {
@@ -22,6 +24,8 @@ class PurchaseZip extends StatefulWidget {
 
 class _PurchaseZipState extends State<PurchaseZip> {
 
+  bool buttonEnable = false;
+
 
   SampleItem? selectedMenu;
   TextEditingController zipSearchController = TextEditingController();
@@ -31,6 +35,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
   String longitude = '';
   String latitude = '';
   String status = '';
+  String searchedZip = '';
 
   @override
   Widget build(BuildContext context) {
@@ -322,8 +327,9 @@ class _PurchaseZipState extends State<PurchaseZip> {
               Container(
                 margin: const EdgeInsets.only(top: 30,bottom: 50, right: 40, left: 40),
                 height: 45,
-                child: ElevatedButton(
+                child: buttonEnable? ElevatedButton(
 
+                  //onPressed: null,
                   style: ButtonStyle(
                     backgroundColor: const MaterialStatePropertyAll(Color(0Xff00A18A)),
 
@@ -335,9 +341,31 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
                   ),
 
-                  onPressed: () {},
-                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                  child: const Text('Add To Cart'),
+                  onPressed: () {
+                    addToCart();
+                  },
+
+                  child: const Text(
+                    'Add To Cart',
+                    // style: TextStyle(color: Colors.white),
+                  ),
+                ): ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: const MaterialStatePropertyAll(Color(0Xff88bdb5)),
+
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0), // Adjust the radius as needed
+                      ),
+                    ),
+
+                  ),
+
+                  onPressed: null,
+                  child: const Text(
+                    'Add To Cart',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
               ),
 
@@ -387,6 +415,8 @@ class _PurchaseZipState extends State<PurchaseZip> {
       status = allDatum.message!;
       setState(() {
 
+        searchedZip = zip;
+
         if(listData!=null && listData.isNotEmpty) {
           state = listData[0].state!;
           place = listData[0].placeName!;
@@ -394,10 +424,18 @@ class _PurchaseZipState extends State<PurchaseZip> {
           latitude = listData[0].latitude!;
         }
 
+        if(status == "Occupied.") {
+          buttonEnable = false;
+        }
+        else{
+          buttonEnable = true;
+        }
+
       });
     }
     else{
       setState(() {
+        buttonEnable = false;
         status = allDatum.message!;
         country = '';
         state = '';
@@ -433,5 +471,52 @@ class _PurchaseZipState extends State<PurchaseZip> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> addToCart() async {
+    DialogHelper.showLoading();
+
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
+
+    var response;
+
+    var add = {
+      "client_id": userId,
+      "code": searchedZip,
+      "package_id": currentPackage,
+    };
+
+    response = await BaseClient()
+        .postWithToken('client/zip/cart', add)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    DialogHelper.hideDialog();
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+
+      if(allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+    }
+    else{
+      if(allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+    }
+
+    DialogHelper.hideDialog();
   }
 }

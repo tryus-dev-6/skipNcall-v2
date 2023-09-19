@@ -11,7 +11,6 @@ import '../Api/base_client.dart';
 import '../Helper/SharedPreferencesHelper.dart';
 import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
-import '../Model/User.dart';
 import '../Util/Constants.dart';
 import 'package:motion_toast/motion_toast.dart';
 
@@ -33,8 +32,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController emailVerifyController = TextEditingController();
   late String email;
-  late PersistentBottomSheetController _controller; // <------ Instance variable
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   bool isLoading = false;
   bool isPasswordVisible = false;
@@ -480,7 +478,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void resendCode () {}
 
   Future<void> checkOtp() async {
 

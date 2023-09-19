@@ -40,7 +40,6 @@ class _ZipCartState extends State<ZipCart> {
                       color: const Color(0Xff634099),
                     ),
                   ),
-
                   Card(
                       margin: const EdgeInsets.only(right: 40, top: 10),
                       color: const Color(0Xff00A18A),
@@ -64,6 +63,92 @@ class _ZipCartState extends State<ZipCart> {
           ),
           body: ListView(
             children: [
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                margin: const EdgeInsets.only(
+                    top: 20.0, left: 15.0, right: 15.0),
+                elevation: 5,
+                child: Container(
+                  margin: const EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Summary',
+                        style: TextStyle(
+                            fontSize: 26, color: Color(0Xff634099)),
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(top: 6, bottom: 5),
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Total Zip',
+                                style: TextStyle(fontSize: 16, color: Color(0Xff434141)),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: const Text(
+                                  'Total Amount',
+                                  style: TextStyle(fontSize: 16, color: Color(0Xff434141)),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(left: 15, right: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    ':',
+                                    style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    child: const Text(
+                                      ':',
+                                      style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                    ),
+                                  ),
+
+                                ],
+                              )
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "10",
+                                style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: const Text(
+                                  "\$50",
+                                  style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),

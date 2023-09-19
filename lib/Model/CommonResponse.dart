@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:skip_n_call/Model/PackageResponse.dart';
@@ -17,6 +18,8 @@ class CommonResponse {
   User? user;
   String? message;
   String? currentBalance;
+  String? clientPackageId;
+  String? purchasedPackage;
   TransactionList? transactionList;
   Data? data;
   Package? packageResponse;
@@ -29,6 +32,8 @@ class CommonResponse {
       this.currentBalance,
       this.transactionList,
       this.packageResponse,
+        this.clientPackageId,
+        this.purchasedPackage,
       this.data});
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
@@ -36,6 +41,8 @@ class CommonResponse {
       user: json!["user"] == null ? null : User.fromJson(json!["user"]),
       token: json!["token"],
       message: json!["message"],
+      clientPackageId: json!["client_package_id"],
+      purchasedPackage: json!["purchased_package"],
       currentBalance: json!['current_balance'],
       transactionList: json['transaction_list'] != null ? TransactionList.fromJson(json['transaction_list']) : null,
       packageResponse: json['package'] != null ? Package.fromJson(json['package']) : null,
@@ -47,6 +54,8 @@ class CommonResponse {
         "user": user?.toJson(),
         "message": message,
         "current_balance": currentBalance,
+        "client_package_id": clientPackageId,
+        "purchased_package": purchasedPackage,
         "package": packageResponse!.toJson(),
         'transaction_list': transactionList!.toJson()
       };
