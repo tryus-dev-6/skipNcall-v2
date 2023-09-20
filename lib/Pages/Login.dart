@@ -310,7 +310,9 @@ class _LoginState extends State<Login> {
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_ACCESS_TOKEN, commonResponse.token.toString());
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, user.email.toString());
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PHONE, user.phone.toString());
-      SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, commonResponse.clientPackageId.toString());
+      if(commonResponse.clientPackageId.toString() != null) {
+        SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, commonResponse.clientPackageId.toString());
+      }
 
       logInSuccess();
 

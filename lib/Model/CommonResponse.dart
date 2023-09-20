@@ -1,8 +1,8 @@
-
 import 'dart:convert';
 
 import 'package:skip_n_call/Model/PackageResponse.dart';
 
+import 'CartList.dart';
 import 'ZipDetails.dart';
 import 'TransactionList.dart';
 import 'User.dart';
@@ -23,6 +23,8 @@ class CommonResponse {
   TransactionList? transactionList;
   Data? data;
   Package? packageResponse;
+  CartList? cartList;
+  int? cartCount;
 
   CommonResponse(
       {this.status,
@@ -32,8 +34,10 @@ class CommonResponse {
       this.currentBalance,
       this.transactionList,
       this.packageResponse,
-        this.clientPackageId,
-        this.purchasedPackage,
+      this.clientPackageId,
+      this.purchasedPackage,
+      this.cartList,
+      this.cartCount,
       this.data});
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
@@ -45,7 +49,10 @@ class CommonResponse {
       purchasedPackage: json!["purchased_package"],
       currentBalance: json!['current_balance'],
       transactionList: json['transaction_list'] != null ? TransactionList.fromJson(json['transaction_list']) : null,
-      packageResponse: json['package'] != null ? Package.fromJson(json['package']) : null,
+      packageResponse:
+          json['package'] != null ? Package.fromJson(json['package']) : null,
+      cartList: json['cart_list'] != null ? CartList.fromJson(json["cart_list"]) : null,
+      cartCount: json["cart_count"],
       data: json['data'] != null ? Data.fromJson(json['data']) : null);
 
   Map<String, dynamic> toJson() => {
@@ -57,6 +64,8 @@ class CommonResponse {
         "client_package_id": clientPackageId,
         "purchased_package": purchasedPackage,
         "package": packageResponse!.toJson(),
+        "cart_list": cartList?.toJson(),
+        "cart_count": cartCount,
         'transaction_list': transactionList!.toJson()
       };
 }

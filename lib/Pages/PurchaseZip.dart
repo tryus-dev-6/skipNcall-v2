@@ -268,57 +268,62 @@ class _PurchaseZipState extends State<PurchaseZip> {
                             margin: const EdgeInsets.only(top: 10),
                             child: const Text(
                               ':',
-                              style: TextStyle(fontSize: 16, color: Color(0Xff00A18A)),
+                              style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
                             ),
                           ),
 
                         ],
                       )
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          country,
-                          style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            state,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            country,
                             style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            place,
-                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              state,
+                              style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            longitude,
-                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              place,
+                              style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            latitude,
-                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              longitude,
+                              style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            status,
-                            style: status == "Available." ? const TextStyle(fontSize: 16, color: Color(0Xff00A18A)) : const TextStyle(fontSize: 16, color: Colors.red),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              latitude,
+                              style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                            ),
                           ),
-                        ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10, right: 20),
+                            child: Flexible(
+                              child: Text(
+                                status,
+                                softWrap: true,
+                                style: status == "Available." ? const TextStyle(fontSize: 16, color: Color(0Xff00A18A)) : const TextStyle(fontSize: 16, color: Colors.red),
+                              ),
+                            ),
+                          ),
 
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -379,6 +384,8 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
   Future<void> zipSearch() async {
 
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
     String zip = zipSearchController.text.toString();
 
     if (zip.isEmpty) {
@@ -390,7 +397,8 @@ class _PurchaseZipState extends State<PurchaseZip> {
     var response;
 
     var search = {
-      "code": zip
+      "code": zip,
+      "client_id": userId
     };
 
     response = await BaseClient()
@@ -401,7 +409,8 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
 
     if (response == null) {
-      debugPrint('failed to get response');
+      showSnackBar('failed to get response');
+      DialogHelper.hideDialog();
       return;
     }
     var res = json.decode(response);
@@ -424,11 +433,11 @@ class _PurchaseZipState extends State<PurchaseZip> {
           latitude = listData[0].latitude!;
         }
 
-        if(status == "Occupied.") {
-          buttonEnable = false;
+        if(status == "Available.") {
+          buttonEnable = true;
         }
         else{
-          buttonEnable = true;
+          buttonEnable = false;
         }
 
       });
@@ -479,6 +488,15 @@ class _PurchaseZipState extends State<PurchaseZip> {
     String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
     String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
 
+    if(currentPackage.isEmpty) {
+
+      showSnackBar("Please Purchase a Package First");
+
+      DialogHelper.hideDialog();
+
+      return;
+    }
+
     var response;
 
     var add = {
@@ -510,6 +528,10 @@ class _PurchaseZipState extends State<PurchaseZip> {
       if(allDatum.message != null) {
         showSnackBar(allDatum.message.toString());
       }
+
+      setState(() {
+        buttonEnable = false;
+      });
     }
     else{
       if(allDatum.message != null) {

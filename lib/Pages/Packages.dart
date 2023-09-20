@@ -80,9 +80,21 @@ class _PackagesState extends State<Packages> {
                                   );
                                 }
                               })
-                              : const Card(
-                            // no data found section
-                          )),
+                              : ListView.builder(
+                                itemCount:1,
+                                shrinkWrap: true,
+                                primary: false,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    height: 350,
+                                    child: const Text(
+                                        "No data Found"
+                                    ),
+                                  );
+                                },
+                          )
+                      ),
                     ],
                   )),
             ],
@@ -776,7 +788,7 @@ class _PackagesState extends State<Packages> {
     page = 1;
     previousPage = 1;
 
-    String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
+    String currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
     currentPackageId = currentPackage;
     debugPrint('current package: $currentPackageId');
 
@@ -794,7 +806,11 @@ class _PackagesState extends State<Packages> {
       debugPrint('error: $err');
     });
 
-    isShimmerLoading = false;
+    setState(() {
+
+      isShimmerLoading = false;
+
+    });
 
     if (response == null) {
       debugPrint('failed to get response');
@@ -805,9 +821,11 @@ class _PackagesState extends State<Packages> {
 
     CommonResponse allDatum = allDataFromJson(response);
 
-    if(currentPackageId != allDatum.purchasedPackage!){
-      SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, allDatum.purchasedPackage!);
-    }
+    //SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, allDatum.purchasedPackage!);
+
+    // if(currentPackageId != allDatum.purchasedPackage! || currentPackageId == null){
+    //   SharedPreferencesHelper.saveData(SKIP_N_CALL_PURCHASED_PACKAGE, allDatum.purchasedPackage!);
+    // }
 
     if (allDatum.status == true) {
       List<Data>? listData = allDatum.packageResponse?.data;
