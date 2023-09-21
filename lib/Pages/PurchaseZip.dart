@@ -36,6 +36,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
   String latitude = '';
   String status = '';
   String searchedZip = '';
+  String cartCount = '0';
 
   @override
   Widget build(BuildContext context) {
@@ -86,13 +87,13 @@ class _PurchaseZipState extends State<PurchaseZip> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.5),
                     ),
-                    child: const SizedBox(
+                    child: SizedBox(
                       height: 17,
                       width: 17,
                       child: Center(
                         child: Text(
-                          '2',
-                          style: TextStyle(fontSize: 12, color: Colors.white),
+                          cartCount,
+                          style: const TextStyle(fontSize: 12, color: Colors.white),
                         ),
                       ),
                     )),
@@ -458,8 +459,6 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
   }
 
-
-
   void showSnackBar(String message) {
     final snackBar = SnackBar(
       content: Text(
@@ -527,6 +526,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
       if(allDatum.message != null) {
         showSnackBar(allDatum.message.toString());
+        //cartCount = allDatum.cartCount.toString();
       }
 
       setState(() {

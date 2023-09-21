@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
+import 'package:skip_n_call/Pages/Zips.dart';
 
 import '../Api/base_client.dart';
 import '../Helper/SharedPreferencesHelper.dart';
@@ -40,6 +41,7 @@ class _ZipCartState extends State<ZipCart> {
 
   Stream<SwipeRefreshState> get _stream => _controller.stream;
   late String totalAmount = '';
+  String cartCount = '';
 
   @override
   void initState() {
@@ -209,15 +211,15 @@ class _ZipCartState extends State<ZipCart> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            "10",
-                                            style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                          Text(
+                                            cartCount,
+                                            style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                                           ),
                                           Container(
                                             margin: const EdgeInsets.only(top: 10),
-                                            child: const Text(
-                                              "\$50",
-                                              style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                            child: Text(
+                                              "\$$totalAmount",
+                                              style: const TextStyle(fontSize: 16, color: Color(0Xff696969)),
                                             ),
                                           ),
 
@@ -286,7 +288,7 @@ class _ZipCartState extends State<ZipCart> {
             ],
           ),
 
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: data.isNotEmpty? FloatingActionButton.extended(
             onPressed: (){
               checkOut();
             },
@@ -299,7 +301,7 @@ class _ZipCartState extends State<ZipCart> {
             ),
             label: const Text("Checkout", style: TextStyle(color: Color(0Xff452b2e))),
 
-          ),
+          ) : const Card(),
         ),
     );
   }
@@ -344,7 +346,7 @@ class _ZipCartState extends State<ZipCart> {
                 ),
                 GestureDetector(
                   onTap: (){
-                    deleteCartItem(data.zipCode!);
+                    deleteCartItem(data.zipCode!, data.packageId!);
                   },
                   child: Container(
                     width: 25,
@@ -453,6 +455,9 @@ class _ZipCartState extends State<ZipCart> {
         // totalAmount = allDatum.currentBalance!;
         //
         // developer.log(totalAmount, name: 'Total amount');
+
+        cartCount = allDatum.cartCount.toString();
+        totalAmount = allDatum.totalCartPrice.toString();
 
         if (allDatum.cartList?.nextPageUrl != null) {
           Uri nextPageUri = Uri.parse(allDatum.cartList?.nextPageUrl);
@@ -624,19 +629,18 @@ class _ZipCartState extends State<ZipCart> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> deleteCartItem(int zipCode) async {
+  Future<void> deleteCartItem(int zipCode, String packageId) async {
 
     DialogHelper.showLoading();
 
     String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
-    String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
 
     var response;
 
     var add = {
       "client_id": userId,
       "code": zipCode.toString(),
-      "package_id": currentPackage,
+      "package_id": packageId,
     };
 
     response = await BaseClient()
@@ -705,8 +709,13 @@ class _ZipCartState extends State<ZipCart> {
     if (allDatum.status == true) {
 
       if(allDatum.message != null) {
+
         showSnackBar(allDatum.message.toString());
+
       }
+
+      loadData();
+      successCheckout();
 
     }
     else{
@@ -716,6 +725,17 @@ class _ZipCartState extends State<ZipCart> {
     }
 
     DialogHelper.hideDialog();
+
+  }
+
+  void successCheckout() {
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Zip(),
+      ),
+    );
 
   }
 

@@ -23,8 +23,9 @@ class CommonResponse {
   TransactionList? transactionList;
   Data? data;
   Package? packageResponse;
-  CartList? cartList;
+  CartList? cartList, zipList;
   int? cartCount;
+  int? totalCartPrice;
 
   CommonResponse(
       {this.status,
@@ -38,6 +39,8 @@ class CommonResponse {
       this.purchasedPackage,
       this.cartList,
       this.cartCount,
+      this.totalCartPrice,
+        this.zipList,
       this.data});
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
@@ -46,12 +49,14 @@ class CommonResponse {
       token: json!["token"],
       message: json!["message"],
       clientPackageId: json!["client_package_id"],
-      purchasedPackage: json!["purchased_package"],
+      purchasedPackage: json!["selectd_package"],
       currentBalance: json!['current_balance'],
+      totalCartPrice: json!['total_price'],
       transactionList: json['transaction_list'] != null ? TransactionList.fromJson(json['transaction_list']) : null,
       packageResponse:
           json['package'] != null ? Package.fromJson(json['package']) : null,
       cartList: json['cart_list'] != null ? CartList.fromJson(json["cart_list"]) : null,
+      zipList: json['list'] != null ? CartList.fromJson(json["list"]) : null,
       cartCount: json["cart_count"],
       data: json['data'] != null ? Data.fromJson(json['data']) : null);
 
@@ -60,11 +65,13 @@ class CommonResponse {
         "token": token,
         "user": user?.toJson(),
         "message": message,
+        "total_price": totalCartPrice,
         "current_balance": currentBalance,
         "client_package_id": clientPackageId,
-        "purchased_package": purchasedPackage,
+        "selectd_package": purchasedPackage,
         "package": packageResponse!.toJson(),
         "cart_list": cartList?.toJson(),
+        "list": cartList?.toJson(),
         "cart_count": cartCount,
         'transaction_list': transactionList!.toJson()
       };
