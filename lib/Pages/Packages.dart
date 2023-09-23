@@ -908,7 +908,7 @@ class _PackagesState extends State<Packages> {
     var response;
 
     response = await BaseClient()
-        .postWithToken('client/purchase/package', purchasePackageBody)
+        .postWithToken('client/select/package', purchasePackageBody)
         .catchError((err) {});
 
     if (response == null) {

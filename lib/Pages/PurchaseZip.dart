@@ -37,6 +37,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
   String status = '';
   String searchedZip = '';
   String cartCount = '0';
+  String currentPackage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -361,7 +362,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0), // Adjust the radius as needed
+                        borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
 
@@ -425,6 +426,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
       status = allDatum.message!;
       setState(() {
 
+        currentPackage = allDatum.purchasedPackage.toString();
         searchedZip = zip;
 
         if(listData!=null && listData.isNotEmpty) {
@@ -485,7 +487,6 @@ class _PurchaseZipState extends State<PurchaseZip> {
     DialogHelper.showLoading();
 
     String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
-    String? currentPackage = await SharedPreferencesHelper.getData(SKIP_N_CALL_PURCHASED_PACKAGE);
 
     if(currentPackage.isEmpty) {
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:skip_n_call/Model/PackageResponse.dart';
+import 'package:skip_n_call/Model/PurchasedZipList.dart';
 
 import 'CartList.dart';
 import 'ZipDetails.dart';
@@ -23,7 +24,8 @@ class CommonResponse {
   TransactionList? transactionList;
   Data? data;
   Package? packageResponse;
-  CartList? cartList, zipList;
+  CartList? cartList;
+  ZipList? zipList;
   int? cartCount;
   int? totalCartPrice;
 
@@ -56,7 +58,7 @@ class CommonResponse {
       packageResponse:
           json['package'] != null ? Package.fromJson(json['package']) : null,
       cartList: json['cart_list'] != null ? CartList.fromJson(json["cart_list"]) : null,
-      zipList: json['list'] != null ? CartList.fromJson(json["list"]) : null,
+      zipList: json['list'] != null ? ZipList.fromJson(json["list"]) : null,
       cartCount: json["cart_count"],
       data: json['data'] != null ? Data.fromJson(json['data']) : null);
 
@@ -71,7 +73,7 @@ class CommonResponse {
         "selectd_package": purchasedPackage,
         "package": packageResponse!.toJson(),
         "cart_list": cartList?.toJson(),
-        "list": cartList?.toJson(),
+        "list": zipList?.toJson(),
         "cart_count": cartCount,
         'transaction_list': transactionList!.toJson()
       };

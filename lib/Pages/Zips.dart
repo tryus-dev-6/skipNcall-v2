@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
+import 'package:intl/intl.dart';
 import 'package:skip_n_call/Pages/PurchaseZip.dart';
 import 'package:shimmer/shimmer.dart';
 import 'dart:developer' as developer;
@@ -13,6 +14,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../Api/base_client.dart';
 import '../Helper/SharedPreferencesHelper.dart';
+import '../Helper/dialog_helper.dart';
 import '../Model/CartListData.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
@@ -234,24 +236,31 @@ class _ZipState extends State<Zip> {
                         color: const Color(0Xff634099),
                       ),
                     ),
-                    const Text(
-                      "65478",
-                      style: TextStyle(
+                    Text(
+                      data.zipCode.toString(),
+                      style: const TextStyle(
                           fontSize: 16,
                           color: Color(0Xff00A18A)),
                     ),
                   ],
                 ),
-                Container(
-                  width: 25,
-                  height: 25,
-                  padding: const EdgeInsets.only(
-                      bottom: 5, right: 5, left: 5),
-                  margin: const EdgeInsets.only(right: 5),
-                  child: const Icon(
-                    Icons.delete,
-                    size: 25,
-                    color: Colors.red,
+                GestureDetector(
+
+                  onTap: (){
+                    showCustomDialog(context, data);
+                  },
+
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    padding: const EdgeInsets.only(
+                        bottom: 10, right: 10, left: 10),
+                    margin: const EdgeInsets.only(right: 5),
+                    child: const Icon(
+                      Icons.delete,
+                      size: 25,
+                      color: Colors.red,
+                    ),
                   ),
                 ),
               ],
@@ -270,10 +279,10 @@ class _ZipState extends State<Zip> {
                       color: Color(0Xff634099),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      "United States,	Missouri, Lawson",
-                      style: TextStyle(
+                      "${data.country}, ${data.city}, ${data.placeName}",
+                      style: const TextStyle(
                           fontSize: 15,
                           color: Color(0Xff5A5A5A)),
                     ),
@@ -295,9 +304,9 @@ class _ZipState extends State<Zip> {
                       color: Color(0Xff634099),
                     ),
                   ),
-                  const Text(
-                    "11-12-2021 | 02:36:29 pm",
-                    style: TextStyle(
+                  Text(
+                    parseDate(data.createdAt.toString()),
+                    style: const TextStyle(
                         fontSize: 15,
                         color: Color(0Xff5A5A5A)),
                   ),
@@ -351,8 +360,8 @@ class _ZipState extends State<Zip> {
         //
         // developer.log(totalAmount, name: 'Total amount');
 
-        if (allDatum.cartList?.nextPageUrl != null) {
-          Uri nextPageUri = Uri.parse(allDatum.cartList?.nextPageUrl);
+        if (allDatum.zipList?.nextPageUrl != null) {
+          Uri nextPageUri = Uri.parse(allDatum.zipList?.nextPageUrl);
           page = int.tryParse(nextPageUri.queryParameters['page'] ?? '')!;
         }
 
@@ -365,6 +374,14 @@ class _ZipState extends State<Zip> {
     }
 
     _controller.sink.add(SwipeRefreshState.hidden);
+  }
+
+  String parseDate(String? inputDate) {
+    DateTime dateTime = DateTime.parse(inputDate!).toLocal();
+
+    var outputFormat = DateFormat("d MMMM y 'at' h:mm a");
+
+    return outputFormat.format(dateTime);
   }
 
   Future<void> loadMoreData() async {
@@ -398,8 +415,8 @@ class _ZipState extends State<Zip> {
         isPaginateLoading = false;
         previousPage = page;
 
-        if (allDatum.cartList?.nextPageUrl != null) {
-          Uri nextPageUri = Uri.parse(allDatum.cartList?.nextPageUrl);
+        if (allDatum.zipList?.nextPageUrl != null) {
+          Uri nextPageUri = Uri.parse(allDatum.zipList?.nextPageUrl);
           page = int.tryParse(nextPageUri.queryParameters['page'] ?? '')!;
           if (page != null) {
             print('Page number: $page');
@@ -519,5 +536,145 @@ class _ZipState extends State<Zip> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> releaseZip(Datum data) async {
+
+    DialogHelper.showLoading();
+
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var delete = {
+      "client_id": userId,
+      "code": data.zipCode.toString(),
+      "package_id": data.packageId,
+    };
+
+    response = await BaseClient()
+        .postWithToken('client/zip/delete', delete)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+      DialogHelper.hideDialog();
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+
+      if(allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+
+      loadData();
+    }
+    else{
+      if(allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+    }
+
+    DialogHelper.hideDialog();
+
+  }
+
+
+  void showCustomDialog(BuildContext context, Datum data) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      // barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (_, __, ___) {
+        return Center(
+          child: Container(
+            height: 150,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: const Text(
+                  "Are you sure you want to release this zip ?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.black87, decoration: TextDecoration.none, fontFamily: 'system', fontWeight: FontWeight.normal),
+                )),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: const MaterialStatePropertyAll(Colors.red),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                          ),
+
+                        ),
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                          releaseZip(data);
+                        }, child: const Text(
+                      'Ok',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: const MaterialStatePropertyAll(Color(0Xff634099)),
+
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0), // Adjust the radius as needed
+                          ),
+                        ),
+
+                      ),
+                      onPressed: (){
+
+                        Navigator.of(context).pop();
+
+                      }, child: const Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+        }
+
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+        );
+      },
+    );
   }
 }

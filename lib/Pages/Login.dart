@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:skip_n_call/Pages/Dashboard.dart';
 import 'package:skip_n_call/Pages/PasswordSet.dart';
 import 'package:skip_n_call/Pages/SignUp.dart';
 import 'package:skip_n_call/Pages/Zips.dart';
@@ -350,7 +351,7 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const Zip(),
+          builder: (context) => const Navigation(index: 0),
         ),
       );
     });

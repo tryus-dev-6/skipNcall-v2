@@ -13,7 +13,11 @@ import 'Transaction.dart';
 import 'Zips.dart';
 
 class Navigation extends StatefulWidget {
-  const Navigation({super.key});
+
+  // ignore: prefer_typing_uninitialized_variables
+  final index;
+
+  const Navigation({super.key, required this.index});
 
   @override
   State<StatefulWidget> createState() => _NavigationState();
@@ -21,6 +25,14 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   int index = 0;
+
+  @override
+  void initState() {
+
+    index = widget.index;
+
+    super.initState();
+  }
 
   final screens = [
     const Dashboard(),
