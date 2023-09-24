@@ -1,14 +1,25 @@
 
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
+import 'package:skip_n_call/Api/Constants.dart';
+import 'package:skip_n_call/Pages/Navigation.dart';
+import 'package:skip_n_call/Pages/Profile.dart';
 
+import '../Api/base_client.dart';
 import '../Helper/SharedPreferencesHelper.dart';
+import '../Helper/dialog_helper.dart';
+import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:http/http.dart' as http;
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -30,6 +41,7 @@ class _EditProfileState extends State<EditProfile> {
   FocusNode phoneFocusNode = FocusNode();
 
   File? selectedImage;
+  String? currentImage;
 
 
   @override
@@ -104,8 +116,13 @@ class _EditProfileState extends State<EditProfile> {
                             SizedBox(
                               width: 90,
                               height: 90,
-                              child: selectedImage != null? CircleAvatar(
-                                backgroundImage:FileImage(selectedImage!),
+                              child:selectedImage != null
+                                  ? CircleAvatar(
+                                backgroundImage: FileImage(selectedImage!),
+                                backgroundColor: Colors.white,
+                              ) :
+                              currentImage != null? CircleAvatar(
+                                backgroundImage:NetworkImage(currentImage!),
                                 backgroundColor: Colors.white,
                               ) : const CircleAvatar(
                                 backgroundImage:
@@ -281,17 +298,131 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void updateUserInfo() {
+  Future<void> updateUserInfo() async {
+
+    DialogHelper.showLoading();
+
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    // if (selectedImage == null){
+    //   DialogHelper.hideDialog();
+    //
+    //   return;
+    // }
+
+    var request = http.MultipartRequest('POST', Uri.parse('${Constants.BASE_URL}client/edit/profile'));
+
+    String? token = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_ACCESS_TOKEN);
+    request.headers['Authorization'] = 'Bearer $token';
+
+    if(selectedImage!=null) {
+      request.files.add(await http.MultipartFile.fromPath('pro_pic', selectedImage!.path));
+    }
+
+    request.fields['client_id'] = userId;
+    request.fields['first_name'] = firstNameController.text;
+    request.fields['last_name'] = lastNameController.text;
+
+    // Send the request with the image
+    var response = await request.send();
+
+    DialogHelper.hideDialog();
+
+    if (response.statusCode == 200) {
+
+      var responseBody = await response.stream.bytesToString();
+
+      var res = json.decode(responseBody);
+
+      CommonResponse allDatum = allDataFromJson(responseBody);
+
+      showSnackBar(allDatum.message.toString());
+
+      successUpload();
+
+      debugPrint('successful: $res');
+    } else {
+
+      DialogHelper.hideDialog();
+      showSnackBar("Something went wrong");
+      debugPrint('Error Status Code: ${response.statusCode}');
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+
+    DialogHelper.hideDialog();
 
   }
 
   Future<void> initiateUserInfo() async {
 
-    firstNameController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_FIRSTNAME);
-    lastNameController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_LASTNAME);
-    emailController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
-    phoneController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
+    //DialogHelper.showLoading();
 
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var profile = {
+      "client_id": userId
+    };
+
+    response = await BaseClient()
+        .postWithToken('client/profile', profile)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+      DialogHelper.hideDialog();
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      firstNameController.text = allDatum.user!.firstName.toString();
+      lastNameController.text = allDatum.user!.lastName.toString();
+      emailController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+      phoneController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
+
+      setState(() {
+        currentImage = Constants.IMAGE_URL+allDatum.user?.proPic;
+      });
+
+    }
+    else{
+      if(allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+    }
+
+    //DialogHelper.hideDialog();
+
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 2),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<void> pickImageFromGallery() async {
@@ -303,6 +434,17 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       selectedImage = File(returnedImage.path);
     });
+
+  }
+
+  void successUpload() {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Navigation(index: 0),
+      ),
+    );
 
   }
 

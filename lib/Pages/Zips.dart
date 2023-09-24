@@ -8,6 +8,7 @@ import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:skip_n_call/Pages/PurchaseZip.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:skip_n_call/Pages/ZipDetails.dart';
 import 'dart:developer' as developer;
 import 'package:swipe_refresh/swipe_refresh.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -141,39 +142,49 @@ class _ZipState extends State<Zip> {
                                     })
                                     : data.isNotEmpty
                                     ? ListView.builder(
-                                    itemCount: data.length + 1,
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    itemBuilder: (context, index) {
-                                      if (index < data.length) {
-                                        return getSingleItem(data[index]);
-                                      } else if (isPaginateLoading) {
-                                        return Container(
-                                          margin:
-                                          const EdgeInsets.all(10),
-                                          height: 40,
-                                          alignment: Alignment.center,
-                                          child: LoadingAnimationWidget
-                                              .staggeredDotsWave(
-                                            color: Colors.black87,
-                                            size: 40,
-                                          ),
-                                        );
-                                      }
+                                      itemCount: data.length + 1,
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      itemBuilder: (context, index) {
+                                        if (index < data.length) {
+                                          return GestureDetector(
+                                            onTap: (){
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => ZipDetails(data: data[index]),
+                                                ),
+                                              );
+                                            },
+                                              child: getSingleItem(data[index])
+                                          );
+                                        } else if (isPaginateLoading) {
+                                          return Container(
+                                            margin:
+                                            const EdgeInsets.all(10),
+                                            height: 40,
+                                            alignment: Alignment.center,
+                                            child: LoadingAnimationWidget
+                                                .staggeredDotsWave(
+                                              color: Colors.black87,
+                                              size: 40,
+                                            ),
+                                          );
+                                        }
                                     })
                                     : ListView.builder(
-                                  itemCount:1,
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Container(
-                                      alignment: Alignment.center,
-                                      height: 350,
-                                      child: const Text(
-                                          "No data Found"
-                                      ),
-                                    );
-                                  },
+                                      itemCount:1,
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Container(
+                                          alignment: Alignment.center,
+                                          height: 350,
+                                          child: const Text(
+                                              "No data Found"
+                                          ),
+                                        );
+                                      },
                                 )
                             ),
                           ],
@@ -385,8 +396,7 @@ class _ZipState extends State<Zip> {
   }
 
   Future<void> loadMoreData() async {
-    String? userId =
-    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     debugPrint("Page $page");
 
@@ -586,7 +596,6 @@ class _ZipState extends State<Zip> {
     DialogHelper.hideDialog();
 
   }
-
 
   void showCustomDialog(BuildContext context, Datum data) {
     showGeneralDialog(
