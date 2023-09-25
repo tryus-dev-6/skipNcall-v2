@@ -262,11 +262,8 @@ class _ZipState extends State<Zip> {
                   },
 
                   child: Container(
-                    width: 30,
-                    height: 30,
-                    padding: const EdgeInsets.only(
-                        bottom: 10, right: 10, left: 10),
-                    margin: const EdgeInsets.only(right: 5),
+                    width: 25,
+                    height: 25,
                     child: const Icon(
                       Icons.delete,
                       size: 25,

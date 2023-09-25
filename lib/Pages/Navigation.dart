@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Pages/PayableLead.dart';
 
 import 'BalanceAndBilling.dart';
 import 'Dashboard.dart';
@@ -38,7 +39,7 @@ class _NavigationState extends State<Navigation> {
     const Dashboard(),
     const Packages(),
     const Zip(),
-    const Transaction(),
+    const PayableLead(),
     const BalanceAndBilling(),
   ];
 
@@ -86,24 +87,24 @@ class _NavigationState extends State<Navigation> {
 
             NavigationDestination(
                 selectedIcon: SizedBox(
-                  width: 30,
-                  height: 30,
+                  width: 25,
+                  height: 25,
                   child: SvgPicture.asset(
-                    'assets/images/ic_transaction.svg',
-                    width: 20,
-                    height: 20,
+                    'assets/images/ic_unpaid_lead1.svg',
+                    width: 17,
+                    height: 17,
                   ),
                 ),
                 icon: SizedBox(
-                  width: 30,
-                  height: 30,
+                  width: 25,
+                  height: 25,
                   child: SvgPicture.asset(
-                    'assets/images/transaction2.svg',
-                    width: 20,
-                    height: 20,
+                    'assets/images/ic_unpaid_lead.svg',
+                    width: 17,
+                    height: 17,
                   ),
                 ),
-                label: 'Transaction'
+                label: 'Payable Lead'
             ),
 
             NavigationDestination(
