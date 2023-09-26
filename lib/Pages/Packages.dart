@@ -45,56 +45,57 @@ class _PackagesState extends State<Packages> {
             children: [
               Expanded(
                   child: SwipeRefresh.material(
-                scrollController: _scrollController,
-                stateStream: _stream,
-                onRefresh: refresh,
-                children: [
-                  Container(
-                      padding: const EdgeInsets.only(bottom: 70),
-                      child: isShimmerLoading
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              primary: false,
-                              itemCount: 10,
-                              itemBuilder: (BuildContext context, int index) {
-                                return getShimmerLoading();
-                              })
-                          : data.isNotEmpty
-                              ? ListView.builder(
-                                  itemCount: data.length + 1,
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  itemBuilder: (context, index) {
-                                    if (index < data.length) {
-                                      return getSingleItem(data[index]);
-                                    } else if (isPaginateLoading) {
-                                      return Container(
-                                        margin: const EdgeInsets.all(10),
-                                        height: 40,
-                                        alignment: Alignment.center,
-                                        child: LoadingAnimationWidget
-                                            .staggeredDotsWave(
-                                          color: Colors.black87,
-                                          size: 40,
-                                        ),
-                                      );
-                                    }
-                                  })
-                              : ListView.builder(
-                                  itemCount: 1,
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      alignment: Alignment.center,
-                                      height: 350,
-                                      child: const Text("No data Found"),
-                                    );
-                                  },
-                                )),
-                ],
-              )),
+                    scrollController: _scrollController,
+                    stateStream: _stream,
+                    onRefresh: refresh,
+                    children: [
+                      Container(
+                            padding: const EdgeInsets.only(bottom: 70),
+                            child: isShimmerLoading
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    itemCount: 10,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return getShimmerLoading();
+                                    })
+                                : data.isNotEmpty
+                                    ? ListView.builder(
+                                        itemCount: data.length + 1,
+                                        shrinkWrap: true,
+                                        primary: false,
+                                        itemBuilder: (context, index) {
+                                          if (index < data.length) {
+                                            return getSingleItem(data[index]);
+                                          } else if (isPaginateLoading) {
+                                            return Container(
+                                              margin: const EdgeInsets.all(10),
+                                              height: 40,
+                                              alignment: Alignment.center,
+                                              child: LoadingAnimationWidget
+                                                  .staggeredDotsWave(
+                                                color: Colors.black87,
+                                                size: 40,
+                                              ),
+                                            );
+                                          }
+                                        })
+                                    : ListView.builder(
+                                        itemCount: 1,
+                                        shrinkWrap: true,
+                                        primary: false,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                            alignment: Alignment.center,
+                                            height: 350,
+                                            child: const Text("No data Found"),
+                                          );
+                                        },
+                                      )),
+                    ],
+                  )
+              ),
             ],
           ),
         ),

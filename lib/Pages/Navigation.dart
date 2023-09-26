@@ -26,11 +26,13 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   int index = 0;
+  late PageController _pageController;
 
   @override
   void initState() {
 
     index = widget.index;
+    _pageController = PageController(initialPage: index);
 
     super.initState();
   }
@@ -53,7 +55,15 @@ class _NavigationState extends State<Navigation> {
     ));
 
     return Scaffold(
-      body: screens[index],
+      body: PageView(
+        controller: _pageController,
+        children: screens,
+        onPageChanged: (newIndex) {
+          setState(() {
+            index = newIndex;
+          });
+        },
+      ),
       bottomNavigationBar: NavigationBarTheme(
         data: const NavigationBarThemeData(
           labelTextStyle: MaterialStatePropertyAll(
@@ -66,8 +76,15 @@ class _NavigationState extends State<Navigation> {
           selectedIndex: index,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           //animationDuration: const Duration(seconds: 1),
-          onDestinationSelected: (index) => {
-            setState(() => this.index = index)
+          onDestinationSelected: (newIndex) {
+            setState(() {
+              index = newIndex;
+              _pageController.animateToPage(
+                newIndex,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            });
           },
           destinations: [
             const NavigationDestination(

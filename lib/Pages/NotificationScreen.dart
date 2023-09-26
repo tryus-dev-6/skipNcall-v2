@@ -13,10 +13,10 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Color(0Xff634099),
-      statusBarIconBrightness: Brightness.light,
-    ));
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //   statusBarColor: Color(0Xff634099),
+    //   statusBarIconBrightness: Brightness.light,
+    // ));
 
     return SafeArea(
       child: Scaffold(
