@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -13,6 +11,7 @@ import 'package:skip_n_call/Pages/Navigation.dart';
 import 'package:skip_n_call/Pages/Profile.dart';
 
 import '../Api/base_client.dart';
+import '../Helper/ImageSelectionDialog.dart';
 import '../Helper/SharedPreferencesHelper.dart';
 import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
@@ -29,7 +28,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -42,7 +40,6 @@ class _EditProfileState extends State<EditProfile> {
 
   File? selectedImage;
   String? currentImage;
-
 
   @override
   void dispose() {
@@ -66,10 +63,10 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void hideKeyboard() {
-
     if (firstNameFocusNode.hasFocus) {
       firstNameFocusNode.unfocus();
-    }if (lastNameFocusNode.hasFocus) {
+    }
+    if (lastNameFocusNode.hasFocus) {
       lastNameFocusNode.unfocus();
     }
     if (emailFocusNode.hasFocus) {
@@ -78,7 +75,6 @@ class _EditProfileState extends State<EditProfile> {
     if (phoneFocusNode.hasFocus) {
       phoneFocusNode.unfocus();
     }
-
   }
 
   @override
@@ -94,8 +90,7 @@ class _EditProfileState extends State<EditProfile> {
             title: const Text("Edit Profile",
                 style: TextStyle(
                   color: Color(0Xff634099),
-                )
-            ),
+                )),
             backgroundColor: const Color(0XffFDF9FF),
           ),
           body: Container(
@@ -116,29 +111,42 @@ class _EditProfileState extends State<EditProfile> {
                             SizedBox(
                               width: 90,
                               height: 90,
-                              child:selectedImage != null
+                              child: selectedImage != null
                                   ? CircleAvatar(
-                                backgroundImage: FileImage(selectedImage!),
-                                backgroundColor: Colors.white,
-                              ) :
-                              currentImage != null? CircleAvatar(
-                                backgroundImage:NetworkImage(currentImage!),
-                                backgroundColor: Colors.white,
-                              ) : const CircleAvatar(
-                                backgroundImage:
-                                AssetImage('assets/images/ic_user2.png'),
-                                backgroundColor: Colors.white,
-                              ),
+                                      backgroundImage: FileImage(selectedImage!),
+                                      backgroundColor: Colors.white,
+                                    )
+                                  : currentImage != null
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(currentImage!),
+                                          backgroundColor: Colors.white,
+                                        )
+                                      : const CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'assets/images/ic_user2.png'),
+                                          backgroundColor: Colors.white,
+                                        ),
                             ),
                             Align(
                               alignment: Alignment.bottomRight,
                               child: GestureDetector(
-                                onTap: (){
-                                  pickImageFromGallery();
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ImageSelectionDialog(
+                                            onPressed: (String imagePath) {
+                                              setState(() {
+                                                selectedImage = File(imagePath);
+                                                //debugPrint(userImage);
+                                              });
+                                            });
+                                      });
                                 },
                                 child: Card(
-                                    margin:
-                                    const EdgeInsets.only(right: 10, bottom: 10),
+                                    margin: const EdgeInsets.only(
+                                        right: 10, bottom: 10),
                                     color: const Color(0Xff00A18A),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12.0),
@@ -161,7 +169,6 @@ class _EditProfileState extends State<EditProfile> {
                     ],
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
                   padding: const EdgeInsets.only(bottom: 50),
@@ -173,17 +180,15 @@ class _EditProfileState extends State<EditProfile> {
                         decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
+                              borderRadius: BorderRadius.all(Radius.circular(10))),
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
+                              borderRadius: BorderRadius.all(Radius.circular(10))),
                           labelText: 'First Name',
-                          labelStyle: (TextStyle(
-                              color: Color(0Xff8F8F8F), fontSize: 14)),
-                          prefixIcon:
-                          Icon(Icons.account_circle_rounded, color: Color(0Xff8F8F8F)),
+                          labelStyle:
+                              (TextStyle(color: Color(0Xff8F8F8F), fontSize: 14)),
+                          prefixIcon: Icon(Icons.account_circle_rounded,
+                              color: Color(0Xff8F8F8F)),
                           iconColor: Color(0Xff8F8F8F),
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -195,17 +200,15 @@ class _EditProfileState extends State<EditProfile> {
                         decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
+                              borderRadius: BorderRadius.all(Radius.circular(10))),
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
+                              borderRadius: BorderRadius.all(Radius.circular(10))),
                           labelText: 'Last Name',
-                          labelStyle: (TextStyle(
-                              color: Color(0Xff8F8F8F), fontSize: 14)),
-                          prefixIcon:
-                          Icon(Icons.account_circle_rounded, color: Color(0Xff8F8F8F)),
+                          labelStyle:
+                              (TextStyle(color: Color(0Xff8F8F8F), fontSize: 14)),
+                          prefixIcon: Icon(Icons.account_circle_rounded,
+                              color: Color(0Xff8F8F8F)),
                           iconColor: Color(0Xff8F8F8F),
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -216,24 +219,22 @@ class _EditProfileState extends State<EditProfile> {
                         controller: emailController,
                         enabled: false,
                         decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
-                          labelText: 'Email',
-
-                          labelStyle: (TextStyle(color: Color(0Xff8F8F8F), fontSize: 14)),
-                          prefixIcon: Icon(Icons.email, color: Color(0Xff8F8F8F)),
-                          iconColor: Color(0Xff8F8F8F),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0Xff8F8F8F)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0Xff8F8F8F)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Email',
+                            labelStyle:
+                                (TextStyle(color: Color(0Xff8F8F8F), fontSize: 14)),
+                            prefixIcon: Icon(Icons.email, color: Color(0Xff8F8F8F)),
+                            iconColor: Color(0Xff8F8F8F),
                             filled: true,
-                            fillColor: CupertinoColors.lightBackgroundGray
-                        ),
+                            fillColor: CupertinoColors.lightBackgroundGray),
                         keyboardType: TextInputType.emailAddress,
-
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -241,44 +242,39 @@ class _EditProfileState extends State<EditProfile> {
                         controller: phoneController,
                         enabled: false,
                         decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0Xff8F8F8F)),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
-                          labelText: 'Phone',
-                          labelStyle: (TextStyle(
-                              color: Color(0Xff8F8F8F), fontSize: 14)),
-                          prefixIcon:
-                          Icon(Icons.phone, color: Color(0Xff8F8F8F)),
-                          iconColor: Color(0Xff8F8F8F),
-                          filled: true,
-                          fillColor: CupertinoColors.lightBackgroundGray
-
-                        ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0Xff8F8F8F)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0Xff8F8F8F)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Phone',
+                            labelStyle:
+                                (TextStyle(color: Color(0Xff8F8F8F), fontSize: 14)),
+                            prefixIcon: Icon(Icons.phone, color: Color(0Xff8F8F8F)),
+                            iconColor: Color(0Xff8F8F8F),
+                            filled: true,
+                            fillColor: CupertinoColors.lightBackgroundGray),
                         keyboardType: TextInputType.emailAddress,
                       ),
-
                       const SizedBox(height: 40),
                       SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: const MaterialStatePropertyAll(Color(0Xff634099)),
-
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Color(0Xff634099)),
+                            shape:
+                                MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
                             ),
-
                           ),
                           onPressed: () {
-
                             updateUserInfo();
                           },
                           child: const Text(
@@ -294,42 +290,34 @@ class _EditProfileState extends State<EditProfile> {
               ],
             ),
           ),
-        )
-    );
+    ));
   }
 
   Future<void> updateUserInfo() async {
-
     DialogHelper.showLoading();
 
-    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
-    // if (selectedImage == null){
-    //   DialogHelper.hideDialog();
-    //
-    //   return;
-    // }
-
-    var request = http.MultipartRequest('POST', Uri.parse('${Constants.BASE_URL}client/edit/profile'));
-
-    String? token = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_ACCESS_TOKEN);
-    request.headers['Authorization'] = 'Bearer $token';
-
-    if(selectedImage!=null) {
-      request.files.add(await http.MultipartFile.fromPath('pro_pic', selectedImage!.path));
-    }
-
-    request.fields['client_id'] = userId;
-    request.fields['first_name'] = firstNameController.text;
-    request.fields['last_name'] = lastNameController.text;
+    Map<String, String> fieldsMap = {
+      'client_id': userId,
+      'first_name': firstNameController.text,
+      'last_name': lastNameController.text,
+    };
 
     // Send the request with the image
-    var response = await request.send();
+    var response;
+
+    response = await BaseClient()
+        .postWithTokenImage(
+            'client/edit/profile', fieldsMap, selectedImage, 'pro_pic')
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
 
     DialogHelper.hideDialog();
 
     if (response.statusCode == 200) {
-
       var responseBody = await response.stream.bytesToString();
 
       var res = json.decode(responseBody);
@@ -342,7 +330,6 @@ class _EditProfileState extends State<EditProfile> {
 
       debugPrint('successful: $res');
     } else {
-
       DialogHelper.hideDialog();
       showSnackBar("Something went wrong");
       debugPrint('Error Status Code: ${response.statusCode}');
@@ -350,20 +337,17 @@ class _EditProfileState extends State<EditProfile> {
     }
 
     DialogHelper.hideDialog();
-
   }
 
   Future<void> initiateUserInfo() async {
-
     //DialogHelper.showLoading();
 
-    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var response;
 
-    var profile = {
-      "client_id": userId
-    };
+    var profile = {"client_id": userId};
 
     response = await BaseClient()
         .postWithToken('client/profile', profile)
@@ -385,22 +369,21 @@ class _EditProfileState extends State<EditProfile> {
     if (allDatum.status == true) {
       firstNameController.text = allDatum.user!.firstName.toString();
       lastNameController.text = allDatum.user!.lastName.toString();
-      emailController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
-      phoneController.text = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
+      emailController.text =
+          await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+      phoneController.text =
+          await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
 
       setState(() {
-        currentImage = Constants.IMAGE_URL+allDatum.user?.proPic;
+        currentImage = Constants.IMAGE_URL + allDatum.user?.proPic;
       });
-
-    }
-    else{
-      if(allDatum.message != null) {
+    } else {
+      if (allDatum.message != null) {
         showSnackBar(allDatum.message.toString());
       }
     }
 
     //DialogHelper.hideDialog();
-
   }
 
   void showSnackBar(String message) {
@@ -425,27 +408,14 @@ class _EditProfileState extends State<EditProfile> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> pickImageFromGallery() async {
-
-    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if(returnedImage == null) return;
-
-    setState(() {
-      selectedImage = File(returnedImage.path);
-    });
-
-  }
-
   void successUpload() {
-
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const Navigation(index: 0),
       ),
     );
-
   }
 
+  void openCamera() {}
 }

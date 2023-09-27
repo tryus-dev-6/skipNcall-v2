@@ -73,9 +73,11 @@ class _PurchaseZipState extends State<PurchaseZip> {
                   },
                   child: Container(
                     margin: const EdgeInsets.only(right: 40, top: 10),
+                    height: 35,
+                    width: 35,
                     child: SvgPicture.asset(
-                      height: 35,
-                      width: 35,
+                      height: 25,
+                      width: 25,
                       'assets/images/ic_cart.svg',
                       color: const Color(0Xff634099),
                     ),
