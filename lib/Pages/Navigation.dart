@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,7 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   int index = 0;
   late PageController _pageController;
+  bool canClose = false;
 
   @override
   void initState() {
@@ -48,107 +50,128 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
 
+    print("build");
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Color(0XffFDF9FF),
       statusBarIconBrightness: Brightness.dark,
 
     ));
 
-    return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: screens,
-        onPageChanged: (newIndex) {
-          setState(() {
-            index = newIndex;
-          });
-        },
-      ),
-      bottomNavigationBar: NavigationBarTheme(
-        data: const NavigationBarThemeData(
-          labelTextStyle: MaterialStatePropertyAll(
-              TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
-        ),
-        child: NavigationBar(
-          height: 70,
-          indicatorColor: const Color(0XffF5F5FF),
-          backgroundColor: Colors.white,
-          selectedIndex: index,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          //animationDuration: const Duration(seconds: 1),
-          onDestinationSelected: (newIndex) {
+    return WillPopScope(
+      onWillPop: () async{
+        if (index > 0) {
+
+          _pageController.animateToPage(
+            index - 1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+
+          return false;
+
+        } else {
+          return true;
+        }
+      },
+
+      child: Scaffold(
+        body: PageView(
+          controller: _pageController,
+          children: screens,
+          onPageChanged: (newIndex) {
             setState(() {
               index = newIndex;
-              _pageController.animateToPage(
-                newIndex,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
             });
           },
-          destinations: [
-            const NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home_rounded),
-                label: 'Home'),
+        ),
+        bottomNavigationBar: NavigationBarTheme(
+          data: const NavigationBarThemeData(
+            labelTextStyle: MaterialStatePropertyAll(
+                TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+          ),
+          child: NavigationBar(
+            height: 70,
+            indicatorColor: const Color(0XffF5F5FF),
+            backgroundColor: Colors.white,
+            selectedIndex: index,
+            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            //animationDuration: const Duration(seconds: 1),
+            onDestinationSelected: (newIndex) {
+              setState(() {
+                index = newIndex;
+                _pageController.animateToPage(
+                  newIndex,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              });
+            },
+            destinations: [
+              const NavigationDestination(
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home_rounded),
+                  label: 'Home'),
 
-            const NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined),
-                selectedIcon: Icon(Icons.dashboard),
-                label: 'Packages'),
+              const NavigationDestination(
+                  icon: Icon(Icons.dashboard_outlined),
+                  selectedIcon: Icon(Icons.dashboard),
+                  label: 'Packages'),
 
-            const NavigationDestination(
-                icon: Icon(Icons.location_on_outlined),
-                selectedIcon: Icon(Icons.location_on_rounded),
-                label: 'Zips'),
+              const NavigationDestination(
+                  icon: Icon(Icons.location_on_outlined),
+                  selectedIcon: Icon(Icons.location_on_rounded),
+                  label: 'Zips'),
 
-            NavigationDestination(
-                selectedIcon: SizedBox(
-                  width: 25,
-                  height: 25,
-                  child: SvgPicture.asset(
-                    'assets/images/ic_unpaid_lead1.svg',
-                    width: 17,
-                    height: 17,
+              NavigationDestination(
+                  selectedIcon: SizedBox(
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      'assets/images/ic_unpaid_lead1.svg',
+                      width: 17,
+                      height: 17,
+                    ),
                   ),
-                ),
-                icon: SizedBox(
-                  width: 25,
-                  height: 25,
-                  child: SvgPicture.asset(
-                    'assets/images/ic_unpaid_lead.svg',
-                    width: 17,
-                    height: 17,
+                  icon: SizedBox(
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      'assets/images/ic_unpaid_lead.svg',
+                      width: 17,
+                      height: 17,
+                    ),
                   ),
-                ),
-                label: 'Payable Lead'
-            ),
+                  label: 'Payable Lead'
+              ),
 
-            NavigationDestination(
-                selectedIcon: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: SvgPicture.asset(
-                    'assets/images/ic_balance_clicked.svg',
-                    width: 20,
-                    height: 20,
+              NavigationDestination(
+                  selectedIcon: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: SvgPicture.asset(
+                      'assets/images/ic_balance_clicked.svg',
+                      width: 20,
+                      height: 20,
+                    ),
                   ),
-                ),
-                icon: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: SvgPicture.asset(
-                    'assets/images/ic_balance.svg',
-                    width: 20,
-                    height: 20,
+                  icon: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: SvgPicture.asset(
+                      'assets/images/ic_balance.svg',
+                      width: 20,
+                      height: 20,
+                    ),
                   ),
-                ),
-                label: 'Balance'),
+                  label: 'Balance'),
 
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
 }
 

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skip_n_call/Helper/SharedPreferencesHelper.dart';
+import 'package:skip_n_call/Helper/dialog_helper.dart';
 import 'package:skip_n_call/Pages/Login.dart';
+import 'package:skip_n_call/Util/Tools.dart';
 import 'dart:async';
 
 import '../Util/Constants.dart';
@@ -32,8 +34,7 @@ class _DashboardState extends State<Dashboard> {
       value: const SystemUiOverlayStyle(
           statusBarColor: Color(0Xff634099),
           statusBarIconBrightness: Brightness.light,
-          systemNavigationBarColor: Colors.white
-      ),
+          systemNavigationBarColor: Colors.white),
       child: Scaffold(
         body: Container(
             // color: const Color(0XffFDF9FF),
@@ -118,19 +119,12 @@ class _DashboardState extends State<Dashboard> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                            const Profile(),
+                                                const Profile(),
                                           ),
                                         );
                                       }
                                       if (item.index == 1) {
-                                        SharedPreferencesHelper.removeData(SKIP_N_CALL_USER_USERID);
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                            const Login(),
-                                          ),
-                                        );
+                                        logOut();
                                       }
                                     });
                                   },
@@ -168,9 +162,9 @@ class _DashboardState extends State<Dashboard> {
 
                                         visualDensity: VisualDensity.compact,
                                         leading: SvgPicture.asset(
-                                        'assets/images/ic_log_out.svg',
-                                        color: Colors.black,
-                                      ),
+                                          'assets/images/ic_log_out.svg',
+                                          color: Colors.black,
+                                        ),
                                         // Icon for the first item
                                         title: Container(
                                             margin:
@@ -203,7 +197,9 @@ class _DashboardState extends State<Dashboard> {
                                     children: [
                                       Container(
                                         margin: const EdgeInsets.only(
-                                            left: 20.0, top: 20.0, bottom: 20.0),
+                                            left: 20.0,
+                                            top: 20.0,
+                                            bottom: 20.0),
                                         child: SvgPicture.asset(
                                           'assets/images/ic_my_zip.svg',
                                           height: 60,
@@ -222,7 +218,8 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                       ),
                                       Container(
-                                        margin: const EdgeInsets.only(right: 20),
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
                                         child: const Text(
                                           '98',
                                           style: TextStyle(
@@ -245,7 +242,9 @@ class _DashboardState extends State<Dashboard> {
                                     children: [
                                       Container(
                                         margin: const EdgeInsets.only(
-                                            left: 20.0, top: 20.0, bottom: 20.0),
+                                            left: 20.0,
+                                            top: 20.0,
+                                            bottom: 20.0),
                                         child: SvgPicture.asset(
                                           'assets/images/ic_data.svg',
                                           height: 60,
@@ -265,7 +264,8 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                       ),
                                       Container(
-                                        margin: const EdgeInsets.only(right: 20),
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
                                         child: const Text(
                                           '98',
                                           style: TextStyle(
@@ -288,7 +288,9 @@ class _DashboardState extends State<Dashboard> {
                                     children: [
                                       Container(
                                         margin: const EdgeInsets.only(
-                                            left: 20.0, top: 20.0, bottom: 20.0),
+                                            left: 20.0,
+                                            top: 20.0,
+                                            bottom: 20.0),
                                         child: SvgPicture.asset(
                                           'assets/images/ic_attend.svg',
                                           height: 60,
@@ -308,7 +310,8 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                       ),
                                       Container(
-                                        margin: const EdgeInsets.only(right: 20),
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
                                         child: const Text(
                                           '98',
                                           style: TextStyle(
@@ -331,7 +334,9 @@ class _DashboardState extends State<Dashboard> {
                                     children: [
                                       Container(
                                         margin: const EdgeInsets.only(
-                                            left: 20.0, top: 20.0, bottom: 20.0),
+                                            left: 20.0,
+                                            top: 20.0,
+                                            bottom: 20.0),
                                         child: SvgPicture.asset(
                                           'assets/images/ic_pending.svg',
                                           height: 60,
@@ -359,7 +364,8 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                       ),
                                       Container(
-                                        margin: const EdgeInsets.only(right: 20),
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
                                         child: const Text(
                                           '98',
                                           style: TextStyle(
@@ -381,6 +387,93 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
+
+  void logOut() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: Center(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    children: [
+                      Container(
+                          margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                          child: const Text(
+                            "Are you sure you want to logout ?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16, color: Colors.black87, decoration: TextDecoration.none, fontFamily: 'system', fontWeight: FontWeight.normal),
+                          )),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: const MaterialStatePropertyAll(Colors.red),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ),
+
+                            ),
+                            onPressed: (){
+                              Navigator.of(context).pop();
+                              performLogOut();
+                            },
+                            child: const Text(
+                            'Ok',
+                            style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: const MaterialStatePropertyAll(Color(0Xff634099)),
+
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0), // Adjust the radius as needed
+                                ),
+                              ),
+
+                            ),
+                            onPressed: (){
+
+                              Navigator.of(context).pop();
+
+                            }, child: const Text(
+                            'Cancel',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  void performLogOut() {
+    //DialogHelper.showLoading();
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+    //DialogHelper.hideDialog();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Login(),
+      ),
+    );
+  }
+
 }
 
 class MySVG extends AssetBundle {

@@ -44,18 +44,18 @@ class _LoginState extends State<Login> {
     isPasswordVisible = true;
   }
 
-  @override
-  void dispose() {
-    usernameFocusNode.dispose();
-    passwordFocusNode.dispose();
-    emailFocusNode.dispose();
-
-
-    usernameController.dispose();
-    passwordController.dispose();
-    usernameController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   usernameFocusNode.dispose();
+  //   passwordFocusNode.dispose();
+  //   emailFocusNode.dispose();
+  //
+  //
+  //   usernameController.dispose();
+  //   passwordController.dispose();
+  //   //usernameController.dispose();
+  //   super.dispose();
+  // }
 
   void hideKeyboard() {
     if (usernameFocusNode.hasFocus) {

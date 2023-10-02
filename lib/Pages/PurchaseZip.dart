@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skip_n_call/Model/Place.dart';
-import 'package:skip_n_call/Model/ZipDetails.dart';
 import 'package:skip_n_call/Pages/ZipCart.dart';
 
 import '../Api/base_client.dart';
