@@ -69,8 +69,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
 
-
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
           statusBarColor: Color(0Xff634099),
