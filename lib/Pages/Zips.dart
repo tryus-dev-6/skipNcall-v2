@@ -130,7 +130,6 @@ class _ZipState extends State<Zip> {
                         child: Column(
                           children: [
                             Container(
-                                padding: const EdgeInsets.only(bottom: 70),
                                 child: isShimmerLoading
                                     ? ListView.builder(
                                     shrinkWrap: true,
@@ -141,51 +140,48 @@ class _ZipState extends State<Zip> {
                                       return getShimmerLoading();
                                     })
                                     : data.isNotEmpty
-                                    ? ListView.builder(
-                                      itemCount: data.length + 1,
-                                      shrinkWrap: true,
-                                      primary: false,
-                                      itemBuilder: (context, index) {
-                                        if (index < data.length) {
-                                          return GestureDetector(
-                                            onTap: (){
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => ZipDetails(data: data[index]),
-                                                ),
-                                              );
-                                            },
-                                              child: getSingleItem(data[index])
-                                          );
-                                        } else if (isPaginateLoading) {
-                                          return Container(
-                                            margin:
-                                            const EdgeInsets.all(10),
-                                            height: 40,
-                                            alignment: Alignment.center,
-                                            child: LoadingAnimationWidget
-                                                .staggeredDotsWave(
-                                              color: Colors.black87,
-                                              size: 40,
-                                            ),
-                                          );
-                                        }
-                                    })
-                                    : ListView.builder(
-                                      itemCount:1,
-                                      shrinkWrap: true,
-                                      primary: false,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return Container(
-                                          alignment: Alignment.center,
-                                          height: 350,
-                                          child: const Text(
-                                              "No data Found"
-                                          ),
-                                        );
-                                      },
-                                )
+                                    ? Container(
+                                      padding: const EdgeInsets.only(bottom: 70),
+                                      child: ListView.builder(
+                                        itemCount: data.length + 1,
+                                        shrinkWrap: true,
+                                        primary: false,
+                                        itemBuilder: (context, index) {
+                                          if (index < data.length) {
+                                            return GestureDetector(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => ZipDetails(data: data[index]),
+                                                  ),
+                                                );
+                                              },
+                                                child: getSingleItem(data[index])
+                                            );
+                                          } else if (isPaginateLoading) {
+                                            return Container(
+                                              margin:
+                                              const EdgeInsets.all(10),
+                                              height: 40,
+                                              alignment: Alignment.center,
+                                              child: LoadingAnimationWidget
+                                                  .staggeredDotsWave(
+                                                color: Colors.black87,
+                                                size: 40,
+                                              ),
+                                            );
+                                          }
+                                      }),
+                                    )
+                                    : SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.70,
+                                      child: const Center(
+                                        child: Text(
+                                          "No data Found"
+                                      ),
+                                    )
+                                ),
                             ),
                           ],
                         ),

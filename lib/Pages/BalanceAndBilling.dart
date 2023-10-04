@@ -203,7 +203,14 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                                               );
                                             }
                                           })
-                                      : const Card()
+                                      : SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.40,
+                                  child: const Center(
+                                    child: Text(
+                                        "No data Found"
+                                    ),
+                                  )
+                              ),
                           ),
                         ],
                       ),
@@ -342,7 +349,9 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
       debugPrint('error: $err');
     });
 
-    isShimmerLoading = false;
+    setState(() {
+      isShimmerLoading = false;
+    });
 
     if (response == null) {
       debugPrint('failed to get response');

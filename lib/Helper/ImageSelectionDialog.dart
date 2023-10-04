@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:skip_n_call/Util/Permissions.dart';
 
 class ImageSelectionDialog extends StatefulWidget {
   Function(String) onPressed;
@@ -57,9 +60,16 @@ class _ImageSelectionDialogState extends State<ImageSelectionDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: (){
+                  onTap: () async {
                     Navigator.of(context).pop();
-                    pickImageFromGallery();
+                    PermissionStatus status = await Permission.manageExternalStorage.request();
+                    if(status.isGranted){
+                      pickImageFromGallery();
+                    }else {
+                      showSnackBar("permission denied");
+                    }
+
+
                   },
                   child: Card(
                       color: const Color(0xfff2f4f5),
@@ -71,9 +81,20 @@ class _ImageSelectionDialogState extends State<ImageSelectionDialog> {
                       )),
                 ),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () async {
                     Navigator.of(context).pop();
-                    openCamera();
+                    try{
+                      PermissionStatus status = await Permission.camera.request();
+
+                      if(await UsesPermission.checkStoragePermission(status)){
+                        openCamera();
+                      }
+                      else {
+                        showSnackBar("permission denied");
+                      }
+                    }catch(e){
+                      //showSnackBar(e.toString());
+                    }
                   },
                   child: Card(
                       color: const Color(0xfff2f4f5),
@@ -94,5 +115,27 @@ class _ImageSelectionDialogState extends State<ImageSelectionDialog> {
         ),
       ),
     );
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 2),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

@@ -50,49 +50,46 @@ class _PackagesState extends State<Packages> {
                     onRefresh: refresh,
                     children: [
                       Container(
-                            padding: const EdgeInsets.only(bottom: 70),
-                            child: isShimmerLoading
-                                ? ListView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    itemCount: 10,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return getShimmerLoading();
-                                    })
-                                : data.isNotEmpty
-                                    ? ListView.builder(
-                                        itemCount: data.length + 1,
-                                        shrinkWrap: true,
-                                        primary: false,
-                                        itemBuilder: (context, index) {
-                                          if (index < data.length) {
-                                            return getSingleItem(data[index]);
-                                          } else if (isPaginateLoading) {
-                                            return Container(
-                                              margin: const EdgeInsets.all(10),
-                                              height: 40,
-                                              alignment: Alignment.center,
-                                              child: LoadingAnimationWidget
-                                                  .staggeredDotsWave(
-                                                color: Colors.black87,
-                                                size: 40,
-                                              ),
-                                            );
-                                          }
-                                        })
-                                    : ListView.builder(
-                                        itemCount: 1,
-                                        shrinkWrap: true,
-                                        primary: false,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
+                        child: isShimmerLoading
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: 10,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return getShimmerLoading();
+                                })
+                            : data.isNotEmpty ? Container(
+                          padding: const EdgeInsets.only(bottom: 70),
+                              child: ListView.builder(
+                                      itemCount: data.length + 1,
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      itemBuilder: (context, index) {
+                                        if (index < data.length) {
+                                          return getSingleItem(data[index]);
+                                        } else if (isPaginateLoading) {
                                           return Container(
+                                            margin: const EdgeInsets.all(10),
+                                            height: 40,
                                             alignment: Alignment.center,
-                                            height: 350,
-                                            child: const Text("No data Found"),
+                                            child: LoadingAnimationWidget
+                                                .staggeredDotsWave(
+                                              color: Colors.black87,
+                                              size: 40,
+                                            ),
                                           );
-                                        },
-                                      )),
+                                        }
+                                      }),
+                            )
+                            : SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.85,
+                                child: const Center(
+                                  child: Text(
+                                      "No data Found"
+                                  ),
+                                )
+                        ),
+                      ),
                     ],
                   )
               ),
@@ -791,7 +788,8 @@ class _PackagesState extends State<Packages> {
     debugPrint('current package: $currentPackageId');
 
     var response;
-    String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
 
     var package = {
       "client_id": userId,
@@ -817,7 +815,6 @@ class _PackagesState extends State<Packages> {
 
     CommonResponse allDatum = allDataFromJson(response);
 
-
     if (allDatum.status == true) {
       List<Data>? listData = allDatum.packageResponse?.data;
       setState(() {
@@ -826,10 +823,9 @@ class _PackagesState extends State<Packages> {
           page = int.tryParse(nextPageUri.queryParameters['page'] ?? '')!;
         }
 
-        if(allDatum.purchasedPackage == null) {
-          currentPackageId =  '';
-        }
-        else{
+        if (allDatum.purchasedPackage == null) {
+          currentPackageId = '';
+        } else {
           currentPackageId = allDatum.purchasedPackage.toString();
         }
 

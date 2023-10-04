@@ -34,6 +34,7 @@ dev_dependencies:
   loading_animation_widget: ^1.2.0+4
   swipe_refresh: ^1.0.2
   image_picker: ^1.0.4
+  permission_handler: ^11.0.0
 
 
 flutter:

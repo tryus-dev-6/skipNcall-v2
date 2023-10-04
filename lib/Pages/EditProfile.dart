@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:skip_n_call/Api/Constants.dart';
 import 'package:skip_n_call/Pages/Navigation.dart';
-import 'package:skip_n_call/Pages/Profile.dart';
 
 import '../Api/base_client.dart';
 import '../Helper/ImageSelectionDialog.dart';
@@ -16,7 +15,6 @@ import '../Helper/SharedPreferencesHelper.dart';
 import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:http/http.dart' as http;
 
