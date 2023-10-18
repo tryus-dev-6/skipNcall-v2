@@ -13,9 +13,10 @@
 
     <application
         android:requestLegacyExternalStorage="true"
-        android:label="skip_n_call"
+        android:label="skipNcall"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"
