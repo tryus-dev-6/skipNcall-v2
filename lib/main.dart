@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -9,10 +10,16 @@ import 'Pages/Navigation.dart';
 import 'Util/Constants.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = Constants.STRIPE_PUBLISH_KEY;
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const MyApp());
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "726180696113",
+    "project_id": "skipncall-1d5ef",
+    "storage_bucket": "skipncall-1d5ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726180696113:android:9bf2074f2840ee925b0510",
+        "android_client_info": {
+          "package_name": "com.example.skipncall.skip_n_call"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuFvYV9ZbwfQrJpA-XFeoDxG6s_cqJjiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

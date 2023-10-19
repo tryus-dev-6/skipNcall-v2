@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skip_n_call/Helper/SharedPreferencesHelper.dart';
 import 'package:skip_n_call/Helper/dialog_helper.dart';
 import 'package:skip_n_call/Pages/Login.dart';
+import 'package:skip_n_call/Util/NotificationService.dart';
 import 'package:skip_n_call/Util/Tools.dart';
 import 'dart:async';
 
@@ -22,6 +23,15 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   SampleItem? selectedMenu;
+
+  NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    notificationService.requestNotificationPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
