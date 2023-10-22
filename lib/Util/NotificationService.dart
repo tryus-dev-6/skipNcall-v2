@@ -1,7 +1,10 @@
 
 
+import 'dart:math';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -52,14 +55,23 @@ class NotificationService {
   }
 
   void firebaseInit(){
-    FirebaseMessaging.onMessage.listen((event) {
+
+    initLocalNotifications();
+    FirebaseMessaging.onMessage.listen((message) {
+
+      if (kDebugMode) {
+        print(message.notification!.body.toString());
+        print(message.notification!.title.toString());
+      }
+
+      showNotification(message);
 
     });
   }
 
-  Future<void> initLocalNotifications(BuildContext context, RemoteMessage message) async {
+  Future<void> initLocalNotifications() async {
 
-    var androidInitSettings = const AndroidInitializationSettings("@drawable/launcher_icon");
+    var androidInitSettings = const AndroidInitializationSettings("@mipmap/launcher_icon");
     var iOSInitSettings = const DarwinInitializationSettings();
 
     var initSettings = InitializationSettings(
@@ -73,6 +85,56 @@ class NotificationService {
 
       }
     );
+
+  }
+
+  void showNotification(RemoteMessage message) {
+
+    AndroidNotificationChannel channel = AndroidNotificationChannel(
+        Random.secure().nextInt(1000000).toString(),
+      'skip_n_call_notification',
+      importance: Importance.max
+    );
+
+
+    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+      channel.id.toString(),
+      channel.name.toString(),
+      channelDescription: 'notification description',
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: 'ticker'
+    );
+
+
+    const DarwinNotificationDetails darwinNotificationDetails = DarwinNotificationDetails(
+
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true
+
+    );
+
+
+    NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: darwinNotificationDetails
+    );
+
+
+
+    Future.delayed(
+      Duration.zero,(){
+        flutterLocationPlugin.show(
+            0,
+            message.notification!.title.toString(),
+            message.notification!.body.toString(),
+            notificationDetails
+        );
+    }
+    );
+
+
 
   }
 
