@@ -16,6 +16,7 @@ import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Model/User.dart';
 import '../Util/Constants.dart';
+import '../Util/NotificationService.dart';
 import 'Navigation.dart';
 
 class Login extends StatefulWidget {
@@ -38,10 +39,21 @@ class _LoginState extends State<Login> {
   FocusNode usernameFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
 
+  NotificationService notificationService = NotificationService();
+  String token = "";
+
   @override
   void initState() {
     super.initState();
     isPasswordVisible = true;
+
+    notificationService.getDeviceToken().then((value) => {
+
+      print("Device Token$value"),
+      token = value
+
+    });
+
   }
 
   // @override
@@ -278,7 +290,8 @@ class _LoginState extends State<Login> {
 
     var userData = {
       "email": username,
-      "password": password
+      "password": password,
+      "notification_token": token
     };
 
     hideKeyboard();

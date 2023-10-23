@@ -11,6 +11,7 @@ import 'Pages/Navigation.dart';
 import 'Util/Constants.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
+import 'Util/NotificationService.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -23,6 +24,10 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  NotificationService notificationService = NotificationService();
+
+  notificationService.firebaseInit();
 
   runApp(const MyApp());
 }

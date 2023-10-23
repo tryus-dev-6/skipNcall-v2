@@ -31,12 +31,6 @@ class _DashboardState extends State<Dashboard> {
     // TODO: implement initState
     super.initState();
     notificationService.requestNotificationPermission();
-    notificationService.firebaseInit();
-    notificationService.getDeviceToken().then((value) => {
-
-      print("Device Token$value")
-
-    });
   }
 
   @override
