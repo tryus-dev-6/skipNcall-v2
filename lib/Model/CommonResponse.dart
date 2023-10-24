@@ -4,6 +4,7 @@ import 'package:skip_n_call/Model/PackageResponse.dart';
 import 'package:skip_n_call/Model/PurchasedZipList.dart';
 
 import 'CartList.dart';
+import 'Notification.dart';
 import 'ZipDetails.dart';
 import 'TransactionList.dart';
 import 'User.dart';
@@ -28,6 +29,7 @@ class CommonResponse {
   ZipList? zipList;
   int? cartCount;
   int? totalCartPrice;
+  Notifications? notifications;
 
   CommonResponse(
       {this.status,
@@ -43,6 +45,7 @@ class CommonResponse {
       this.cartCount,
       this.totalCartPrice,
         this.zipList,
+        this.notifications,
       this.data});
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
@@ -60,6 +63,7 @@ class CommonResponse {
       cartList: json['cart_list'] != null ? CartList.fromJson(json["cart_list"]) : null,
       zipList: json['list'] != null ? ZipList.fromJson(json["list"]) : null,
       cartCount: json["cart_count"],
+      notifications: json['notifications'] != null ? Notifications.fromJson(json["notifications"]) : null,
       data: json['data'] != null ? Data.fromJson(json['data']) : null);
 
   Map<String, dynamic> toJson() => {
@@ -75,6 +79,7 @@ class CommonResponse {
         "cart_list": cartList?.toJson(),
         "list": zipList?.toJson(),
         "cart_count": cartCount,
-        'transaction_list': transactionList!.toJson()
+        'transaction_list': transactionList!.toJson(),
+        "notifications": notifications!.toJson(),
       };
 }
