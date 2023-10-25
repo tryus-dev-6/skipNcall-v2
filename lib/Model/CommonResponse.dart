@@ -4,6 +4,7 @@ import 'package:skip_n_call/Model/PackageResponse.dart';
 import 'package:skip_n_call/Model/PurchasedZipList.dart';
 
 import 'CartList.dart';
+import 'Leads.dart';
 import 'Notification.dart';
 import 'ZipDetails.dart';
 import 'TransactionList.dart';
@@ -30,6 +31,11 @@ class CommonResponse {
   int? cartCount;
   int? totalCartPrice;
   Notifications? notifications;
+  int? rawLeadsCount;
+  int? warmLeadsCount;
+  int? hovlLeadsCount;
+  int? totalLeadCount;
+  Leads? leads;
 
   CommonResponse(
       {this.status,
@@ -44,8 +50,13 @@ class CommonResponse {
       this.cartList,
       this.cartCount,
       this.totalCartPrice,
-        this.zipList,
-        this.notifications,
+      this.zipList,
+      this.notifications,
+      this.rawLeadsCount,
+      this.warmLeadsCount,
+      this.hovlLeadsCount,
+      this.totalLeadCount,
+      this.leads,
       this.data});
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
@@ -57,13 +68,24 @@ class CommonResponse {
       purchasedPackage: json!["selectd_package"],
       currentBalance: json!['current_balance'],
       totalCartPrice: json!['total_price'],
-      transactionList: json['transaction_list'] != null ? TransactionList.fromJson(json['transaction_list']) : null,
+      transactionList: json['transaction_list'] != null
+          ? TransactionList.fromJson(json['transaction_list'])
+          : null,
       packageResponse:
           json['package'] != null ? Package.fromJson(json['package']) : null,
-      cartList: json['cart_list'] != null ? CartList.fromJson(json["cart_list"]) : null,
+      cartList: json['cart_list'] != null
+          ? CartList.fromJson(json["cart_list"])
+          : null,
       zipList: json['list'] != null ? ZipList.fromJson(json["list"]) : null,
       cartCount: json["cart_count"],
-      notifications: json['notifications'] != null ? Notifications.fromJson(json["notifications"]) : null,
+      rawLeadsCount: json["raw_leads_count"],
+      warmLeadsCount: json["warm_leads_count"],
+      hovlLeadsCount: json["hovl_leads_count"],
+      totalLeadCount: json["total_lead_count"],
+      notifications: json['notifications'] != null
+          ? Notifications.fromJson(json["notifications"])
+          : null,
+      leads: json['leads'] != null ? Leads.fromJson(json["leads"]) : null,
       data: json['data'] != null ? Data.fromJson(json['data']) : null);
 
   Map<String, dynamic> toJson() => {
@@ -81,5 +103,10 @@ class CommonResponse {
         "cart_count": cartCount,
         'transaction_list': transactionList!.toJson(),
         "notifications": notifications!.toJson(),
+        "raw_leads_count": rawLeadsCount,
+        "warm_leads_count": warmLeadsCount,
+        "hovl_leads_count": hovlLeadsCount,
+        "total_lead_count": totalLeadCount,
+        "leads": leads?.toJson(),
       };
 }

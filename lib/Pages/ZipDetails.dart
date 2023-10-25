@@ -1,7 +1,13 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:skip_n_call/Model/CartListData.dart';
 import 'package:skip_n_call/Pages/LeadDetailsList.dart';
+
+import '../Api/base_client.dart';
+import '../Model/CommonResponse.dart';
 
 class ZipDetails extends StatefulWidget {
 
@@ -13,6 +19,23 @@ class ZipDetails extends StatefulWidget {
 }
 
 class _ZipDetailsState extends State<ZipDetails> {
+
+  late String warmLead = "";
+  late String hovLead = "";
+  late String rawLead = "";
+  late String zip = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.data.zipCode.toString()!=null) {
+      zip = widget.data.zipCode.toString();
+    }
+    loadData(widget.data.zipCode.toString());
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +75,7 @@ class _ZipDetailsState extends State<ZipDetails> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const LeadDetailsList(),
+                      builder: (context) => LeadDetailsList(leadType: "Warm lead", zipCode: zip, lt : "warm_lead"),
                     ),
                   );
                 },
@@ -77,9 +100,9 @@ class _ZipDetailsState extends State<ZipDetails> {
 
                         Container(
                           margin: const EdgeInsets.only(top: 6.0),
-                          child: const Text(
-                            "20",
-                            style: TextStyle(
+                          child: Text(
+                            warmLead,
+                            style: const TextStyle(
                                 fontSize: 30,
                                 color: Color(0Xff434141)),
                             textAlign: TextAlign.center,
@@ -90,69 +113,89 @@ class _ZipDetailsState extends State<ZipDetails> {
                   ),
                 ),
               ),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: const EdgeInsets.only(
-                    top: 20.0, left: 20.0, right: 20.0),
-                elevation: 5,
-                child: Container(
-                  margin: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Text(
-                        'Home Owner Verified',
-                        style: TextStyle(
-                            fontSize: 20, color: Color(0Xff634099)),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      Container(
-                        margin: const EdgeInsets.only(top: 6.0),
-                        child: const Text(
-                          "10",
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LeadDetailsList(leadType: "Home Owner Verified", zipCode: zip, lt : "hovl_lead"),
+                    ),
+                  );
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  margin: const EdgeInsets.only(
+                      top: 20.0, left: 20.0, right: 20.0),
+                  elevation: 5,
+                  child: Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text(
+                          'Home Owner Verified',
                           style: TextStyle(
-                              fontSize: 30,
-                              color: Color(0Xff434141)),
+                              fontSize: 20, color: Color(0Xff634099)),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+
+                        Container(
+                          margin: const EdgeInsets.only(top: 6.0),
+                          child: Text(
+                            hovLead,
+                            style: const TextStyle(
+                                fontSize: 30,
+                                color: Color(0Xff434141)),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: const EdgeInsets.only(
-                    top: 20.0, left: 20.0, right: 20.0),
-                elevation: 5,
-                child: Container(
-                  margin: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Text(
-                        'Raw Lead',
-                        style: TextStyle(
-                            fontSize: 20, color: Color(0Xff634099)),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      Container(
-                        margin: const EdgeInsets.only(top: 6.0),
-                        child: const Text(
-                          "5",
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LeadDetailsList(leadType: "Raw Lead", zipCode: zip, lt : "raw_lead"),
+                    ),
+                  );
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  margin: const EdgeInsets.only(
+                      top: 20.0, left: 20.0, right: 20.0),
+                  elevation: 5,
+                  child: Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text(
+                          'Raw Lead',
                           style: TextStyle(
-                              fontSize: 30,
-                              color: Color(0Xff434141)),
+                              fontSize: 20, color: Color(0Xff634099)),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+
+                        Container(
+                          margin: const EdgeInsets.only(top: 6.0),
+                          child: Text(
+                            rawLead,
+                            style: const TextStyle(
+                                fontSize: 30,
+                                color: Color(0Xff434141)),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -161,4 +204,69 @@ class _ZipDetailsState extends State<ZipDetails> {
       ),
     );
   }
+
+  Future<void> loadData(String zipCode) async {
+
+    var response;
+
+
+
+    var cartBody = {
+      "zip_code": zipCode,
+    };
+
+    response = await BaseClient()
+        .postWithToken('client/zip/details', cartBody)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+
+      setState(() {
+
+        warmLead = allDatum.warmLeadsCount.toString();
+        hovLead = allDatum.hovlLeadsCount.toString();
+        rawLead = allDatum.rawLeadsCount.toString();
+
+      });
+    }
+    else{
+      showSnackBar(allDatum.message.toString());
+    }
+
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 }
