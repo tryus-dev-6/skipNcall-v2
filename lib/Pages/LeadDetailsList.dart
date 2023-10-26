@@ -7,6 +7,7 @@ import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:skip_n_call/Model/Leads.dart';
 import 'package:skip_n_call/Model/leadList.dart';
+import 'package:skip_n_call/Pages/LeadDetailsData.dart';
 import 'package:swipe_refresh/swipe_refresh.dart';
 import 'dart:developer' as developer;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -91,8 +92,8 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
           color: Color(0Xff634099), // <-- SEE HERE
         ),
         centerTitle: true,
-        title: const Text("Leads",
-            style: TextStyle(
+        title: Text(leadType,
+            style: const TextStyle(
               color: Color(0Xff634099),
             )),
         backgroundColor: const Color(0XffFDF9FF),
@@ -133,12 +134,12 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
                                         if (index < data.length) {
                                           return GestureDetector(
                                               onTap: (){
-                                                // Navigator.push(
-                                                //   context,
-                                                //   MaterialPageRoute(
-                                                //     builder: (context) => ZipDetails(data: data[index]),
-                                                //   ),
-                                                // );
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => LeadDetailsData(data: data[index]),
+                                                  ),
+                                                );
                                               },
                                               child: getSingleItem(data[index])
                                           );
