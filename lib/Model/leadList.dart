@@ -1,3 +1,6 @@
+import 'Contact.dart';
+import 'Questonaire.dart';
+
 class LeadList {
   LeadList({
     this.id,
@@ -21,8 +24,11 @@ class LeadList {
     this.isDeleted,
     this.createdAt,
     this.updatedAt,
+    this.questonaire,
     this.contactPhone,
     this.contactEmail,
+    this.question,
+    this.answer,
   });
 
   int? id;
@@ -46,8 +52,11 @@ class LeadList {
   int? isDeleted;
   DateTime? createdAt;
   DateTime? updatedAt;
-  List<dynamic>? contactPhone;
-  List<dynamic>? contactEmail;
+  List<Questonaire>? questonaire;
+  List<Contact>? contactPhone;
+  List<Contact>? contactEmail;
+  String? question;
+  String? answer;
 
   factory LeadList.fromJson(Map<String, dynamic> json) => LeadList(
     id: json["id"],
@@ -69,10 +78,13 @@ class LeadList {
     updatedBy: json["updated_by"],
     deletedBy: json["deleted_by"],
     isDeleted: json["is_deleted"],
+    question: json["question"],
+    answer: json["answer"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    contactPhone: List<dynamic>.from(json["contact_phone"].map((x) => x)),
-    contactEmail: List<dynamic>.from(json["contact_email"].map((x) => x)),
+    questonaire: List<Questonaire>.from(json["questonaire"].map((x) => Questonaire.fromJson(x))),
+    contactPhone: List<Contact>.from(json["contact_phone"].map((x) => Contact.fromJson(x))),
+    contactEmail: List<Contact>.from(json["contact_email"].map((x) => Contact.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -95,9 +107,12 @@ class LeadList {
     "updated_by": updatedBy,
     "deleted_by": deletedBy,
     "is_deleted": isDeleted,
+    "question": question,
+    "answer": answer,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
-    "contact_phone": List<dynamic>.from(contactPhone!.map((x) => x)),
-    "contact_email": List<dynamic>.from(contactEmail!.map((x) => x)),
+    "questonaire": List<dynamic>.from(questonaire!.map((x) => x.toJson())),
+    "contact_phone": List<dynamic>.from(contactPhone!.map((x) => x.toJson())),
+    "contact_email": List<dynamic>.from(contactEmail!.map((x) => x.toJson())),
   };
 }

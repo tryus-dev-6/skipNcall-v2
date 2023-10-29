@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:skip_n_call/Model/Leads.dart';
 import 'package:skip_n_call/Model/leadList.dart';
 import 'package:skip_n_call/Pages/LeadDetailsData.dart';
 import 'package:swipe_refresh/swipe_refresh.dart';
@@ -125,38 +124,38 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
                                     })
                                     : data.isNotEmpty
                                     ? Container(
-                                  padding: const EdgeInsets.only(bottom: 70),
-                                  child: ListView.builder(
-                                      itemCount: data.length + 1,
-                                      shrinkWrap: true,
-                                      primary: false,
-                                      itemBuilder: (context, index) {
-                                        if (index < data.length) {
-                                          return GestureDetector(
-                                              onTap: (){
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => LeadDetailsData(data: data[index]),
-                                                  ),
-                                                );
-                                              },
-                                              child: getSingleItem(data[index])
-                                          );
-                                        } else if (isPaginateLoading) {
-                                          return Container(
-                                            margin:
-                                            const EdgeInsets.all(10),
-                                            height: 40,
-                                            alignment: Alignment.center,
-                                            child: LoadingAnimationWidget
-                                                .staggeredDotsWave(
-                                              color: Colors.black87,
-                                              size: 40,
-                                            ),
-                                          );
-                                        }
-                                      }),
+                                      padding: const EdgeInsets.only(bottom: 70),
+                                        child: ListView.builder(
+                                          itemCount: data.length + 1,
+                                          shrinkWrap: true,
+                                          primary: false,
+                                          itemBuilder: (context, index) {
+                                            if (index < data.length) {
+                                              return GestureDetector(
+                                                  onTap: (){
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => LeadDetailsData(data: data[index], leadType: widget.leadType),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: getSingleItem(data[index])
+                                              );
+                                            } else if (isPaginateLoading) {
+                                              return Container(
+                                                margin:
+                                                const EdgeInsets.all(10),
+                                                height: 40,
+                                                alignment: Alignment.center,
+                                                child: LoadingAnimationWidget
+                                                    .staggeredDotsWave(
+                                                  color: Colors.black87,
+                                                  size: 40,
+                                                ),
+                                              );
+                                            }
+                                          }),
                                 )
                                     : SizedBox(
                                     height: MediaQuery.of(context).size.height * 0.70,

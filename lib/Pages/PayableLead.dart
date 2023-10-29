@@ -1,8 +1,16 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:skip_n_call/Util/ColorCodes.dart';
 import 'package:skip_n_call/Util/Tools.dart';
+
+import '../Api/base_client.dart';
+import '../Helper/SharedPreferencesHelper.dart';
+import '../Model/CommonResponse.dart';
+import '../Util/Constants.dart';
 
 
 class PayableLead extends StatefulWidget {
@@ -18,6 +26,10 @@ class _PayableLeadState extends State<PayableLead> {
   int hovLeadSelected = 0;
   int rawLeadSelected = 0;
 
+  int warmLeadCount = 0;
+  int hovLeadCount = 0;
+  int rawLeadCount = 0;
+
   Color warmLeadColor = color0;
   Color hovLeadColor = color0;
   Color rawLeadColor = color0;
@@ -29,6 +41,13 @@ class _PayableLeadState extends State<PayableLead> {
   Color warmLeadBgColor = Colors.white;
   Color hovLeadBgColor = Colors.white;
   Color rawLeadBgColor = Colors.white;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
 
 
   @override
@@ -83,7 +102,7 @@ class _PayableLeadState extends State<PayableLead> {
                                       Container(
                                         margin: const EdgeInsets.only(top: 5),
                                         child: Text(
-                                          "Unpaid Lead - 10",
+                                          "Unpaid Lead - $warmLeadCount",
                                           style: TextStyle(
                                               fontSize: 15, color: warmLeadTColor),
                                         ),
@@ -126,7 +145,7 @@ class _PayableLeadState extends State<PayableLead> {
                                       Container(
                                         margin: const EdgeInsets.only(top: 5),
                                         child: Text(
-                                          "Unpaid Lead - 10",
+                                          "Unpaid Lead - $hovLeadCount",
                                           style: TextStyle(
                                               fontSize: 15, color: hovLeadTColor),
                                         ),
@@ -171,7 +190,7 @@ class _PayableLeadState extends State<PayableLead> {
                                         Container(
                                           margin: const EdgeInsets.only(top: 5),
                                           child: Text(
-                                            "Unpaid Lead - 10",
+                                            "Unpaid Lead - $rawLeadCount",
                                             style: TextStyle(
                                                 fontSize: 15, color: rawLeadTColor),
                                           ),
@@ -325,4 +344,69 @@ class _PayableLeadState extends State<PayableLead> {
 
     }
   }
+
+  Future<void> loadData() async {
+
+    var response;
+    String? userId =
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+
+
+    var cartBody = {
+      "client_id": userId
+    };
+
+    response = await BaseClient()
+        .postWithToken('client/payable/lead/count', cartBody)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      setState(() {
+
+        hovLeadCount = allDatum.hovlLeadsCount!;
+        warmLeadCount = allDatum.warmLeadsCount!;
+        rawLeadCount = allDatum.rawLeadsCount!;
+
+      });
+    }
+    else{
+      showSnackBar(allDatum.message.toString());
+    }
+
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 1),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 }

@@ -1,19 +1,34 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skip_n_call/Model/Contact.dart';
+import 'package:skip_n_call/Model/Questonaire.dart';
 import 'package:skip_n_call/Model/leadList.dart';
 
 class LeadDetailsData extends StatefulWidget {
 
   LeadList data;
+  String leadType;
 
-  LeadDetailsData({super.key, required this.data});
+  LeadDetailsData({super.key, required this.data, required this.leadType});
 
   @override
   State<LeadDetailsData> createState() => _LeadDetailsDataState();
 }
 
 class _LeadDetailsDataState extends State<LeadDetailsData> {
+
+
+  late LeadList data;
+
+  @override
+  void initState() {
+    super.initState();
+
+    data = widget.data;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,9 +74,9 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      const Text(
-                        "Abdulla Al Mued",
-                        style: TextStyle(
+                      Text(
+                        "${widget.data.firstName}${widget.data.lastName}",
+                        style: const TextStyle(
                             fontSize: 15, color: Color(0Xff5A5A5A)),
                       ),
                     ],
@@ -81,9 +96,9 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      const Text(
-                        "mued@gmail.com",
-                        style: TextStyle(
+                      Text(
+                        widget.data.emailAddress.toString(),
+                        style: const TextStyle(
                             fontSize: 15, color: Color(0Xff5A5A5A)),
                       ),
                     ],
@@ -103,9 +118,9 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      const Text(
-                        "01832587160",
-                        style: TextStyle(
+                      Text(
+                        widget.data.phoneNumber.toString(),
+                        style: const TextStyle(
                             fontSize: 15, color: Color(0Xff5A5A5A)),
                       ),
                     ],
@@ -125,9 +140,9 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      const Text(
-                        "address",
-                        style: TextStyle(
+                      Text(
+                        widget.data.propertyAddress.toString(),
+                        style: const TextStyle(
                             fontSize: 15, color: Color(0Xff5A5A5A)),
                       ),
                     ],
@@ -146,9 +161,9 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: const Color(0Xff634099),
                         ),
                       ),
-                      const Text(
-                        "10001",
-                        style: TextStyle(
+                      Text(
+                        widget.data.zipCode.toString(),
+                        style: const TextStyle(
                             fontSize: 15, color: Color(0Xff5A5A5A)),
                       ),
                     ],
@@ -168,9 +183,9 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      const Text(
-                        "Mailing address",
-                        style: TextStyle(
+                      Text(
+                        widget.data.mailingAddress.toString(),
+                        style: const TextStyle(
                             fontSize: 15, color: Color(0Xff5A5A5A)),
                       ),
                     ],
@@ -199,28 +214,33 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                   ],
                 ),
 
-                Container(
-                  margin: const EdgeInsets.only(top: 15, left: 30),
-                  child: const Text(
-                    "mued@gmail.com",
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0Xff5A5A5A)),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, left: 30),
-                  child: const Text(
-                    "mued@gmail.com",
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0Xff5A5A5A)),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, left: 30),
-                  child: const Text(
-                    "mued@gmail.com",
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0Xff5A5A5A)),
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: data.contactEmail!.isNotEmpty
+                            ? Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                                child: ListView.builder(
+                              itemCount: data.contactEmail!.length,
+                              shrinkWrap: true,
+                              primary: false,
+                              itemBuilder: (context, index) {
+                                if (index < data.contactEmail!.length) {
+                                  return getEmailSingleItem(data.contactEmail![index]);
+                                }
+                              }),
+                        )
+                            : SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.10,
+                                child: const Center(
+                                  child: Text(
+                                  "No data Found"
+                              ),
+                            )
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -246,32 +266,37 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                   ],
                 ),
 
-                Container(
-                  margin: const EdgeInsets.only(top: 15, left: 30),
-                  child: const Text(
-                    "01236445789",
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0Xff5A5A5A)),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, left: 30),
-                  child: const Text(
-                    "01236445789",
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0Xff5A5A5A)),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, left: 30),
-                  child: const Text(
-                    "01236445789",
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0Xff5A5A5A)),
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: data.contactPhone!.isNotEmpty
+                            ? Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: ListView.builder(
+                                  itemCount: data.contactPhone!.length,
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  itemBuilder: (context, index) {
+                                    if (index < data.contactPhone!.length) {
+                                      return getEmailSingleItem(data.contactPhone![index]);
+                                    }
+                                  }),
+                        )
+                            : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.10,
+                            child: const Center(
+                              child: Text(
+                                  "No data Found"
+                              ),
+                            )
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
-                Row(
+                widget.leadType == "Warm lead" ? Row(
                   children: [
                     Container(
                       margin: const EdgeInsets.only(top: 20, left: 15),
@@ -291,32 +316,55 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                       ),
                     ),
                   ],
-                ),
+                ) : const Card(),
 
-                Column(
+                widget.leadType == "Warm lead" ? Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: const Text(
-                          "Question ?",
-                          style: TextStyle(fontSize: 16, color: Colors.black87, decoration: TextDecoration.none, fontFamily: 'system', fontWeight: FontWeight.normal),
+                        margin: const EdgeInsets.only(top: 20, left: 30, right: 20),
+                        child: Text(
+                          data.question.toString(),
+                          style: const TextStyle(fontSize: 17, color: Colors.black87, decoration: TextDecoration.none, fontFamily: 'system', fontWeight: FontWeight.normal),
                         )),
                     const SizedBox(height: 24),
                     Container(
-                      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                      child: const SingleChildScrollView(
+                      margin: const EdgeInsets.only(left: 30, right: 20),
+                      child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: Text(
-                          "Please set to minLines 1 and maxLines to 8. If Message is short it's will take one line if there is large text it's will be auto scroll. You can change max line according to your needs. Here's an example for reference. "
-                              "Please set to minLines 1 and maxLines to 8. If Message is short it's will take one line if there is large text it's will be auto scroll. You can change max line according to your needs. Here's an example for reference."
-                              "Please set to minLines 1 and maxLines to 8. If Message is short it's will take one line if there is large text it's will be auto scroll. You can change max line according to your needs. Here's an example for reference."
-                              "Please set to minLines 1 and maxLines to 8. If Message is short it's will take one line if there is large text it's will be auto scroll. You can change max line according to your needs. Here's an example for reference.",
-                          style: TextStyle(fontSize: 16, color: Colors.black87, decoration: TextDecoration.none, fontFamily: 'system', fontWeight: FontWeight.normal),
+                          data.answer.toString(),
+                          style: const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A))
                         ),
                       ),
                     ),
                   ],
+                ) : const Card(),
+
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: data.questonaire!.isNotEmpty
+                            ? Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: ListView.builder(
+                                  itemCount: data.questonaire!.length,
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  itemBuilder: (context, index) {
+                                    if (index < data.questonaire!.length) {
+                                      return getQuestionnairesSingleItem(data.questonaire![index]);
+                                    }
+                                  }),
+                        )
+                            : SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.10,
+                              child: const Card(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
               ],
@@ -324,4 +372,42 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
           ),
         ));
   }
+
+  Container getEmailSingleItem(Contact contactEmail){
+    return Container(
+      margin: const EdgeInsets.only(top: 15, left: 30),
+      child: Text(
+        contactEmail.contact.toString(),
+        style: const TextStyle(
+            fontSize: 15, color: Color(0Xff5A5A5A)),
+      ),
+    );
+  }
+
+  Column getQuestionnairesSingleItem(Questonaire questionnaires){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+            margin: const EdgeInsets.only(top: 40, left: 30, right: 20),
+            child: Text(
+              questionnaires.question.toString(),
+              style: const TextStyle(fontSize: 17, color: Colors.black87, decoration: TextDecoration.none, fontFamily: 'system', fontWeight: FontWeight.normal),
+            )
+        ),
+        const SizedBox(height: 24),
+        Container(
+          margin: const EdgeInsets.only(left: 30, right: 20, bottom: 20),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Text(
+                questionnaires.answer.toString(),
+                style: const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A))
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 }
