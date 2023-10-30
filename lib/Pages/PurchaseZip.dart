@@ -498,6 +498,8 @@ class _PurchaseZipState extends State<PurchaseZip> {
       return;
     }
 
+    debugPrint('packageId: $currentPackage');
+
     var response;
 
     var add = {

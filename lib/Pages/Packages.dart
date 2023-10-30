@@ -772,8 +772,8 @@ class _PackagesState extends State<Packages> {
                           : const Color(0Xff634099),
                       textStyle: const TextStyle(color: Colors.white)),
                   child: currentPackageId == data.packageId
-                      ? const Text('Purchased')
-                      : const Text('Purchase'),
+                      ? const Text('Selected')
+                      : const Text('Select'),
                 ),
               ),
             ],

@@ -288,6 +288,8 @@ class _LoginState extends State<Login> {
     }
     debugPrint("Password $password");
 
+    print("Device Token$token");
+
     var userData = {
       "email": username,
       "password": password,
