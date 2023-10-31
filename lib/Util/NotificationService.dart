@@ -66,6 +66,26 @@ class NotificationService {
     });
   }
 
+  Future<void> initPushNotifications() async {
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+        alert: true, badge: true, sound: true);
+
+    // FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
+    // FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+    // FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+    // FirebaseMessaging.onMessage.listen((message) {
+    //   final notification = message.notification;
+    //
+    //   if (notification==null) return;
+    //
+    //   localNotifications.show(notification.hashCode, notification.title, notification.body, NotificationDetails(
+    //       android: AndroidNotificationDetails(androidChannel.id, androidChannel.name, icon: '@drawable/ic_launcher')
+    //   ), payload: jsonEncode(message.toMap()));
+    // });
+  }
+
   Future<void> initLocalNotifications() async {
 
     var androidInitSettings = const AndroidInitializationSettings("@mipmap/launcher_icon");
@@ -95,7 +115,10 @@ class NotificationService {
         AndroidNotificationChannel channel = AndroidNotificationChannel(
           Random.secure().nextInt(1000000).toString(),
           'skip_n_call_notification',
+          groupId: "notification",
           importance: Importance.max,
+          showBadge: true,
+
         );
 
         AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(

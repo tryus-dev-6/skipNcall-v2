@@ -30,6 +30,12 @@ class _PayableLeadState extends State<PayableLead> {
   int hovLeadCount = 0;
   int rawLeadCount = 0;
 
+  int warmLeadPayable = 0;
+  int hovLeadPayable = 0;
+  int rawLeadPayable = 0;
+
+  int totalPayable = 0;
+
   Color warmLeadColor = color0;
   Color hovLeadColor = color0;
   Color rawLeadColor = color0;
@@ -37,6 +43,10 @@ class _PayableLeadState extends State<PayableLead> {
   Color warmLeadTColor = color2;
   Color hovLeadTColor = color2;
   Color rawLeadTColor = color2;
+
+  var cardBody = {
+
+  };
 
   Color warmLeadBgColor = Colors.white;
   Color hovLeadBgColor = Colors.white;
@@ -110,7 +120,7 @@ class _PayableLeadState extends State<PayableLead> {
                                       Container(
                                         margin: const EdgeInsets.only(top: 5),
                                         child: Text(
-                                          "Payable - \$500",
+                                          "Payable - \$$warmLeadPayable",
                                           style: TextStyle(
                                               fontSize: 15, color: warmLeadTColor),
                                         ),
@@ -153,7 +163,7 @@ class _PayableLeadState extends State<PayableLead> {
                                       Container(
                                         margin: const EdgeInsets.only(top: 5),
                                         child: Text(
-                                          "Payable - \$500",
+                                          "Payable - \$$hovLeadPayable",
                                           style: TextStyle(
                                               fontSize: 15, color: hovLeadTColor),
                                         ),
@@ -198,7 +208,7 @@ class _PayableLeadState extends State<PayableLead> {
                                         Container(
                                           margin: const EdgeInsets.only(top: 5),
                                           child: Text(
-                                            "Payable - \$500",
+                                            "Payable - \$$rawLeadPayable",
                                             style: TextStyle(
                                                 fontSize: 15, color: rawLeadTColor),
                                           ),
@@ -237,12 +247,38 @@ class _PayableLeadState extends State<PayableLead> {
 
                         ),
 
-                        onPressed: (){
+                        onPressed: () async {
 
-                        }, child: const Text(
-                        'Total payable - \$1500\n Pay Now',
+
+                          String? userId =
+                              await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+                          cardBody = {
+                            "client_id": userId,
+                          };
+
+                          if(rawLeadSelected == 1){
+                            cardBody["lead_type"] = "raw_lead";
+                          }
+                          if(hovLeadSelected == 1){
+                            cardBody["lead_type"] = "hov_lead";
+                          }
+                          if(warmLeadSelected == 1){
+                            cardBody["lead_type"] = "warm_lead";
+                          }
+
+                          if(hovLeadSelected == 0 && warmLeadSelected == 0 && rawLeadSelected == 0){
+
+                            showSnackBar("Please Select At least one item");
+
+                            return;
+                          }
+                          payPayableLead(cardBody);
+
+                        }, child: Text(
+                        'Total payable - \$$totalPayable\n Pay Now',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 17),
+                      style: const TextStyle(fontSize: 17),
                     )
                     ),
                   )
@@ -265,6 +301,7 @@ class _PayableLeadState extends State<PayableLead> {
           warmLeadColor = color0;
           warmLeadTColor = color2;
           warmLeadBgColor = Colors.white;
+          totalPayable = totalPayable - warmLeadPayable;
 
         });
 
@@ -278,6 +315,7 @@ class _PayableLeadState extends State<PayableLead> {
           warmLeadColor = Colors.white;
           warmLeadTColor = Colors.white;
           warmLeadBgColor = color1;
+          totalPayable = totalPayable + warmLeadPayable;
 
         });
 
@@ -293,6 +331,7 @@ class _PayableLeadState extends State<PayableLead> {
           hovLeadColor = color0;
           hovLeadTColor = color2;
           hovLeadBgColor = Colors.white;
+          totalPayable = totalPayable - hovLeadPayable;
 
         });
 
@@ -306,6 +345,7 @@ class _PayableLeadState extends State<PayableLead> {
           hovLeadColor = Colors.white;
           hovLeadTColor = Colors.white;
           hovLeadBgColor = color1;
+          totalPayable = totalPayable + hovLeadPayable;
 
         });
 
@@ -322,6 +362,7 @@ class _PayableLeadState extends State<PayableLead> {
           rawLeadColor = color0;
           rawLeadTColor = color2;
           rawLeadBgColor = Colors.white;
+          totalPayable = totalPayable - rawLeadPayable;
 
         });
 
@@ -335,9 +376,9 @@ class _PayableLeadState extends State<PayableLead> {
           rawLeadColor = Colors.white;
           rawLeadTColor = Colors.white;
           rawLeadBgColor = color1;
+          totalPayable = totalPayable + rawLeadPayable;
 
         });
-
         rawLeadSelected = 1;
 
       }
@@ -373,17 +414,72 @@ class _PayableLeadState extends State<PayableLead> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
-      setState(() {
+      hovLeadCount = allDatum.hovlLeadsCount!;
+      warmLeadCount = allDatum.warmLeadsCount!;
+      rawLeadCount = allDatum.rawLeadsCount!;
 
-        hovLeadCount = allDatum.hovlLeadsCount!;
-        warmLeadCount = allDatum.warmLeadsCount!;
-        rawLeadCount = allDatum.rawLeadsCount!;
-
-      });
+      hovLeadPayable = allDatum.hovlLeadsCost!;
+      warmLeadPayable = allDatum.warmLeadsCost!;
+      rawLeadPayable = allDatum.rawLeadsCost!;
     }
     else{
       showSnackBar(allDatum.message.toString());
     }
+
+  }
+
+  Future<void> payPayableLead(var cartBody) async{
+
+    var response;
+
+
+
+    // var cartBody = {
+    //   "client_id": userId
+    // };
+
+    response = await BaseClient()
+        .postWithToken('client/payable/lead', cartBody)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      setState(() {
+
+        print("hov $hovLeadSelected");
+
+        if(rawLeadSelected == 1){
+          rawLeadCount = 0;
+          rawLeadPayable = 0;
+          performSelection(3);
+        }
+        if(hovLeadSelected == 1){
+          hovLeadCount = 0;
+          hovLeadPayable = 0;
+          performSelection(2);
+          print("hov $hovLeadSelected");
+        }
+        if(warmLeadSelected == 1){
+          warmLeadCount = 0;
+          rawLeadPayable = 0;
+          performSelection(1);
+        }
+
+
+      });
+    }
+
+    showSnackBar(allDatum.message.toString());
 
   }
 

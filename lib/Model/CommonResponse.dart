@@ -34,6 +34,9 @@ class CommonResponse {
   int? rawLeadsCount;
   int? warmLeadsCount;
   int? hovlLeadsCount;
+  int? rawLeadsCost;
+  int? warmLeadsCost;
+  int? hovlLeadsCost;
   int? totalLeadCount;
   Leads? leads;
 
@@ -56,6 +59,9 @@ class CommonResponse {
       this.warmLeadsCount,
       this.hovlLeadsCount,
       this.totalLeadCount,
+      this.rawLeadsCost,
+      this.hovlLeadsCost,
+      this.warmLeadsCost,
       this.leads,
       this.data});
 
@@ -81,6 +87,9 @@ class CommonResponse {
       rawLeadsCount: json["raw_leads_count"],
       warmLeadsCount: json["warm_leads_count"],
       hovlLeadsCount: json["hovl_leads_count"],
+      rawLeadsCost: json['raw_leads_cost'],
+      hovlLeadsCost: json['hovl_leads_cost'],
+      warmLeadsCost: json['warm_leads_cost'],
       totalLeadCount: json["total_lead_count"],
       notifications: json['notifications'] != null
           ? Notifications.fromJson(json["notifications"])
@@ -107,6 +116,9 @@ class CommonResponse {
         "warm_leads_count": warmLeadsCount,
         "hovl_leads_count": hovlLeadsCount,
         "total_lead_count": totalLeadCount,
+        "warm_leads_cost": warmLeadsCost,
+        "hovl_leads_cost": hovlLeadsCost,
+        "raw_leads_cost": rawLeadsCost,
         "leads": leads?.toJson(),
       };
 }

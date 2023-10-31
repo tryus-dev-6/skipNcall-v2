@@ -38,7 +38,7 @@ class LeadList {
   String? lastName;
   String? emailAddress;
   String? phoneNumber;
-  int? zipCode;
+  String? zipCode;
   String? propertyAddress;
   String? mailingAddress;
   int? ownerVerified;
