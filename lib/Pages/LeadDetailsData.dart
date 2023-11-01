@@ -74,10 +74,12 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      Text(
-                        "${widget.data.firstName}${widget.data.lastName}",
-                        style: const TextStyle(
-                            fontSize: 15, color: Color(0Xff5A5A5A)),
+                      Flexible(
+                        child: Text(
+                          "${widget.data.firstName} ${widget.data.lastName}",
+                          style: const TextStyle(
+                              fontSize: 15, color: Color(0Xff5A5A5A)),
+                        ),
                       ),
                     ],
                   ),
@@ -140,10 +142,12 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      Text(
-                        widget.data.propertyAddress.toString(),
-                        style: const TextStyle(
-                            fontSize: 15, color: Color(0Xff5A5A5A)),
+                      Flexible(
+                        child: Text(
+                          widget.data.propertyAddress.toString(),
+                          style: const TextStyle(
+                              fontSize: 15, color: Color(0Xff5A5A5A)),
+                        ),
                       ),
                     ],
                   ),
@@ -183,10 +187,12 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                           color: Color(0Xff634099),
                         ),
                       ),
-                      Text(
-                        widget.data.mailingAddress.toString(),
-                        style: const TextStyle(
-                            fontSize: 15, color: Color(0Xff5A5A5A)),
+                      Flexible(
+                        child: Text(
+                          widget.data.mailingAddress.toString(),
+                          style: const TextStyle(
+                              fontSize: 15, color: Color(0Xff5A5A5A)),
+                        ),
                       ),
                     ],
                   ),
