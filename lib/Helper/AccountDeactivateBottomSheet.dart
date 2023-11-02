@@ -1,8 +1,22 @@
 
+import 'dart:convert';
+
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 
+import '../Api/base_client.dart';
+import '../Model/CommonResponse.dart';
+import '../Pages/Login.dart';
+import '../Util/Constants.dart';
+import 'SharedPreferencesHelper.dart';
+import 'dialog_helper.dart';
+
 class DeactivateAccountDialog extends StatefulWidget {
-  const DeactivateAccountDialog({super.key});
+
+  Function(String) onPressed;
+
+  DeactivateAccountDialog({super.key, required this.onPressed});
 
   @override
   State<DeactivateAccountDialog> createState() => _DeactivateAccountDialogState();
@@ -14,8 +28,6 @@ class _DeactivateAccountDialogState extends State<DeactivateAccountDialog> {
   TextEditingController deactivateTextController = TextEditingController();
 
 
-  FocusNode currentPasswordFocusNode = FocusNode();
-  FocusNode newPasswordFocusNode = FocusNode();
   FocusNode deactivatePasswordFocusNode = FocusNode();
   FocusNode deactivateTextFocusNode = FocusNode();
 
@@ -173,7 +185,8 @@ class _DeactivateAccountDialogState extends State<DeactivateAccountDialog> {
                       style: TextStyle(fontSize: 16),
                     ),
                     onPressed: () {
-
+                      hideKeyboard();
+                      deactivateAccount(context);
                     },
                   ),
                 ),
@@ -187,4 +200,120 @@ class _DeactivateAccountDialogState extends State<DeactivateAccountDialog> {
       ),
     );
   }
+
+  void hideKeyboard() {
+    if (deactivateTextFocusNode.hasFocus) {
+      deactivateTextFocusNode.unfocus(); // Remove focus from the text field
+    }
+    if (deactivatePasswordFocusNode.hasFocus) {
+      deactivatePasswordFocusNode.unfocus(); // Remove focus from the text field
+    }
+  }
+
+  Future<void> deactivateAccount(BuildContext context) async {
+
+    String cause = deactivateTextController.text;
+    String password = deactivatePasswordController.text;
+
+    if(cause.isEmpty){
+
+      flushBarErrorMessage("please enter you cause of deactivation");
+
+      return;
+    }
+    if(password.isEmpty){
+
+      flushBarErrorMessage("Enter your password");
+
+      return;
+    }
+
+    DialogHelper.showLoading();
+
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var profile = {
+      "user_id": userId,
+      "password": password,
+      "deactivation_cause": cause
+    };
+
+    response = await BaseClient()
+        .postWithToken('user/account/deactivate', profile)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      flushBarErrorMessage('failed to get response');
+      DialogHelper.hideDialog();
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+
+      DialogHelper.hideDialog();
+      successfulDeactivate(allDatum.message.toString());
+      toLogInPage(context);
+
+    } else {
+
+      DialogHelper.hideDialog();
+      if (allDatum.message != null) {
+        flushBarErrorMessage(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false) {
+
+        toLogInPage(context);
+      }
+    }
+
+
+  }
+
+  void toLogInPage(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
+  }
+
+  void successfulDeactivate(String message) {
+    widget.onPressed(message);
+    // Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  void flushBarErrorMessage(String message){
+
+    showFlushbar(
+        context: context,
+        flushbar: Flushbar(
+
+          forwardAnimationCurve: Curves.decelerate,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.all(10),
+          message: message,
+          duration: const Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+          backgroundColor: Colors.red,
+          reverseAnimationCurve: Curves.easeOut,
+          borderRadius: BorderRadius.circular(10),
+          positionOffset: 20,
+          icon: const Icon(Icons.error, size: 28, color: Colors.white),
+
+        )..show(context)
+    );
+
+  }
+
 }

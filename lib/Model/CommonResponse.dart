@@ -17,6 +17,7 @@ String allDatumToJson(CommonResponse data) => json.encode(data.toJson());
 
 class CommonResponse {
   bool? status;
+  bool? isTokenValid;
   String? token;
   User? user;
   String? message;
@@ -38,10 +39,12 @@ class CommonResponse {
   int? warmLeadsCost;
   int? hovlLeadsCost;
   int? totalLeadCount;
+
   Leads? leads;
 
   CommonResponse(
       {this.status,
+      this.isTokenValid,
       this.token,
       this.user,
       this.message,
@@ -67,6 +70,7 @@ class CommonResponse {
 
   factory CommonResponse.fromJson(Map<String, dynamic>? json) => CommonResponse(
       status: json!["status"],
+      isTokenValid: json!["is_token"],
       user: json!["user"] == null ? null : User.fromJson(json!["user"]),
       token: json!["token"],
       message: json!["message"],
@@ -99,6 +103,7 @@ class CommonResponse {
 
   Map<String, dynamic> toJson() => {
         "status": status,
+        "is_token": isTokenValid,
         "token": token,
         "user": user?.toJson(),
         "message": message,

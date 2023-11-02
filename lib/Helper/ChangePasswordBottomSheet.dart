@@ -1,9 +1,22 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_route.dart';
+import 'package:flutter/material.dart';
+import 'package:skip_n_call/Pages/Login.dart';
+
+import '../Api/base_client.dart';
+import '../Model/CommonResponse.dart';
+import '../Util/Constants.dart';
 import '../Util/Tools.dart';
+import 'SharedPreferencesHelper.dart';
+import 'dialog_helper.dart';
 
 class ChangePasswordBottomSheet extends StatefulWidget {
-  const ChangePasswordBottomSheet({super.key});
+
+  Function(String) onPressed;
+
+  ChangePasswordBottomSheet({super.key, required this.onPressed});
 
   @override
   State<ChangePasswordBottomSheet> createState() => _ChangePasswordBottomSheetState();
@@ -26,6 +39,23 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
     super.initState();
     isNewPasswordVisible = true;
     isCurrentPasswordVisible = true;
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+  }
+
+
+  void hideKeyboard() {
+    if (currentPasswordFocusNode.hasFocus) {
+      currentPasswordFocusNode.unfocus(); // Remove focus from the text field
+    }
+    if (newPasswordFocusNode.hasFocus) {
+      newPasswordFocusNode.unfocus(); // Remove focus from the text field
+    }
   }
 
   @override
@@ -179,6 +209,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                       style: TextStyle(fontSize: 16),
                     ),
                     onPressed: () {
+                      hideKeyboard();
                       updatePassword(context);
                     },
                   ),
@@ -194,7 +225,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
     );
   }
 
-  void updatePassword(BuildContext context) {
+  Future<void> updatePassword(BuildContext context) async {
 
     String currentPassword = currentPasswordController.text;
     String newPassword = newPasswordController.text;
@@ -210,5 +241,91 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
       return;
     }
 
+    DialogHelper.showLoading();
+
+    String? userId =
+        await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var profile = {
+      "user_id": userId,
+      "new_password": newPassword,
+      "old_password": currentPassword
+    };
+
+    response = await BaseClient()
+        .postWithToken('user/change/password', profile)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      flushBarErrorMessage('failed to get response');
+      DialogHelper.hideDialog();
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+
+      DialogHelper.hideDialog();
+      successfulUpdate(allDatum.message.toString());
+
+    } else {
+
+      DialogHelper.hideDialog();
+      if (allDatum.message != null) {
+        flushBarErrorMessage(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false) {
+
+        toLogInPage();
+      }
+    }
+
+
   }
+
+  void flushBarErrorMessage(String message){
+
+    showFlushbar(
+        context: context,
+        flushbar: Flushbar(
+
+          forwardAnimationCurve: Curves.decelerate,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.all(10),
+          message: message,
+          duration: const Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+          backgroundColor: Colors.red,
+          reverseAnimationCurve: Curves.easeOut,
+          borderRadius: BorderRadius.circular(10),
+          positionOffset: 20,
+          icon: const Icon(Icons.error, size: 28, color: Colors.white),
+
+        )..show(context)
+    );
+
+  }
+
+  void toLogInPage() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
+  }
+
+  void successfulUpdate(String message) {
+    widget.onPressed(message);
+    // Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
 }

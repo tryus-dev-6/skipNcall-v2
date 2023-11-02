@@ -1,11 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:skip_n_call/Helper/AccountDeactivateBottomSheet.dart';
 import 'package:skip_n_call/Helper/ChangePasswordBottomSheet.dart';
+import 'package:skip_n_call/Pages/ChangeEmail.dart';
+import 'package:skip_n_call/Util/Tools.dart';
 
+import '../Api/Constants.dart';
+import '../Api/base_client.dart';
+import '../Helper/SharedPreferencesHelper.dart';
+import '../Helper/dialog_helper.dart';
+import '../Model/CommonResponse.dart';
+import '../Util/Constants.dart';
 import 'EditProfile.dart';
+import 'Login.dart';
 
 enum SampleItem { itemOne }
 
@@ -30,13 +42,23 @@ class _ProfileState extends State<Profile> {
   bool isPasswordVisible = false;
   bool isDeactivatePasswordVisible = false;
 
+  String? currentImage, firstname = "", lastname = "", email = "", phone = "", balance = "";
+  int totalZip = 0;
+
+
   void hideKeyboard() {
-    // if (usernameFocusNode.hasFocus) {
-    //   usernameFocusNode.unfocus(); // Remove focus from the text field
-    // }
-    // if (passwordFocusNode.hasFocus) {
-    //   passwordFocusNode.unfocus(); // Remove focus from the text field
-    // }
+    if (emailFocusNode.hasFocus) {
+      emailFocusNode.unfocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    emailController.dispose();
   }
 
   @override
@@ -44,6 +66,7 @@ class _ProfileState extends State<Profile> {
     // TODO: implement initState
     super.initState();
     isPasswordVisible = true;
+    initiateUserInfo();
   }
 
   @override
@@ -82,12 +105,18 @@ class _ProfileState extends State<Profile> {
                         width: 90,
                         child: Stack(
                           children: <Widget>[
-                            const SizedBox(
+                            SizedBox(
                               width: 90,
                               height: 90,
-                              child: CircleAvatar(
+                              child: currentImage != null
+                                  ? CircleAvatar(
                                 backgroundImage:
-                                    AssetImage('assets/images/ic_user2.png'),
+                                NetworkImage(currentImage!),
+                                backgroundColor: Colors.white,
+                              )
+                                  : const CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    'assets/images/ic_user2.png'),
                                 backgroundColor: Colors.white,
                               ),
                             ),
@@ -130,19 +159,19 @@ class _ProfileState extends State<Profile> {
                 Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top: 15),
-                  child: const Column(
+                  child: Column(
                     children: [
                       Text(
-                        'Abdulla Al Mued',
-                        style: TextStyle(fontSize: 20, color: Color(0Xff434141)),
+                        "${firstname!} ${lastname!}",
+                        style: const TextStyle(fontSize: 20, color: Color(0Xff434141)),
                       ),
                       Text(
-                        'abdullaalmuid101@gmail.com',
-                        style: TextStyle(fontSize: 14, color: Color(0Xff696969)),
+                        email.toString(),
+                        style: const TextStyle(fontSize: 14, color: Color(0Xff696969)),
                       ),
                       Text(
-                        '01831553096',
-                        style: TextStyle(fontSize: 14, color: Color(0Xff696969)),
+                        phone.toString(),
+                        style: const TextStyle(fontSize: 14, color: Color(0Xff696969)),
                       ),
                     ],
                   ),
@@ -175,9 +204,9 @@ class _ProfileState extends State<Profile> {
                             Container(
                               alignment: Alignment.center,
                               margin: const EdgeInsets.all(5),
-                              child: const Text(
-                                '\$ 12,2545',
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              child: Text(
+                                '\$ $balance',
+                                style: const TextStyle(fontSize: 20, color: Colors.white),
                               ),
                             ),
                           ],
@@ -195,9 +224,9 @@ class _ProfileState extends State<Profile> {
                             Container(
 
                               margin: const EdgeInsets.all(5),
-                              child: const Text(
-                                '122',
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              child: Text(
+                                totalZip.toString(),
+                                style: const TextStyle(fontSize: 20, color: Colors.white),
                               ),
                             ),
                           ],
@@ -451,6 +480,52 @@ class _ProfileState extends State<Profile> {
     ));
   }
 
+  Future<void> initiateUserInfo() async {
+    //DialogHelper.showLoading();
+
+    String? userId =
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var profile = {"client_id": userId};
+
+    response = await BaseClient()
+        .postWithToken('client/profile', profile)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+      DialogHelper.hideDialog();
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      firstname = allDatum.user!.firstName.toString();
+      lastname = allDatum.user!.lastName.toString();
+      totalZip = allDatum.user!.totalZip!;
+      balance = allDatum.user!.clientBalance.toString();
+      email = allDatum.user!.email = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+      phone = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
+
+      setState(() {
+        currentImage = Constants.IMAGE_URL + allDatum.user?.proPic;
+      });
+    } else {
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+    }
+
+    //DialogHelper.hideDialog();
+  }
 
   void showCustomBottomSheet(){
 
@@ -459,7 +534,12 @@ class _ProfileState extends State<Profile> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const ChangePasswordBottomSheet();
+        return ChangePasswordBottomSheet(
+            onPressed: (String message) {
+              setState(() {
+                showSnackBar(message);
+              });
+            });
       },
     );
   }
@@ -564,7 +644,8 @@ class _ProfileState extends State<Profile> {
                           style: TextStyle(fontSize: 16),
                         ),
                         onPressed: () {
-
+                          hideKeyboard();
+                          sendOtp();
                         },
                       ),
                     ),
@@ -581,6 +662,15 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  void successSendOtp(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeEmail(user: emailController.text.toString()),
+      ),
+    );
+  }
+
   void deactivateAccountCustomButtonSheet(){
 
     showModalBottomSheet<void>(
@@ -588,9 +678,106 @@ class _ProfileState extends State<Profile> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const DeactivateAccountDialog();
+        return DeactivateAccountDialog(
+            onPressed: (String message) {
+              setState(() {
+                showSnackBar(message);
+              });
+            }
+        );
       },
     );
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 2),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> sendOtp() async {
+
+    if(emailController.text.isEmpty){
+      showFlushBar("please enter your email address");
+
+      return;
+    }
+
+
+    String? userId =
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var sendOtp = {
+      "user_id": userId,
+      "email": emailController.text.toString()
+    };
+
+    emailController.clear();
+
+    hideKeyboard();
+    DialogHelper.showLoading();
+    var response = await BaseClient()
+        .postWithToken('client/change/email', sendOtp)
+        .catchError((err) {
+      DialogHelper.hideDialog();
+      showSnackBar(err.toString());
+    });
+    if (response == null) {
+      debugPrint('failed');
+      DialogHelper.hideDialog();
+      return;
+    }
+    var res = json.decode(response);
+    DialogHelper.hideDialog();
+    debugPrint('successful: $res');
+    CommonResponse commonResponse = allDataFromJson(response);
+    if (commonResponse.status == true) {
+
+      showFlushBar(commonResponse.message.toString());
+      successSendOtp();
+
+    }else{
+
+      showFlushBar(commonResponse.message.toString());
+
+
+      if(commonResponse.isTokenValid == false){
+        tokenInvalid();
+      }
+
+    }
+
+  }
+
+  void showFlushBar(String message){
+    Tools.flushBarErrorMessage(message, context);
+  }
+
+  void tokenInvalid() {
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ),
+      );
+    });
   }
 
 }
