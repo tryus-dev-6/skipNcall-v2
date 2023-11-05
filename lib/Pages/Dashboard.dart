@@ -194,12 +194,63 @@ class _DashboardState extends State<Dashboard> {
                           padding: const EdgeInsets.only(bottom: 40),
                           child: Column(
                             children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        margin: const EdgeInsets.only(
+                                            top: 50.0, left: 15.0, right: 5.0),
+                                        elevation: 5,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 45,
+                                              margin: const EdgeInsets.only(top: 5),
+                                              child: const Text(
+                                                'Top Up',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                  Expanded(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        margin: const EdgeInsets.only(
+                                            top: 50.0, left: 5.0, right: 15.0),
+                                        elevation: 5,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 45,
+                                              margin: const EdgeInsets.only(top: 5),
+                                              child: const Text(
+                                                'Add Zip',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                ],
+                              ),
                               Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
                                   margin: const EdgeInsets.only(
-                                      top: 50.0, left: 20.0, right: 20.0),
+                                      top: 15.0, left: 15.0, right: 15.0),
                                   elevation: 5,
                                   child: Row(
                                     mainAxisAlignment:
@@ -211,180 +262,236 @@ class _DashboardState extends State<Dashboard> {
                                             top: 20.0,
                                             bottom: 20.0),
                                         child: SvgPicture.asset(
-                                          'assets/images/ic_my_zip.svg',
+                                          'assets/images/ic_dashboard_balance.svg',
                                           height: 60,
                                           width: 60,
                                         ),
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(5),
-                                        margin: const EdgeInsets.only(top: 5),
-                                        child: const Text(
-                                          'My Zips',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff434141)),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
+                                      Column(
+                                        children: [
+
+                                          Container(
+                                            margin:
                                             const EdgeInsets.only(right: 20),
-                                        child: const Text(
-                                          '98',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff00A18A)),
-                                        ),
+                                            child: const Text(
+                                              '\$9,800000',
+                                              style: TextStyle(
+                                                  fontSize: 22,
+                                                  color: Color(0Xff434141)),
+                                            ),
+                                          ),
+
+                                          Container(
+                                            //color: const Color(0Xff424853),
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                                color: const Color(0Xff424853),
+                                              borderRadius: BorderRadius.circular(5)
+                                            ),
+                                            margin: const EdgeInsets.only(
+                                                right: 10, top: 5),
+                                            child: const Text(
+                                              'Total Balance',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   )),
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        margin: const EdgeInsets.only(
+                                            top: 15.0, left: 15.0, right: 5.0),
+                                        elevation: 5,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 20.0,
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/images/ic_attend.svg',
+                                                height: 40,
+                                                width: 40,
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 45,
+                                              alignment: Alignment.center,
+                                              padding: const EdgeInsets.all(5),
+                                              margin: const EdgeInsets.only(
+                                                  top: 5),
+                                              child: const Text(
+                                                'Warm Lead',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(bottom: 10),
+                                              child: const Text(
+                                                '98',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0XffFFB100)),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
                                   ),
-                                  margin: const EdgeInsets.only(
-                                      top: 20.0, left: 20.0, right: 20.0),
-                                  elevation: 5,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
+                                  Expanded(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
                                         margin: const EdgeInsets.only(
-                                            left: 20.0,
-                                            top: 20.0,
-                                            bottom: 20.0),
-                                        child: SvgPicture.asset(
-                                          'assets/images/ic_data.svg',
-                                          height: 60,
-                                          width: 60,
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(5),
-                                        margin: const EdgeInsets.only(
-                                            right: 10, top: 5),
-                                        child: const Text(
-                                          'Data',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff434141)),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
-                                        child: const Text(
-                                          '98',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff434141)),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
+                                            top: 15.0, left: 5.0, right: 15.0),
+                                        elevation: 5,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                top: 20.0,
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/images/ic_attend.svg',
+                                                height: 40,
+                                                width: 40,
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 45,
+                                              padding: const EdgeInsets.all(5),
+                                              margin: const EdgeInsets.only(
+                                                  right: 10, top: 5),
+                                              child: const Text(
+                                                'Home Owner verified',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(bottom: 10),
+                                              child: const Text(
+                                                '98',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0XffFFB100)),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
                                   ),
-                                  margin: const EdgeInsets.only(
-                                      top: 20.0, left: 20.0, right: 20.0),
-                                  elevation: 5,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
                                         margin: const EdgeInsets.only(
-                                            left: 20.0,
-                                            top: 20.0,
-                                            bottom: 20.0),
-                                        child: SvgPicture.asset(
-                                          'assets/images/ic_attend.svg',
-                                          height: 60,
-                                          width: 60,
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(5),
-                                        margin: const EdgeInsets.only(
-                                            right: 10, top: 5),
-                                        child: const Text(
-                                          'Attend',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff434141)),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
-                                        child: const Text(
-                                          '98',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0XffFFB100)),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
+                                            top: 15.0, left: 15.0, right: 5.0),
+                                        elevation: 5,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                top: 20.0,
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/images/ic_attend.svg',
+                                                height: 40,
+                                                width: 40,
+                                              ),
+                                            ),
+                                            Container(
+                                              alignment: Alignment.center,
+                                              padding: const EdgeInsets.all(5),
+                                              margin: const EdgeInsets.only(
+                                                  top: 5),
+                                              child: const Text(
+                                                'Raw Lead',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(bottom: 10),
+                                              child: const Text(
+                                                '98',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0XffFFB100)),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
                                   ),
-                                  margin: const EdgeInsets.only(
-                                      top: 20.0, left: 20.0, right: 20.0),
-                                  elevation: 5,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
+                                  Expanded(
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
                                         margin: const EdgeInsets.only(
-                                            left: 20.0,
-                                            top: 20.0,
-                                            bottom: 20.0),
-                                        child: SvgPicture.asset(
-                                          'assets/images/ic_pending.svg',
-                                          height: 60,
-                                          width: 60,
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        // decoration: BoxDecoration(
-                                        //     color: const Color(0Xff634099),
-                                        //     border: Border.all(
-                                        //       color: const Color(0Xff634099),
-                                        //     ),
-                                        //     borderRadius: const BorderRadius.all(
-                                        //         Radius.circular(8))
-                                        // ),
-                                        padding: const EdgeInsets.all(5),
-                                        margin: const EdgeInsets.only(
-                                            right: 10, top: 5),
-                                        child: const Text(
-                                          'Pending',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff434141)),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
-                                        child: const Text(
-                                          '98',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0Xff634099)),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
+                                            top: 15.0, left: 5.0, right: 15.0),
+                                        elevation: 5,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                top: 20.0,
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/images/ic_my_zip.svg',
+                                                height: 40,
+                                                width: 40,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets.all(5),
+                                              margin: const EdgeInsets.only(
+                                                  right: 10, top: 5),
+                                              child: const Text(
+                                                'My Zips',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(bottom: 10),
+                                              child: const Text(
+                                                '98',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Color(0Xff434141)),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),

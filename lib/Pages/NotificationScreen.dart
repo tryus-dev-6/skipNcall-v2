@@ -18,6 +18,7 @@ import '../Model/CommonResponse.dart';
 import '../Model/NotificationData.dart';
 import '../Util/Constants.dart';
 import '../Util/Tools.dart';
+import 'Login.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -225,7 +226,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
       });
     }
 
+    else {
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
+    }
+
     _controller.sink.add(SwipeRefreshState.hidden);
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
   }
 
   Future<void> loadMoreData() async {

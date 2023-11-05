@@ -16,6 +16,8 @@ import '../Util/Tools.dart';
 import 'package:swipe_refresh/swipe_refresh.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import 'Login.dart';
+
 class Packages extends StatefulWidget {
   const Packages({super.key});
 
@@ -838,10 +840,27 @@ class _PackagesState extends State<Packages> {
         data.addAll(listData!);
       });
     } else {
-      showSnackBar(allDatum.message!);
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
     }
 
     _controller.sink.add(SwipeRefreshState.hidden);
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
   }
 
   Future<void> loadMoreData() async {

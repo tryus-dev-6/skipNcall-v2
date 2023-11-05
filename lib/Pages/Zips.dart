@@ -20,6 +20,7 @@ import '../Model/CartListData.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
 import '../Util/Tools.dart';
+import 'Login.dart';
 
 class Zip extends StatefulWidget {
   const Zip({super.key});
@@ -376,8 +377,28 @@ class _ZipState extends State<Zip> {
         data.addAll(listData!);
       });
     }
+    else {
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
+    }
 
     _controller.sink.add(SwipeRefreshState.hidden);
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
   }
 
   String parseDate(String? inputDate) {

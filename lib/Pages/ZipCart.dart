@@ -120,13 +120,13 @@ class _ZipCartState extends State<ZipCart> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.5),
                       ),
-                      child: const SizedBox(
+                      child: SizedBox(
                         height: 17,
                         width: 17,
                         child: Center(
                           child: Text(
-                            '2',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            cartCount,
+                            style: const TextStyle(fontSize: 12, color: Colors.white),
                           ),
                         ),
                       )),

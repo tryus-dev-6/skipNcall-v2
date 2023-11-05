@@ -18,6 +18,8 @@ import '../Util/Constants.dart';
 
 import 'package:http/http.dart' as http;
 
+import 'Login.dart';
+
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
 
@@ -373,15 +375,32 @@ class _EditProfileState extends State<EditProfile> {
           await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
 
       setState(() {
-        currentImage = Constants.IMAGE_URL + allDatum.user?.proPic;
+        if(allDatum.user!.proPic != null) {
+          currentImage = Constants.IMAGE_URL + allDatum.user?.proPic;
+        }
       });
     } else {
       if (allDatum.message != null) {
         showSnackBar(allDatum.message.toString());
       }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
     }
 
     //DialogHelper.hideDialog();
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
   }
 
   void showSnackBar(String message) {

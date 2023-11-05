@@ -516,11 +516,16 @@ class _ProfileState extends State<Profile> {
       phone = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PHONE);
 
       setState(() {
-        currentImage = Constants.IMAGE_URL + allDatum.user?.proPic;
+        if(allDatum.user?.proPic != null) {
+          currentImage = Constants.IMAGE_URL + allDatum.user?.proPic;
+        }
       });
     } else {
       if (allDatum.message != null) {
         showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
       }
     }
 
@@ -778,6 +783,18 @@ class _ProfileState extends State<Profile> {
         ),
       );
     });
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
   }
 
 }

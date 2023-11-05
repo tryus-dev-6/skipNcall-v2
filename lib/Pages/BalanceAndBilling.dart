@@ -21,6 +21,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:swipe_refresh/swipe_refresh.dart';
 
 import '../Util/Tools.dart';
+import 'Login.dart';
 
 class BalanceAndBilling extends StatefulWidget {
   const BalanceAndBilling({super.key});
@@ -430,6 +431,27 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
         data.addAll(listData!);
       });
     }
+    else {
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
+    }
+
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
   }
 
   Card getShimmerLoading() {
