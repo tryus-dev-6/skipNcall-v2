@@ -1,14 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:skip_n_call/Helper/SharedPreferencesHelper.dart';
-import 'package:skip_n_call/Helper/dialog_helper.dart';
 import 'package:skip_n_call/Pages/Login.dart';
+import 'package:skip_n_call/Util/ColorCodes.dart';
 import 'package:skip_n_call/Util/NotificationService.dart';
-import 'package:skip_n_call/Util/Tools.dart';
 import 'dart:async';
 
+import '../Api/base_client.dart';
+import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
+import 'Navigation.dart';
 import 'NotificationScreen.dart';
 import 'Profile.dart';
 
@@ -23,6 +28,11 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   SampleItem? selectedMenu;
+  String totalBalance = "";
+  String warmLead = "";
+  String hov = "";
+  String rawLead = "";
+  String zips = "";
 
   NotificationService notificationService = NotificationService();
 
@@ -30,14 +40,16 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    initiateDashboardInfo();
     notificationService.requestNotificationPermission();
   }
 
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    //   statusBarColor: Color(0Xff634099),
-    //   statusBarIconBrightness: Brightness.light,
+    //     statusBarColor: Color(0Xff634099),
+    //     statusBarIconBrightness: Brightness.light,
+    //     systemNavigationBarColor: Colors.white,
     // ));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -59,16 +71,6 @@ class _DashboardState extends State<Dashboard> {
             child: SafeArea(
               child: Stack(
                 children: <Widget>[
-                  // ScalableImageWidget.fromSISource(
-                  //   scale: double.infinity,
-                  //   fit: BoxFit.fitWidth,
-                  //   alignment: Alignment.topCenter,
-                  //   si: ScalableImageSource.fromSvg(
-                  //     MySVG(imagePath: 'assets/dashboard_bg.svg'),
-                  //     'key',
-                  //     compact: true,
-                  //   ),
-                  // ),
                   Column(
                     children: [
                       Row(
@@ -198,50 +200,78 @@ class _DashboardState extends State<Dashboard> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
-                                    child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                            top: 50.0, left: 15.0, right: 5.0),
-                                        elevation: 5,
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 45,
-                                              margin: const EdgeInsets.only(top: 5),
-                                              child: const Text(
-                                                'Top Up',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Color(0Xff434141)),
-                                              ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const Navigation(index: 4),
+                                          ),
+                                        );
+                                      },
+                                      child: Card(
+                                        color: const Color(0Xff00A18A),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                              top: 50.0, left: 15.0, right: 5.0),
+                                          elevation: 5,
+                                          child: Container(
+                                            margin: const EdgeInsets.only(top: 15, bottom: 15),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround, // Aligns children at the start and end
+                                              children: [
+                                                const Text(
+                                                  'Top Up',
+                                                  style: TextStyle(fontSize: 20, color: Colors.white),
+                                                ),
+                                                SvgPicture.asset(
+                                                  'assets/images/ic_right2.svg',
+                                                  height: 30,
+                                                  width: 30,
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        )),
+                                          )),
+                                    ),
                                   ),
                                   Expanded(
-                                    child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                            top: 50.0, left: 5.0, right: 15.0),
-                                        elevation: 5,
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 45,
-                                              margin: const EdgeInsets.only(top: 5),
-                                              child: const Text(
-                                                'Add Zip',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Color(0Xff434141)),
-                                              ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const Navigation(index: 2),
+                                          ),
+                                        );
+                                      },
+                                      child: Card(
+                                          color: const Color(0XffFFB100),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                              top: 50.0, left: 5.0, right: 15.0),
+                                          elevation: 5,
+                                          child: Container(
+                                            margin: const EdgeInsets.only(top: 15, bottom: 15),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround, // Aligns children at the start and end
+                                              children: [
+                                                const Text(
+                                                  'Add Zip',
+                                                  style: TextStyle(fontSize: 20, color: Colors.white),
+                                                ),
+                                                SvgPicture.asset(
+                                                  'assets/images/ic_right2.svg',
+                                                  height: 30,
+                                                  width: 30,
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        )),
+                                          )),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -273,9 +303,9 @@ class _DashboardState extends State<Dashboard> {
                                           Container(
                                             margin:
                                             const EdgeInsets.only(right: 20),
-                                            child: const Text(
-                                              '\$9,800000',
-                                              style: TextStyle(
+                                            child: Text(
+                                              '\$$totalBalance',
+                                              style: const TextStyle(
                                                   fontSize: 22,
                                                   color: Color(0Xff434141)),
                                             ),
@@ -316,13 +346,12 @@ class _DashboardState extends State<Dashboard> {
                                         child: Column(
                                           children: [
                                             Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 20.0,
-                                              ),
-                                              child: SvgPicture.asset(
-                                                'assets/images/ic_attend.svg',
-                                                height: 40,
-                                                width: 40,
+
+                                              margin: const EdgeInsets.only(top: 20),
+                                              child: const Icon(
+                                                Icons.people_alt,
+                                                size: 40,
+                                                color: Color(0XffFFB100),
                                               ),
                                             ),
                                             Container(
@@ -340,11 +369,11 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                             Container(
                                               margin: const EdgeInsets.only(bottom: 10),
-                                              child: const Text(
-                                                '98',
-                                                style: TextStyle(
+                                              child: Text(
+                                                warmLead,
+                                                style: const TextStyle(
                                                     fontSize: 18,
-                                                    color: Color(0XffFFB100)),
+                                                    color: color0),
                                               ),
                                             ),
                                           ],
@@ -362,13 +391,12 @@ class _DashboardState extends State<Dashboard> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Container(
-                                              margin: const EdgeInsets.only(
-                                                top: 20.0,
-                                              ),
-                                              child: SvgPicture.asset(
-                                                'assets/images/ic_attend.svg',
-                                                height: 40,
-                                                width: 40,
+
+                                              margin: const EdgeInsets.only(top: 20),
+                                              child: const Icon(
+                                                Icons.people_alt,
+                                                size: 40,
+                                                color: Color(0Xff424853),
                                               ),
                                             ),
                                             Container(
@@ -386,11 +414,11 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                             Container(
                                               margin: const EdgeInsets.only(bottom: 10),
-                                              child: const Text(
-                                                '98',
-                                                style: TextStyle(
+                                              child: Text(
+                                                hov,
+                                                style: const TextStyle(
                                                     fontSize: 18,
-                                                    color: Color(0XffFFB100)),
+                                                    color: color0),
                                               ),
                                             ),
                                           ],
@@ -412,13 +440,12 @@ class _DashboardState extends State<Dashboard> {
                                         child: Column(
                                           children: [
                                             Container(
-                                              margin: const EdgeInsets.only(
-                                                top: 20.0,
-                                              ),
-                                              child: SvgPicture.asset(
-                                                'assets/images/ic_attend.svg',
-                                                height: 40,
-                                                width: 40,
+
+                                              margin: const EdgeInsets.only(top: 20),
+                                              child: const Icon(
+                                                Icons.people_alt,
+                                                size: 40,
+                                                color: Color(0Xff634099),
                                               ),
                                             ),
                                             Container(
@@ -435,11 +462,11 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                             Container(
                                               margin: const EdgeInsets.only(bottom: 10),
-                                              child: const Text(
-                                                '98',
-                                                style: TextStyle(
+                                              child: Text(
+                                                rawLead,
+                                                style: const TextStyle(
                                                     fontSize: 18,
-                                                    color: Color(0XffFFB100)),
+                                                    color: color0),
                                               ),
                                             ),
                                           ],
@@ -480,11 +507,11 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                             Container(
                                               margin: const EdgeInsets.only(bottom: 10),
-                                              child: const Text(
-                                                '98',
-                                                style: TextStyle(
+                                              child: Text(
+                                                zips,
+                                                style: const TextStyle(
                                                     fontSize: 18,
-                                                    color: Color(0Xff434141)),
+                                                    color: color0),
                                               ),
                                             ),
                                           ],
@@ -589,6 +616,93 @@ class _DashboardState extends State<Dashboard> {
         builder: (context) => const Login(),
       ),
     );
+  }
+
+  Future<void> initiateDashboardInfo() async {
+    //DialogHelper.showLoading();
+
+    String? userId =
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var profile = {"client_id": userId};
+
+    response = await BaseClient()
+        .postWithToken('user/dashboards', profile)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      totalBalance = allDatum.currentBalance!;
+      warmLead = allDatum.warmLeadsCount.toString();
+      hov = allDatum.hovlLeadsCount.toString();
+      rawLead = allDatum.rawLeadsCount.toString();
+      zips = allDatum.totalZip.toString();
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+
+      });
+
+    } else {
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
+    }
+
+    //DialogHelper.hideDialog();
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+            fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal),
+      ),
+      duration: const Duration(seconds: 2),
+      backgroundColor: const Color(0Xff1E1E1E),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: 'Dismiss',
+        disabledTextColor: Colors.white,
+        textColor: Colors.blue,
+        onPressed: () {
+          SnackbarController.closeCurrentSnackbar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 }

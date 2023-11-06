@@ -79,12 +79,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //   statusBarColor: Colors.white,
+    //   statusBarIconBrightness: Brightness.light,
+    // ));
 
     return Scaffold(
         appBar: AppBar(
@@ -97,77 +95,79 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 color: Color(0Xff634099),
               )),
           backgroundColor: Colors.white,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: Color(0Xff634099),
+              statusBarIconBrightness: Brightness.light,
+              systemNavigationBarColor: Colors.white),
         ),
-        body: SafeArea(
-          child: Container(
-            color: const Color(0XffFDF9FF),
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: SwipeRefresh.material(
-                      scrollController: _scrollController,
-                      stateStream: _stream,
-                      onRefresh: refresh,
-                      children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Container(
-                                child: isShimmerLoading
-                                    ? ListView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    itemCount: 10,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return getShimmerLoading();
-                                    })
-                                    : data.isNotEmpty
-                                    ? Container(
-                                      padding: const EdgeInsets.only(bottom: 70),
-                                          child: ListView.builder(
-                                              itemCount: data.length + 1,
-                                              shrinkWrap: true,
-                                              primary: false,
-                                              itemBuilder: (context, index) {
-                                                if (index < data.length) {
-                                                  return getSingleItem(data[index]);
-                                                } else if (isPaginateLoading) {
-                                                  return Container(
-                                                    margin:
-                                                    const EdgeInsets.all(10),
-                                                    height: 40,
-                                                    alignment: Alignment.center,
-                                                    child: LoadingAnimationWidget
-                                                        .staggeredDotsWave(
-                                                      color: Colors.black87,
-                                                      size: 40,
-                                                    ),
-                                                  );
-                                                }
-                                              }),
-                                )
-                                    : SizedBox(
-                                      height: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height * 0.70,
-                                      child: const Center(
-                                        child: Text(
-                                            "No data Found"
-                                        ),
-                                      )
-                                ),
+        body: Container(
+          color: const Color(0XffFDF9FF),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: SwipeRefresh.material(
+                    scrollController: _scrollController,
+                    stateStream: _stream,
+                    onRefresh: refresh,
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Container(
+                              child: isShimmerLoading
+                                  ? ListView.builder(
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  itemCount: 10,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return getShimmerLoading();
+                                  })
+                                  : data.isNotEmpty
+                                  ? Container(
+                                    padding: const EdgeInsets.only(bottom: 70),
+                                        child: ListView.builder(
+                                            itemCount: data.length + 1,
+                                            shrinkWrap: true,
+                                            primary: false,
+                                            itemBuilder: (context, index) {
+                                              if (index < data.length) {
+                                                return getSingleItem(data[index]);
+                                              } else if (isPaginateLoading) {
+                                                return Container(
+                                                  margin:
+                                                  const EdgeInsets.all(10),
+                                                  height: 40,
+                                                  alignment: Alignment.center,
+                                                  child: LoadingAnimationWidget
+                                                      .staggeredDotsWave(
+                                                    color: Colors.black87,
+                                                    size: 40,
+                                                  ),
+                                                );
+                                              }
+                                            }),
+                              )
+                                  : SizedBox(
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * 0.90,
+                                    child: const Center(
+                                      child: Text(
+                                          "No data Found"
+                                      ),
+                                    )
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ]
-                  ),
+                      ),
+                    ]
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
     );

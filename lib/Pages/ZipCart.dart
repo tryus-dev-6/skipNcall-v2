@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:skip_n_call/Pages/Navigation.dart';
-import 'package:skip_n_call/Pages/PurchaseZip.dart';
-import 'package:skip_n_call/Pages/Zips.dart';
 
 import '../Api/base_client.dart';
 import '../Helper/SharedPreferencesHelper.dart';

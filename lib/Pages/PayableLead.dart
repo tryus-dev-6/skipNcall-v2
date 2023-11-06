@@ -388,6 +388,10 @@ class _PayableLeadState extends State<PayableLead> {
 
   Future<void> loadData() async {
 
+    if (!mounted) {
+      return;
+    }
+
     var response;
     String? userId =
     await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);

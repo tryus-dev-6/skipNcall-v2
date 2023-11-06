@@ -13,6 +13,7 @@ import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
 import 'Dashboard.dart';
+import 'Login.dart';
 
 class PurchaseZip extends StatefulWidget {
   const PurchaseZip({super.key});
@@ -37,6 +38,13 @@ class _PurchaseZipState extends State<PurchaseZip> {
   String searchedZip = '';
   String cartCount = '0';
   String currentPackage = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initiateCartCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -385,6 +393,63 @@ class _PurchaseZipState extends State<PurchaseZip> {
     );
   }
 
+  Future<void> initiateCartCount() async {
+    //DialogHelper.showLoading();
+
+    String? userId =
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
+    var response;
+
+    var profile = {"client_id": userId};
+
+    response = await BaseClient()
+        .postWithToken('client/zip/cart/count', profile)
+        .catchError((err) {
+      debugPrint('error: $err');
+    });
+
+    if (response == null) {
+      showSnackBar('failed to get response');
+
+      return;
+    }
+    var res = json.decode(response);
+    debugPrint('successful: $res');
+
+    CommonResponse allDatum = allDataFromJson(response);
+
+    if (allDatum.status == true) {
+      cartCount = allDatum.totalZip.toString();
+
+      setState(() {
+
+      });
+
+    } else {
+      if (allDatum.message != null) {
+        showSnackBar(allDatum.message.toString());
+      }
+      if(allDatum.isTokenValid == false){
+        toLogInPage();
+      }
+    }
+
+    //DialogHelper.hideDialog();
+  }
+
+  void toLogInPage() {
+
+    SharedPreferencesHelper.removeData(
+        SKIP_N_CALL_USER_USERID);
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ), (Route route) => false);
+  }
+
   Future<void> zipSearch() async {
 
     String? userId = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
@@ -531,6 +596,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
       if(allDatum.message != null) {
         showSnackBar(allDatum.message.toString());
         //cartCount = allDatum.cartCount.toString();
+        initiateCartCount();
       }
 
       setState(() {

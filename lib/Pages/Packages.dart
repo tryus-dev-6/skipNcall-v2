@@ -784,6 +784,11 @@ class _PackagesState extends State<Packages> {
   }
 
   Future<void> loadData() async {
+
+    if (!mounted) {
+      return;
+    }
+
     page = 1;
     previousPage = 1;
 
@@ -804,6 +809,11 @@ class _PackagesState extends State<Packages> {
       debugPrint('error: $err');
     });
 
+
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       isShimmerLoading = false;
     });
@@ -819,6 +829,11 @@ class _PackagesState extends State<Packages> {
 
     if (allDatum.status == true) {
       List<Data>? listData = allDatum.packageResponse?.data;
+
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         if (allDatum.transactionList?.nextPageUrl != null) {
           Uri nextPageUri = Uri.parse(allDatum.transactionList?.nextPageUrl);

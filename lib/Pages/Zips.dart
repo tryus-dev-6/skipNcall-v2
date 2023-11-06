@@ -325,6 +325,11 @@ class _ZipState extends State<Zip> {
   }
 
   Future<void> loadData() async {
+
+    if (!mounted) {
+      return;
+    }
+
     page = 1;
     previousPage = 1;
 
@@ -345,6 +350,10 @@ class _ZipState extends State<Zip> {
       debugPrint('error: $err');
     });
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       isShimmerLoading = false;
     });
@@ -360,6 +369,11 @@ class _ZipState extends State<Zip> {
 
     if (allDatum.status == true) {
       List<Datum>? listData = allDatum.zipList?.data;
+
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         // totalAmount = allDatum.currentBalance!;
         //

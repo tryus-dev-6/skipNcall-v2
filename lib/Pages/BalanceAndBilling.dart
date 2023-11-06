@@ -332,6 +332,11 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
   }
 
   Future<void> loadData() async {
+
+    if (!mounted) {
+      return;
+    }
+
     page = 1;
     previousPage = 1;
 
@@ -350,6 +355,10 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
       debugPrint('error: $err');
     });
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       isShimmerLoading = false;
     });
@@ -365,6 +374,11 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
 
     if (allDatum.status == true) {
       List<Data>? listData = allDatum.transactionList?.data;
+
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         totalAmount = allDatum.currentBalance!;
 

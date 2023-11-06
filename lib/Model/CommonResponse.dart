@@ -39,7 +39,7 @@ class CommonResponse {
   int? warmLeadsCost;
   int? hovlLeadsCost;
   int? totalLeadCount;
-
+  int? totalZip;
   Leads? leads;
 
   CommonResponse(
@@ -65,6 +65,7 @@ class CommonResponse {
       this.rawLeadsCost,
       this.hovlLeadsCost,
       this.warmLeadsCost,
+      this.totalZip,
       this.leads,
       this.data});
 
@@ -74,6 +75,7 @@ class CommonResponse {
       user: json!["user"] == null ? null : User.fromJson(json!["user"]),
       token: json!["token"],
       message: json!["message"],
+      totalZip: json!["zip_count"],
       clientPackageId: json!["client_package_id"],
       purchasedPackage: json!["selectd_package"],
       currentBalance: json!['current_balance'],
@@ -107,6 +109,7 @@ class CommonResponse {
         "token": token,
         "user": user?.toJson(),
         "message": message,
+        "zip_count": totalZip,
         "total_price": totalCartPrice,
         "current_balance": currentBalance,
         "client_package_id": clientPackageId,
