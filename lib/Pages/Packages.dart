@@ -25,7 +25,7 @@ class Packages extends StatefulWidget {
   State<Packages> createState() => _PackagesState();
 }
 
-class _PackagesState extends State<Packages> {
+class _PackagesState extends State<Packages> with AutomaticKeepAliveClientMixin<Packages>{
   List<Data> data = [];
   bool isShimmerLoading = true;
   late bool isPaginateLoading = false;
@@ -983,6 +983,10 @@ class _PackagesState extends State<Packages> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class MySVG extends AssetBundle {

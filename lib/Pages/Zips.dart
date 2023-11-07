@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +30,7 @@ class Zip extends StatefulWidget {
   State<Zip> createState() => _ZipState();
 }
 
-class _ZipState extends State<Zip> {
+class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
 
   List<Datum> data = [];
   bool isShimmerLoading = true;
@@ -83,43 +84,50 @@ class _ZipState extends State<Zip> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Color(0XffFDF9FF),
+      statusBarIconBrightness: Brightness.dark,
+
+    ));
+
     return Scaffold(
       body: SafeArea(
         child: Container(
           color: const Color(0XffFDF9FF),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 20.0, left: 15, right: 15, bottom: 15),
-                child: TextField(
-                  cursorColor: const Color(0Xff634099),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          width: 1.5, color: Color(0Xff634099)),
-                    ),
-                    hintText: 'Find Your Zip',
-                    prefixIcon: const Icon(Icons.search,
-                        size: 30.0, color: Color(0Xff634099)),
-                    suffixIcon: IconButton(
-                      icon: const Icon(
-                        Icons.clear,
-                        size: 30.0,
-                        color: Color(0Xff634099),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //       top: 20.0, left: 15, right: 15, bottom: 15),
+              //   child: TextField(
+              //     cursorColor: const Color(0Xff634099),
+              //     decoration: InputDecoration(
+              //       contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.0),
+              //         borderSide:
+              //             const BorderSide(color: Colors.white, width: 1.5),
+              //       ),
+              //       focusedBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.0),
+              //         borderSide: const BorderSide(
+              //             width: 1.5, color: Color(0Xff634099)),
+              //       ),
+              //       hintText: 'Find Your Zip',
+              //       prefixIcon: const Icon(Icons.search,
+              //           size: 30.0, color: Color(0Xff634099)),
+              //       suffixIcon: IconButton(
+              //         icon: const Icon(
+              //           Icons.clear,
+              //           size: 30.0,
+              //           color: Color(0Xff634099),
+              //         ),
+              //         onPressed: () {},
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Expanded(
                 flex: 1,
                 child: SwipeRefresh.material(
@@ -714,4 +722,8 @@ class _ZipState extends State<Zip> {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

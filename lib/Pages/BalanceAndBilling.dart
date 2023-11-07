@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
@@ -30,7 +31,7 @@ class BalanceAndBilling extends StatefulWidget {
   State<BalanceAndBilling> createState() => _BalanceAndBillingState();
 }
 
-class _BalanceAndBillingState extends State<BalanceAndBilling> {
+class _BalanceAndBillingState extends State<BalanceAndBilling> with AutomaticKeepAliveClientMixin<BalanceAndBilling> {
   List<Data> data = [];
   bool isShimmerLoading = true;
   late bool isPaginateLoading = false;
@@ -82,43 +83,50 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Color(0XffFDF9FF),
+      statusBarIconBrightness: Brightness.dark,
+
+    ));
+
     return Scaffold(
       body: SafeArea(
         child: Container(
           color: const Color(0XffFDF9FF),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 20.0, left: 15, right: 15, bottom: 15),
-                child: TextField(
-                  cursorColor: const Color(0Xff634099),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          width: 1.5, color: Color(0Xff634099)),
-                    ),
-                    hintText: 'Search',
-                    prefixIcon: const Icon(Icons.search,
-                        size: 30.0, color: Color(0Xff634099)),
-                    suffixIcon: IconButton(
-                      icon: const Icon(
-                        Icons.clear,
-                        size: 30.0,
-                        color: Color(0Xff634099),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //       top: 20.0, left: 15, right: 15, bottom: 15),
+              //   child: TextField(
+              //     cursorColor: const Color(0Xff634099),
+              //     decoration: InputDecoration(
+              //       contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.0),
+              //         borderSide:
+              //             const BorderSide(color: Colors.white, width: 1.5),
+              //       ),
+              //       focusedBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.0),
+              //         borderSide: const BorderSide(
+              //             width: 1.5, color: Color(0Xff634099)),
+              //       ),
+              //       hintText: 'Search',
+              //       prefixIcon: const Icon(Icons.search,
+              //           size: 30.0, color: Color(0Xff634099)),
+              //       suffixIcon: IconButton(
+              //         icon: const Icon(
+              //           Icons.clear,
+              //           size: 30.0,
+              //           color: Color(0Xff634099),
+              //         ),
+              //         onPressed: () {},
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Expanded(
                 child: SwipeRefresh.material(
                   scrollController: _scrollController,
@@ -177,7 +185,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
                                   ? ListView.builder(
                                       shrinkWrap: true,
                                       primary: false,
-                                      itemCount: 10,
+                                      itemCount: 5,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return getShimmerLoading();
@@ -670,4 +678,8 @@ class _BalanceAndBillingState extends State<BalanceAndBilling> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

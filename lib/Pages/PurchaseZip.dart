@@ -420,7 +420,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
-      cartCount = allDatum.totalZip.toString();
+      cartCount = allDatum.totalZip!.toString();
 
       setState(() {
 
