@@ -418,13 +418,15 @@ class _PayableLeadState extends State<PayableLead> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
-      hovLeadCount = allDatum.hovlLeadsCount!;
-      warmLeadCount = allDatum.warmLeadsCount!;
-      rawLeadCount = allDatum.rawLeadsCount!;
+      setState(() {
+        hovLeadCount = allDatum.hovlLeadsCount!;
+        warmLeadCount = allDatum.warmLeadsCount!;
+        rawLeadCount = allDatum.rawLeadsCount!;
 
-      hovLeadPayable = allDatum.hovlLeadsCost!;
-      warmLeadPayable = allDatum.warmLeadsCost!;
-      rawLeadPayable = allDatum.rawLeadsCost!;
+        hovLeadPayable = allDatum.hovlLeadsCost!;
+        warmLeadPayable = allDatum.warmLeadsCost!;
+        rawLeadPayable = allDatum.rawLeadsCost!;
+      });
     }
     else{
       showSnackBar(allDatum.message.toString());
