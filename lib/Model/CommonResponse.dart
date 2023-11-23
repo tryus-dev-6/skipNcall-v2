@@ -21,11 +21,13 @@ class CommonResponse {
   String? token;
   User? user;
   String? message;
+  String? proPic;
   String? currentBalance;
   String? clientPackageId;
   String? purchasedPackage;
   TransactionList? transactionList;
   Data? data;
+  List<dynamic>? leadType;
   Package? packageResponse;
   CartList? cartList;
   ZipList? zipList;
@@ -48,6 +50,8 @@ class CommonResponse {
       this.token,
       this.user,
       this.message,
+        this.leadType,
+        this.proPic,
       this.currentBalance,
       this.transactionList,
       this.packageResponse,
@@ -75,6 +79,7 @@ class CommonResponse {
       user: json!["user"] == null ? null : User.fromJson(json!["user"]),
       token: json!["token"],
       message: json!["message"],
+      proPic: json!["pro_pic"],
       totalZip: json!["zip_count"],
       clientPackageId: json!["client_package_id"],
       purchasedPackage: json!["selectd_package"],
@@ -83,6 +88,7 @@ class CommonResponse {
       transactionList: json['transaction_list'] != null
           ? TransactionList.fromJson(json['transaction_list'])
           : null,
+      leadType: json['lead_type'],
       packageResponse:
           json['package'] != null ? Package.fromJson(json['package']) : null,
       cartList: json['cart_list'] != null
@@ -118,6 +124,8 @@ class CommonResponse {
         "cart_list": cartList?.toJson(),
         "list": zipList?.toJson(),
         "cart_count": cartCount,
+        "lead_type": leadType,
+    "pro_pic": proPic,
         'transaction_list': transactionList!.toJson(),
         "notifications": notifications!.toJson(),
         "raw_leads_count": rawLeadsCount,

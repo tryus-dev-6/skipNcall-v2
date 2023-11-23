@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
+import 'package:skip_n_call/Helper/dialog_helper.dart';
 import 'package:skip_n_call/Util/ColorCodes.dart';
 import 'package:skip_n_call/Util/Tools.dart';
 
@@ -47,6 +48,8 @@ class _PayableLeadState extends State<PayableLead> {
   var cardBody = {
 
   };
+
+  List<String> body = [];
 
   Color warmLeadBgColor = Colors.white;
   Color hovLeadBgColor = Colors.white;
@@ -249,22 +252,17 @@ class _PayableLeadState extends State<PayableLead> {
 
                         onPressed: () async {
 
-
-                          String? userId =
-                              await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
-
-                          cardBody = {
-                            "client_id": userId,
-                          };
-
                           if(rawLeadSelected == 1){
-                            cardBody["lead_type"] = "raw_lead";
+                            //cardBody["lead_type"] = "raw_lead";
+                            body.add("raw_lead");
                           }
                           if(hovLeadSelected == 1){
-                            cardBody["lead_type"] = "hov_lead";
+                            //cardBody["lead_type"] = "hov_lead";
+                            body.add("hov_lead");
                           }
                           if(warmLeadSelected == 1){
-                            cardBody["lead_type"] = "warm_lead";
+                            //cardBody["lead_type"] = "warm_lead";
+                            body.add("warm_lead");
                           }
 
                           if(hovLeadSelected == 0 && warmLeadSelected == 0 && rawLeadSelected == 0){
@@ -418,6 +416,11 @@ class _PayableLeadState extends State<PayableLead> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
+
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         hovLeadCount = allDatum.hovlLeadsCount!;
         warmLeadCount = allDatum.warmLeadsCount!;
@@ -438,20 +441,35 @@ class _PayableLeadState extends State<PayableLead> {
 
     var response;
 
+    String? userId =
+    await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_USERID);
+
 
 
     // var cartBody = {
     //   "client_id": userId
     // };
 
+    // cardBody = {
+    //   'client_id': userId,
+    //   'lead_type[]': body.join(','),
+    // };
+
+    DialogHelper.showLoading();
+
     response = await BaseClient()
-        .postWithToken('client/payable/lead', cartBody)
+        .postWithTokenPayableLead('client/payable/lead', body, 'lead_type', userId)
         .catchError((err) {
       debugPrint('error: $err');
     });
 
+    print(userId);
+
+    body.clear();
+
     if (response == null) {
       showSnackBar('failed to get response');
+      DialogHelper.hideDialog();
       return;
     }
     var res = json.decode(response);
@@ -477,13 +495,15 @@ class _PayableLeadState extends State<PayableLead> {
         }
         if(warmLeadSelected == 1){
           warmLeadCount = 0;
-          rawLeadPayable = 0;
+          warmLeadPayable = 0;
           performSelection(1);
         }
 
 
       });
     }
+
+    DialogHelper.hideDialog();
 
     showSnackBar(allDatum.message.toString());
 

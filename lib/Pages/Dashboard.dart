@@ -10,6 +10,7 @@ import 'package:skip_n_call/Util/ColorCodes.dart';
 import 'package:skip_n_call/Util/NotificationService.dart';
 import 'dart:async';
 
+import '../Api/Constants.dart';
 import '../Api/base_client.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
@@ -32,6 +33,7 @@ class _DashboardState extends State<Dashboard> {
   String warmLead = "";
   String hov = "";
   String rawLead = "";
+  String? currentImage;
   String zips = "";
 
   NotificationService notificationService = NotificationService();
@@ -114,7 +116,13 @@ class _DashboardState extends State<Dashboard> {
                                 width: 60,
                                 height: 60,
                                 child: PopupMenuButton<SampleItem>(
-                                  icon: SvgPicture.asset(
+                                  icon: currentImage != null ?
+                                  CircleAvatar(
+                                    backgroundImage:
+                                    NetworkImage(currentImage!),
+                                    backgroundColor: Colors.white,
+                                  ):
+                                  SvgPicture.asset(
                                     height: 60,
                                     width: 60,
                                     'assets/images/ic_user.svg',
@@ -656,7 +664,7 @@ class _DashboardState extends State<Dashboard> {
       }
 
       setState(() {
-
+        currentImage = Constants.IMAGE_URL + allDatum.proPic!;
       });
 
     } else {
