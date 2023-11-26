@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skip_n_call/Pages/PayableLead.dart';
+import 'package:skip_n_call/Util/ColorCodes.dart';
 
 import 'BalanceAndBilling.dart';
 import 'Dashboard.dart';
@@ -89,10 +90,13 @@ class _NavigationState extends State<Navigation> {
           data: const NavigationBarThemeData(
             labelTextStyle: MaterialStatePropertyAll(
                 TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+            elevation: 10,
+
           ),
           child: NavigationBar(
-            height: 70,
-            indicatorColor: const Color(0XffF5F5FF),
+            height: 80,
+            indicatorColor: Colors.transparent,
+            elevation: 10,
             backgroundColor: Colors.white,
             selectedIndex: index,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
@@ -110,17 +114,21 @@ class _NavigationState extends State<Navigation> {
             destinations: [
               const NavigationDestination(
                   icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home_rounded),
-                  label: 'Home'),
+                  selectedIcon: Icon(
+                      Icons.home_rounded,
+                    color: color0,
+                  ),
+                  label: 'Home'
+              ),
 
               const NavigationDestination(
                   icon: Icon(Icons.dashboard_outlined),
-                  selectedIcon: Icon(Icons.dashboard),
+                  selectedIcon: Icon(Icons.dashboard,color: color0),
                   label: 'Packages'),
 
               const NavigationDestination(
                   icon: Icon(Icons.location_on_outlined),
-                  selectedIcon: Icon(Icons.location_on_rounded),
+                  selectedIcon: Icon(Icons.location_on_rounded , color: color0),
                   label: 'Zips'),
 
               NavigationDestination(
@@ -131,6 +139,7 @@ class _NavigationState extends State<Navigation> {
                       'assets/images/ic_unpaid_lead1.svg',
                       width: 17,
                       height: 17,
+                        color: color0
                     ),
                   ),
                   icon: SizedBox(
@@ -153,6 +162,7 @@ class _NavigationState extends State<Navigation> {
                       'assets/images/ic_balance_clicked.svg',
                       width: 20,
                       height: 20,
+                        color: color0
                     ),
                   ),
                   icon: SizedBox(

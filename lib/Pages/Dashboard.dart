@@ -664,7 +664,9 @@ class _DashboardState extends State<Dashboard> {
       }
 
       setState(() {
-        currentImage = Constants.IMAGE_URL + allDatum.proPic!;
+        if(allDatum.proPic != null) {
+          currentImage = Constants.IMAGE_URL + allDatum.proPic!;
+        }
       });
 
     } else {
