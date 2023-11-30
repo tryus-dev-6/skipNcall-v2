@@ -286,7 +286,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
                         ],
                       )
                     ),
-                    Expanded(
+                    Flexible(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -324,12 +324,10 @@ class _PurchaseZipState extends State<PurchaseZip> {
                           ),
                           Container(
                             margin: const EdgeInsets.only(top: 10, right: 20),
-                            child: Flexible(
-                              child: Text(
-                                status,
-                                softWrap: true,
-                                style: status == "Available." ? const TextStyle(fontSize: 16, color: Color(0Xff00A18A)) : const TextStyle(fontSize: 16, color: Colors.red),
-                              ),
+                            child: Text(
+                              status,
+                              softWrap: true,
+                              style: status == "Available." ? const TextStyle(fontSize: 16, color: Color(0Xff00A18A)) : const TextStyle(fontSize: 16, color: Colors.red),
                             ),
                           ),
 
@@ -420,7 +418,10 @@ class _PurchaseZipState extends State<PurchaseZip> {
     CommonResponse allDatum = allDataFromJson(response);
 
     if (allDatum.status == true) {
-      cartCount = allDatum.totalZip!.toString();
+
+      if(allDatum.totalZip != null){
+        cartCount = allDatum.totalZip!.toString();
+      }
 
       setState(() {
 
