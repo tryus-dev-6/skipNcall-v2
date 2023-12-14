@@ -115,7 +115,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       margin: const EdgeInsets.only(
-                          top: 15.0, left: 15.0, right: 15.0),
+                          top: 10.0, left: 15.0, right: 15.0),
                       elevation: 5,
                       child: Container(
                         margin: const EdgeInsets.all(10.0),
@@ -126,7 +126,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
                             const Text(
                               'Balance',
                               style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   color: Color(0Xff634099)),
                               textAlign: TextAlign.center,
                             ),
@@ -135,7 +135,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
                               child: const Text(
                                 "Your credits will automatically be replenished with the below amount when your balance reaches \$0.",
                                 style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     color: Color(0Xff5A5A5A)),
                                 textAlign: TextAlign.center,
                               ),
@@ -146,7 +146,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
                                 "\$$totalAmount",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 34,
+                                    fontSize: 25,
                                     color: Color(0Xff434141)),
                                 textAlign: TextAlign.center,
                               ),
@@ -237,7 +237,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+      margin: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
       elevation: 5,
       child: Container(
         margin: const EdgeInsets.all(10.0),
@@ -245,10 +245,11 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 22,
-                  height: 22,
+                  width: 18,
+                  height: 18,
                   margin: const EdgeInsets.only(right: 5),
                   child: SvgPicture.asset(
                     'assets/images/ic_transaction_id.svg',
@@ -261,7 +262,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
                     softWrap: true,
                     overflow: TextOverflow.visible,
                     style:
-                        const TextStyle(fontSize: 16, color: Color(0Xff00A18A)),
+                        const TextStyle(fontSize: 14, color: Color(0Xff00A18A)),
                   ),
                 ),
               ],
@@ -271,19 +272,19 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
               child: Row(
                 children: [
                   Container(
-                    width: 22,
-                    height: 22,
+                    width: 18,
+                    height: 18,
                     margin: const EdgeInsets.only(right: 5),
                     child: const Icon(
                       Icons.monetization_on_outlined,
-                      size: 22,
+                      size: 18,
                       color: Color(0Xff634099),
                     ),
                   ),
                   Text(
                     "${data.paidAmount}",
                     style:
-                        const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A)),
+                        const TextStyle(fontSize: 14, color: Color(0Xff5A5A5A)),
                   ),
                 ],
               ),
@@ -293,19 +294,19 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
               child: Row(
                 children: [
                   Container(
-                    width: 22,
-                    height: 22,
+                    width: 18,
+                    height: 18,
                     margin: const EdgeInsets.only(right: 5),
                     child: const Icon(
                       Icons.alarm,
-                      size: 22,
+                      size: 18,
                       color: Color(0Xff634099),
                     ),
                   ),
                   Text(
                     parseDate(data.createdAt),
                     style:
-                        const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A)),
+                        const TextStyle(fontSize: 14, color: Color(0Xff5A5A5A)),
                   ),
                 ],
               ),
@@ -430,7 +431,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
       });
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), context);
       }
       if (allDatum.isTokenValid == false) {
         toLogInPage();
@@ -612,7 +613,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
     if (allDatum.status == true) {
       setState(() {
         loadData();
-        showSnackBar("Successfully balance added");
+        Tools.flushBarSuccessMessage("Successfully balance added", context);
         Timer(
             const Duration(seconds: 1),
             () => _scrollController.animateTo(0,

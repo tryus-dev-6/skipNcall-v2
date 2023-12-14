@@ -152,7 +152,7 @@ class _ZipCartState extends State<ZipCart> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     margin: const EdgeInsets.only(
-                        top: 20.0, left: 15.0, right: 15.0),
+                        top: 10.0, left: 15.0, right: 15.0),
                     elevation: 5,
                     child: Container(
                       margin: const EdgeInsets.all(15.0),
@@ -162,7 +162,7 @@ class _ZipCartState extends State<ZipCart> {
                           const Text(
                             'Summary',
                             style: TextStyle(
-                                fontSize: 26, color: Color(0Xff634099)),
+                                fontSize: 18, color: Color(0Xff634099)),
                           ),
 
                           Container(
@@ -178,13 +178,13 @@ class _ZipCartState extends State<ZipCart> {
                                 children: [
                                   const Text(
                                     'Total Zip',
-                                    style: TextStyle(fontSize: 16, color: Color(0Xff434141)),
+                                    style: TextStyle(fontSize: 14, color: Color(0Xff434141)),
                                   ),
                                   Container(
                                     margin: const EdgeInsets.only(top: 10),
                                     child: const Text(
                                       'Total Amount',
-                                      style: TextStyle(fontSize: 16, color: Color(0Xff434141)),
+                                      style: TextStyle(fontSize: 14, color: Color(0Xff434141)),
                                     ),
                                   ),
 
@@ -197,13 +197,13 @@ class _ZipCartState extends State<ZipCart> {
                                     children: [
                                       const Text(
                                         ':',
-                                        style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                        style: TextStyle(fontSize: 14, color: Color(0Xff696969)),
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 10),
                                         child: const Text(
                                           ':',
-                                          style: TextStyle(fontSize: 16, color: Color(0Xff696969)),
+                                          style: TextStyle(fontSize: 14, color: Color(0Xff696969)),
                                         ),
                                       ),
 
@@ -312,7 +312,7 @@ class _ZipCartState extends State<ZipCart> {
         borderRadius: BorderRadius.circular(10.0),
       ),
       margin: const EdgeInsets.only(
-          top: 20.0, left: 20.0, right: 20.0
+          top: 10.0, left: 20.0, right: 20.0
       ),
       elevation: 5,
       child: Container(
@@ -327,8 +327,8 @@ class _ZipCartState extends State<ZipCart> {
                 Row(
                   children: [
                     Container(
-                      width: 22,
-                      height: 22,
+                      width: 18,
+                      height: 18,
                       margin: const EdgeInsets.only(right: 5),
                       child: SvgPicture.asset(
                         'assets/images/ic_zip.svg',
@@ -338,7 +338,7 @@ class _ZipCartState extends State<ZipCart> {
                     Text(
                       "${data.zipCode}",
                       style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           color: Color(0Xff00A18A)),
                     ),
                   ],
@@ -367,12 +367,12 @@ class _ZipCartState extends State<ZipCart> {
               child: Row(
                 children: [
                   Container(
-                    width: 22,
-                    height: 22,
+                    width: 18,
+                    height: 18,
                     margin: const EdgeInsets.only(right: 5),
                     child: const Icon(
                       Icons.my_location,
-                      size: 22,
+                      size: 18,
                       color: Color(0Xff634099),
                     ),
                   ),
@@ -381,7 +381,7 @@ class _ZipCartState extends State<ZipCart> {
                     child: Text(
                       "${data.country}, ${data.city}, ${data.placeName}",
                       style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 14,
                           color: Color(0Xff5A5A5A)),
                     ),
                   ),
@@ -393,19 +393,19 @@ class _ZipCartState extends State<ZipCart> {
               child: Row(
                 children: [
                   Container(
-                    width: 22,
-                    height: 22,
+                    width: 18,
+                    height: 18,
                     margin: const EdgeInsets.only(right: 5),
                     child: const Icon(
                       Icons.monetization_on_outlined,
-                      size: 22,
+                      size: 18,
                       color: Color(0Xff634099),
                     ),
                   ),
                   const Text(
                     "500",
                     style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         color: Color(0Xff5A5A5A)),
                   ),
                 ],

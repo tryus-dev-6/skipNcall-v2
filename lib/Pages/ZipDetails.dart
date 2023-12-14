@@ -71,7 +71,7 @@ class _ZipDetailsState extends State<ZipDetails> {
                 children: [
 
                   Container(
-                      margin: const EdgeInsets.only(left: 20, top: 20),
+                      margin: const EdgeInsets.only(left: 20, top: 10),
                       child: Text(
                         "#${data.zipCode.toString()}",
                         style: const TextStyle(

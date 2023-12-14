@@ -209,7 +209,7 @@ class _DashboardState extends State<Dashboard> {
                                             children: [
                                               const Text(
                                                 'Top Up',
-                                                style: TextStyle(fontSize: 20, color: Colors.white),
+                                                style: TextStyle(fontSize: 18, color: Colors.white),
                                               ),
                                               SvgPicture.asset(
                                                 'assets/images/ic_right2.svg',
@@ -241,7 +241,7 @@ class _DashboardState extends State<Dashboard> {
                                             children: [
                                               const Text(
                                                 'Add Zip',
-                                                style: TextStyle(fontSize: 20, color: Colors.white),
+                                                style: TextStyle(fontSize: 18, color: Colors.white),
                                               ),
                                               SvgPicture.asset(
                                                 'assets/images/ic_right2.svg',

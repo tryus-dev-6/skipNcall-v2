@@ -178,7 +178,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      margin: const EdgeInsets.only(top: 15.0, left: 20.0, right: 20.0),
+      margin: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
       elevation: 5,
       child: Container(
         margin: const EdgeInsets.all(10.0),
@@ -191,8 +191,8 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
                 Row(
                   children: [
                     Container(
-                      width: 22,
-                      height: 22,
+                      width: 18,
+                      height: 18,
                       margin: const EdgeInsets.only(right: 5),
                       child: SvgPicture.asset(
                         'assets/images/ic_zip.svg',
@@ -202,7 +202,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
                     Text(
                       data.zipCode.toString(),
                       style: const TextStyle(
-                          fontSize: 16, color: Color(0Xff00A18A)),
+                          fontSize: 14, color: Color(0Xff00A18A)),
                     ),
                   ],
                 ),
@@ -227,12 +227,12 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
               child: Row(
                 children: [
                   Container(
-                    width: 22,
-                    height: 22,
+                    width: 18,
+                    height: 18,
                     margin: const EdgeInsets.only(right: 5),
                     child: const Icon(
                       Icons.my_location,
-                      size: 22,
+                      size: 18,
                       color: Color(0Xff634099),
                     ),
                   ),
@@ -240,7 +240,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
                     child: Text(
                       "${data.country}, ${data.city}, ${data.placeName ?? data.state}",
                       style: const TextStyle(
-                          fontSize: 15, color: Color(0Xff5A5A5A)),
+                          fontSize: 14, color: Color(0Xff5A5A5A)),
                     ),
                   ),
                 ],
@@ -251,19 +251,19 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
               child: Row(
                 children: [
                   Container(
-                    width: 22,
-                    height: 22,
+                    width: 18,
+                    height: 18,
                     margin: const EdgeInsets.only(right: 5),
                     child: const Icon(
                       Icons.alarm,
-                      size: 22,
+                      size: 18,
                       color: Color(0Xff634099),
                     ),
                   ),
                   Text(
                     parseDate(data.createdAt.toString()),
                     style:
-                        const TextStyle(fontSize: 15, color: Color(0Xff5A5A5A)),
+                        const TextStyle(fontSize: 14, color: Color(0Xff5A5A5A)),
                   ),
                 ],
               ),
@@ -547,13 +547,17 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
 
     if (allDatum.status == true) {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        if (mounted) {
+          Tools.flushBarSuccessMessage(allDatum.message.toString(), context);
+        }
       }
 
       loadData();
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        if (mounted) {
+          Tools.flushBarErrorMessage(allDatum.message.toString(), context);
+        }
       }
     }
 
@@ -604,7 +608,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context, rootNavigator: true).pop();
                         releaseZip(data);
                       },
                       child: const Text(
@@ -625,7 +629,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context, rootNavigator: true).pop();
                       },
                       child: const Text(
                         'Cancel',

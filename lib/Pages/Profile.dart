@@ -97,7 +97,7 @@ class _ProfileState extends State<Profile> {
           child: ListView(
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 10),
+                margin: const EdgeInsets.only(top: 15),
                 child: Column(
                   children: [
                     SizedBox(
@@ -153,7 +153,7 @@ class _ProfileState extends State<Profile> {
               ),
               Container(
                 alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 15),
+                margin: const EdgeInsets.only(top: 10),
                 child: Column(
                   children: [
                     Text(
@@ -161,6 +161,7 @@ class _ProfileState extends State<Profile> {
                       style: const TextStyle(
                           fontSize: 20, color: Color(0Xff434141)),
                     ),
+                    SizedBox(height: 3),
                     Text(
                       email.toString(),
                       style: const TextStyle(
@@ -183,9 +184,9 @@ class _ProfileState extends State<Profile> {
                 ),
                 elevation: 5,
                 margin: const EdgeInsets.only(
-                    right: 15, left: 15, top: 20, bottom: 15),
+                    right: 15, left: 15, top: 0, bottom: 10),
                 child: Container(
-                  margin: const EdgeInsets.only(top: 20, bottom: 20),
+                  margin: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -206,7 +207,7 @@ class _ProfileState extends State<Profile> {
                             child: Text(
                               '\$ $balance',
                               style: const TextStyle(
-                                  fontSize: 20, color: Colors.white),
+                                  fontSize: 18, color: Colors.white),
                             ),
                           ),
                         ],
@@ -226,7 +227,7 @@ class _ProfileState extends State<Profile> {
                             child: Text(
                               totalZip.toString(),
                               style: const TextStyle(
-                                  fontSize: 20, color: Colors.white),
+                                  fontSize: 18, color: Colors.white),
                             ),
                           ),
                         ],
@@ -239,7 +240,7 @@ class _ProfileState extends State<Profile> {
                 margin: const EdgeInsets.only(top: 10, left: 15),
                 child: const Text(
                   'Settings',
-                  style: TextStyle(fontSize: 20, color: Color(0Xff434141)),
+                  style: TextStyle(fontSize: 18, color: Color(0Xff434141)),
                 ),
               ),
               GestureDetector(
@@ -272,17 +273,18 @@ class _ProfileState extends State<Profile> {
                               color: Color(
                                   0Xff00A18A), // You can change the color as needed
                             ),
-                            child: SvgPicture.asset(
-                                'assets/images/ic_change_password.svg',
-                                color: Colors.white,
-                                width: 20,
-                                height: 20,
-                                fit: BoxFit.scaleDown),
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: SvgPicture.asset(
+                                  'assets/images/ic_change_password.svg',
+                                  color: Colors.white,
+                                  fit: BoxFit.scaleDown),
+                            ),
                           ),
                           const Text(
                             'Change Password',
                             style: TextStyle(
-                                fontSize: 18, color: Color(0Xff424853)),
+                                fontSize: 16, color: Color(0Xff424853)),
                           ),
                         ],
                       ),
@@ -291,8 +293,8 @@ class _ProfileState extends State<Profile> {
                             top: 20.0, bottom: 20.0, right: 25),
                         child: SvgPicture.asset(
                           'assets/images/ic_right.svg',
-                          height: 25,
-                          width: 20,
+                          height: 20,
+                          width: 10,
                           color: const Color(0Xff424853),
                         ),
                       ),
@@ -332,14 +334,14 @@ class _ProfileState extends State<Profile> {
                             ),
                             child: const Icon(
                               Icons.email,
-                              size: 20,
+                              size: 18,
                               color: Colors.white,
                             ),
                           ),
                           const Text(
                             'Change Email Address',
                             style: TextStyle(
-                                fontSize: 18, color: Color(0Xff424853)),
+                                fontSize: 16, color: Color(0Xff424853)),
                           ),
                         ],
                       ),
@@ -348,8 +350,8 @@ class _ProfileState extends State<Profile> {
                             top: 20.0, bottom: 20.0, right: 25),
                         child: SvgPicture.asset(
                           'assets/images/ic_right.svg',
-                          height: 25,
-                          width: 20,
+                          height: 20,
+                          width: 10,
                           color: const Color(0Xff424853),
                         ),
                       ),
@@ -389,14 +391,14 @@ class _ProfileState extends State<Profile> {
                             ),
                             child: const Icon(
                               Icons.edit,
-                              size: 20,
+                              size: 18,
                               color: Colors.white,
                             ),
                           ),
                           const Text(
                             'Edit Profile',
                             style: TextStyle(
-                                fontSize: 18, color: Color(0Xff424853)),
+                                fontSize: 16, color: Color(0Xff424853)),
                           ),
                         ],
                       ),
@@ -405,8 +407,8 @@ class _ProfileState extends State<Profile> {
                             top: 20.0, bottom: 20.0, right: 25),
                         child: SvgPicture.asset(
                           'assets/images/ic_right.svg',
-                          height: 25,
-                          width: 20,
+                          height: 20,
+                          width: 10,
                           color: const Color(0Xff424853),
                         ),
                       ),
@@ -446,14 +448,14 @@ class _ProfileState extends State<Profile> {
                             ),
                             child: const Icon(
                               Icons.account_circle_rounded,
-                              size: 20,
+                              size: 18,
                               color: Colors.white,
                             ),
                           ),
                           const Text(
                             'Deactivate Account',
                             style: TextStyle(
-                                fontSize: 18, color: Color(0Xff424853)),
+                                fontSize: 16, color: Color(0Xff424853)),
                           ),
                         ],
                       ),
@@ -462,8 +464,8 @@ class _ProfileState extends State<Profile> {
                             top: 20.0, bottom: 20.0, right: 25),
                         child: SvgPicture.asset(
                           'assets/images/ic_right.svg',
-                          height: 25,
-                          width: 20,
+                          height: 20,
+                          width: 10,
                           color: const Color(0Xff424853),
                         ),
                       ),

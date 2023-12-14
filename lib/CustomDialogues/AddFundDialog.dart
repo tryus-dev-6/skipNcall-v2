@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Util/Tools.dart';
+
 
 class AddFundDialog extends StatefulWidget {
   final String title, descriptions, text;
@@ -115,7 +117,7 @@ class _AddFundDialogState extends State<AddFundDialog> {
                     ),
                     onPressed: () {
                       if (usernameController.text.toString().isEmpty) {
-                        showSnackBar("Please enter the email or phone");
+                        Tools.flushBarErrorMessage("Please enter the email or phone", context);
                         return;
                       }
 

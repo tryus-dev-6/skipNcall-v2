@@ -209,7 +209,7 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                 Row(
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 20, left: 15),
+                      margin: const EdgeInsets.only(top: 15, left: 15),
                       child: const Text(
                         'Other Mail Address',
                         style: TextStyle(fontSize: 20, color: Color(0Xff434141)),
@@ -218,7 +218,7 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                     Container(
                       width: 22,
                       height: 22,
-                      margin: const EdgeInsets.only(left: 5, top: 20),
+                      margin: const EdgeInsets.only(left: 5, top: 15),
                       child: const Icon(
                         Icons.email,
                         size: 22,
@@ -261,7 +261,7 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                 Row(
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 20, left: 15),
+                      margin: const EdgeInsets.only(top: 10, left: 15),
                       child: const Text(
                         'Other Phone Numbers',
                         style: TextStyle(fontSize: 20, color: Color(0Xff434141)),
@@ -270,7 +270,7 @@ class _LeadDetailsDataState extends State<LeadDetailsData> {
                     Container(
                       width: 22,
                       height: 22,
-                      margin: const EdgeInsets.only(left: 5, top: 20),
+                      margin: const EdgeInsets.only(left: 5, top: 10),
                       child: const Icon(
                         Icons.phone,
                         size: 22,

@@ -182,7 +182,7 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+        margin: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
         elevation: 5,
         child: Shimmer.fromColors(
           baseColor: Colors.grey[350]!,
@@ -266,7 +266,7 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+      margin: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
       elevation: 5,
       child: Container(
         margin: const EdgeInsets.all(10.0),
