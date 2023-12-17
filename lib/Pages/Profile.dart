@@ -51,6 +51,8 @@ class _ProfileState extends State<Profile> {
       balance = "";
   int totalZip = 0;
 
+  BuildContext? mContext;
+
   void hideKeyboard() {
     if (emailFocusNode.hasFocus) {
       emailFocusNode.unfocus();
@@ -76,6 +78,9 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
         appBar: AppBar(
           leading: const BackButton(
@@ -495,7 +500,7 @@ class _ProfileState extends State<Profile> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       DialogHelper.hideDialog();
 
       return;
@@ -523,7 +528,7 @@ class _ProfileState extends State<Profile> {
       });
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if (allDatum.isTokenValid == false) {
         toLogInPage();
@@ -541,7 +546,7 @@ class _ProfileState extends State<Profile> {
       builder: (BuildContext context) {
         return ChangePasswordBottomSheet(onPressed: (String message) {
           setState(() {
-            showSnackBar(message);
+            Tools.flushBarSuccessMessage(message, mContext!);
           });
         });
       },
@@ -668,7 +673,7 @@ class _ProfileState extends State<Profile> {
       builder: (BuildContext context) {
         return DeactivateAccountDialog(onPressed: (String message) {
           setState(() {
-            showSnackBar(message);
+            Tools.flushBarSuccessMessage(message, mContext!);
           });
         });
       },
@@ -715,7 +720,7 @@ class _ProfileState extends State<Profile> {
         .postWithToken('client/change/email', sendOtp)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');

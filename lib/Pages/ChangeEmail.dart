@@ -11,6 +11,7 @@ import '../Helper/SharedPreferencesHelper.dart';
 import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
+import '../Util/Tools.dart';
 
 
 class ChangeEmail extends StatefulWidget {
@@ -28,6 +29,8 @@ class _ChangeEmailState extends State<ChangeEmail> {
   FocusNode otpFocusNode = FocusNode();
 
   late String user;
+
+  BuildContext? mContext;
 
 
   @override
@@ -57,6 +60,8 @@ class _ChangeEmailState extends State<ChangeEmail> {
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarColor: Colors.white
     ));
+
+    mContext = context;
 
     return Scaffold(
       backgroundColor: const Color(0XffFDF9FF),
@@ -209,7 +214,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
         .postWithToken('client/change/email', sendOtp)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -222,10 +227,11 @@ class _ChangeEmailState extends State<ChangeEmail> {
     CommonResponse commonResponse = allDataFromJson(response);
     if (commonResponse.status == true) {
 
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
     }else{
-      showSnackBar(commonResponse.message!);
+
+      Tools.flushBarErrorMessage(commonResponse.message!, mContext!);
 
       if(commonResponse.isTokenValid == false){
         successSetPassword(context);
@@ -243,7 +249,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
 
 
     if (code.isEmpty) {
-      showSnackBar("Please enter the otp");
+      Tools.flushBarErrorMessage("Please enter the otp", mContext!);
       return;
     }
 
@@ -260,7 +266,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
         .postWithToken('client/verify/email', resetPassword)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -276,10 +282,10 @@ class _ChangeEmailState extends State<ChangeEmail> {
 
       successSetPassword(context);
 
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
     }else{
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarErrorMessage(commonResponse.message!, mContext!);
     }
 
   }

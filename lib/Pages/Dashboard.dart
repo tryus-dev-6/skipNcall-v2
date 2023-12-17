@@ -16,6 +16,7 @@ import '../Api/Constants.dart';
 import '../Api/base_client.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
+import '../Util/Tools.dart';
 import 'Navigation.dart';
 import 'NotificationScreen.dart';
 import 'Profile.dart';
@@ -41,6 +42,7 @@ class _DashboardState extends State<Dashboard> {
   String zips = "";
 
   NotificationService notificationService = NotificationService();
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -52,6 +54,9 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
       body: Container(
         // color: const Color(0XffFDF9FF),
@@ -610,8 +615,7 @@ class _DashboardState extends State<Dashboard> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
-
+      Tools.flushBarErrorMessage("failed to get response", mContext!);
       return;
     }
     var res = json.decode(response);
@@ -638,7 +642,7 @@ class _DashboardState extends State<Dashboard> {
 
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if(allDatum.isTokenValid == false){
         toLogInPage();

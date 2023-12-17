@@ -11,6 +11,7 @@ import 'package:skip_n_call/Pages/LeadDetailsList.dart';
 import '../Api/base_client.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/ColorCodes.dart';
+import '../Util/Tools.dart';
 
 class ZipDetails extends StatefulWidget {
 
@@ -28,6 +29,7 @@ class _ZipDetailsState extends State<ZipDetails> {
   late String zip = "";
 
   Datum data = Get.arguments;
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -45,6 +47,9 @@ class _ZipDetailsState extends State<ZipDetails> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
       backgroundColor: const Color(0XffFDF9FF),
       appBar: AppBar(
@@ -225,7 +230,7 @@ class _ZipDetailsState extends State<ZipDetails> {
 
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -244,7 +249,7 @@ class _ZipDetailsState extends State<ZipDetails> {
       });
     }
     else{
-      showSnackBar(allDatum.message.toString());
+      Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
     }
 
   }

@@ -17,6 +17,7 @@ import '../Model/CommonResponse.dart';
 import '../Model/User.dart';
 import '../Util/Constants.dart';
 import '../Util/NotificationService.dart';
+import '../Util/Tools.dart';
 import 'Home.dart';
 import 'Navigation.dart';
 
@@ -42,6 +43,8 @@ class _LoginState extends State<Login> {
 
   NotificationService notificationService = NotificationService();
   String token = "";
+
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -87,6 +90,8 @@ class _LoginState extends State<Login> {
       statusBarIconBrightness: Brightness.light, // Change icon color
       systemNavigationBarColor: color0, // Change system navigation bar color
     ));
+
+    mContext = context;
 
     return Scaffold(
         body: Container(
@@ -271,13 +276,14 @@ class _LoginState extends State<Login> {
     String password = passwordController.text;
 
     if (username.isEmpty) {
-      showSnackBar("Please enter the email or phone");
+      Tools.flushBarErrorMessage("Please enter the email or phone", mContext!);
       return;
     }
     debugPrint("Username $username");
 
     if (password.isEmpty) {
-      showSnackBar("Please enter the password");
+      Tools.flushBarErrorMessage("Please enter the password", mContext!);
+
       return;
     }
     debugPrint("Password $password");
@@ -296,7 +302,7 @@ class _LoginState extends State<Login> {
         .post('login', userData)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -304,11 +310,12 @@ class _LoginState extends State<Login> {
       return;
     }
     var res = json.decode(response);
-    showSnackBar(res["message"]);
     DialogHelper.hideDialog();
     debugPrint('successful: $res');
     CommonResponse commonResponse = allDataFromJson(response);
     if (commonResponse.status == true) {
+
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
       User? user = commonResponse.user;
       debugPrint('user_id: ${user!.userId}');
@@ -328,6 +335,10 @@ class _LoginState extends State<Login> {
       //     const Duration(seconds: 1),
       //         () => Get.offAllNamed('/home'));
     }
+    else
+      {
+        Tools.flushBarErrorMessage(commonResponse.message!, mContext!);
+      }
 
   }
 
@@ -512,7 +523,7 @@ class _LoginState extends State<Login> {
         .post('user/reset/password', sendOtp)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -530,7 +541,7 @@ class _LoginState extends State<Login> {
 
       successOtpSend(email);
 
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
       // Timer(
       //     const Duration(seconds: 1),

@@ -41,6 +41,8 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
 
   var dataArg = Get.arguments;
 
+  BuildContext? mContext;
+
 
   @override
   void initState() {
@@ -88,6 +90,9 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -364,7 +369,7 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -412,7 +417,7 @@ class _LeadDetailsListState extends State<LeadDetailsList> {
         .catchError((err) {});
 
     if (response == null) {
-      showSnackBar('failed');
+      Tools.flushBarErrorMessage("failed", mContext!);
       return;
     }
     var res = json.decode(response);

@@ -11,6 +11,7 @@ import '../Helper/SharedPreferencesHelper.dart';
 import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
+import '../Util/Tools.dart';
 
 
 class PasswordSet extends StatefulWidget {
@@ -33,6 +34,7 @@ class _PasswordSetState extends State<PasswordSet> {
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
   late String user;
+  BuildContext? mContext;
 
 
   @override
@@ -73,6 +75,8 @@ class _PasswordSetState extends State<PasswordSet> {
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarColor: Colors.white
     ));
+
+    mContext = context;
 
     return Scaffold(
       backgroundColor: const Color(0XffFDF9FF),
@@ -293,7 +297,7 @@ class _PasswordSetState extends State<PasswordSet> {
         .post('user/reset/password', sendOtp)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -308,13 +312,13 @@ class _PasswordSetState extends State<PasswordSet> {
 
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_ACCESS_TOKEN, commonResponse.token.toString());
 
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
       // Timer(
       //     const Duration(seconds: 1),
       //         () => Get.offAllNamed('/home'));
     }else{
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarErrorMessage(commonResponse.message!, mContext!);
     }
 
   }
@@ -327,23 +331,23 @@ class _PasswordSetState extends State<PasswordSet> {
 
 
     if (code.isEmpty) {
-      showSnackBar("Please enter the otp");
+      Tools.flushBarErrorMessage("Please enter the otp", mContext!);
       return;
     }
     if (password.isEmpty) {
-      showSnackBar("Please enter the password");
+      Tools.flushBarErrorMessage("Please enter the password", mContext!);
       return;
     }
     if (password.length<8) {
-      showSnackBar("password At least 8 characters required");
+      Tools.flushBarErrorMessage("password At least 8 characters required", mContext!);
       return;
     }
     if (confirmPassword.isEmpty) {
-      showSnackBar("Please enter confirmation password");
+      Tools.flushBarErrorMessage("Please enter confirmation password", mContext!);
       return;
     }
     if (confirmPassword != password) {
-      showSnackBar("Password unmatched");
+      Tools.flushBarErrorMessage("Password unmatched", mContext!);
       return;
     }
 
@@ -361,7 +365,7 @@ class _PasswordSetState extends State<PasswordSet> {
         .postWithToken('user/check/code', resetPassword)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -377,13 +381,13 @@ class _PasswordSetState extends State<PasswordSet> {
 
       successSetPassword();
 
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
       // Timer(
       //     const Duration(seconds: 1),
       //         () => Get.offAllNamed('/home'));
     }else{
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarErrorMessage(commonResponse.message!, mContext!);
     }
 
   }

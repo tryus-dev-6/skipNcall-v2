@@ -15,6 +15,7 @@ import '../Helper/dialog_helper.dart';
 import '../Model/CommonResponse.dart';
 import '../Util/ColorCodes.dart';
 import '../Util/Constants.dart';
+import '../Util/Tools.dart';
 import 'Dashboard.dart';
 import 'Login.dart';
 
@@ -41,6 +42,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
   String searchedZip = '';
   String cartCount = '0';
   String currentPackage = '';
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -51,6 +53,9 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return SafeArea(
       child: Scaffold(
 
@@ -410,8 +415,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
-
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -431,7 +435,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if(allDatum.isTokenValid == false){
         toLogInPage();
@@ -457,7 +461,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
     String zip = zipSearchController.text.toString();
 
     if (zip.isEmpty) {
-      showSnackBar("Please enter a zip number");
+      Tools.flushBarErrorMessage("Please enter a zip number", mContext!);
       DialogHelper.hideDialog();
       return;
     }
@@ -477,7 +481,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       DialogHelper.hideDialog();
       return;
     }
@@ -556,7 +560,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
 
     if(currentPackage.isEmpty) {
 
-      showSnackBar("Please Purchase a Package First");
+      Tools.flushBarErrorMessage("Please Purchase a Package First", mContext!);
 
       DialogHelper.hideDialog();
 
@@ -582,8 +586,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
     DialogHelper.hideDialog();
 
     if (response == null) {
-      showSnackBar('failed to get response');
-
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -594,7 +597,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
     if (allDatum.status == true) {
 
       if(allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarSuccessMessage(allDatum.message.toString(), mContext!);
         //cartCount = allDatum.cartCount.toString();
         initiateCartCount();
       }
@@ -605,7 +608,7 @@ class _PurchaseZipState extends State<PurchaseZip> {
     }
     else{
       if(allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
     }
 

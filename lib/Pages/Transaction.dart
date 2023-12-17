@@ -34,9 +34,13 @@ class _TransactionState extends State<Transaction> {
   final ScrollController _scrollController = ScrollController();
 
   Stream<SwipeRefreshState> get _stream => _controller.stream;
+  BuildContext? mContext;
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -391,7 +395,7 @@ class _TransactionState extends State<Transaction> {
       });
     }
     else{
-      showSnackBar(allDatum.message!);
+      Tools.flushBarErrorMessage(allDatum.message!, mContext!);
     }
 
     _controller.sink.add(SwipeRefreshState.hidden);
@@ -451,7 +455,7 @@ class _TransactionState extends State<Transaction> {
       });
     }
     else{
-      showSnackBar(allDatum.message!);
+      Tools.flushBarErrorMessage(allDatum.message!, mContext!);
     }
   }
 

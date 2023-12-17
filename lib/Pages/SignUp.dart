@@ -15,6 +15,8 @@ import '../Model/CommonResponse.dart';
 import '../Util/Constants.dart';
 import 'package:motion_toast/motion_toast.dart';
 
+import '../Util/Tools.dart';
+
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -48,6 +50,7 @@ class _SignUpState extends State<SignUp> {
   FocusNode emailFocusNode = FocusNode();
   FocusNode phoneFocusNode = FocusNode();
   FocusNode emailVerifyNode = FocusNode();
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -101,6 +104,9 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+    
     return Scaffold(
         body: Container(
           color: const Color(0XffFDF9FF),
@@ -501,7 +507,7 @@ class _SignUpState extends State<SignUp> {
         .postWithToken('user/email/verification', userVerify)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -509,7 +515,6 @@ class _SignUpState extends State<SignUp> {
       return;
     }
     var res = json.decode(response);
-    showSnackBar(res["message"]);
     DialogHelper.hideDialog();
     debugPrint('successful: $res');
     CommonResponse commonResponse = allDataFromJson(response);
@@ -517,7 +522,7 @@ class _SignUpState extends State<SignUp> {
 
       signInSuccess();
 
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!!);
 
       // Timer(
       //     const Duration(seconds: 1),
@@ -538,27 +543,27 @@ class _SignUpState extends State<SignUp> {
     String phone = phoneController.text;
 
     if (firstName.isEmpty) {
-      showSnackBar("Please enter the email or phone");
+      Tools.flushBarErrorMessage("Please enter the email or phone", mContext!);
       return;
     }
     if (password.isEmpty) {
-      showSnackBar("Please enter the password");
+      Tools.flushBarErrorMessage("Please enter the password", mContext!);
       return;
     }
     if (lastName.isEmpty) {
-      showSnackBar("Please enter your last name");
+      Tools.flushBarErrorMessage("Please enter your last name", mContext!);
       return;
     }
     if (email.isEmpty) {
-      showSnackBar("Please enter your email");
+      Tools.flushBarErrorMessage("Please enter your email", mContext!);
       return;
     }
     if (confirmPassword.isEmpty) {
-      showSnackBar("Please confirm your password");
+      Tools.flushBarErrorMessage("Please confirm your password", mContext!);
       return;
     }
     if (phone.isEmpty) {
-      showSnackBar("Please enter your phone number");
+      Tools.flushBarErrorMessage("Please enter your phone number", mContext!);
       return;
     }
     debugPrint("Password $password");
@@ -579,7 +584,7 @@ class _SignUpState extends State<SignUp> {
         .post('register', userData)
         .catchError((err) {
       DialogHelper.hideDialog();
-      showSnackBar(err.toString());
+      Tools.flushBarErrorMessage(err.toString(), mContext!);
     });
     if (response == null) {
       debugPrint('failed');
@@ -587,12 +592,11 @@ class _SignUpState extends State<SignUp> {
       return;
     }
     var res = json.decode(response);
-    showSnackBar(res["message"]);
     DialogHelper.hideDialog();
     debugPrint('successful: $res');
     CommonResponse commonResponse = allDataFromJson(response);
     if (commonResponse.status == true) {
-
+      Tools.flushBarSuccessMessage(commonResponse.message!, mContext!);
 
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_ACCESS_TOKEN, commonResponse.token.toString());
       showCustomButtonSheet();
@@ -602,7 +606,7 @@ class _SignUpState extends State<SignUp> {
       //     const Duration(seconds: 1),
       //         () => Get.offAllNamed('/home'));
     }else{
-      showSnackBar(commonResponse.message!);
+      Tools.flushBarErrorMessage(commonResponse.message!, mContext!);
     }
 
   }

@@ -37,11 +37,14 @@ class _PackagesState extends State<Packages> with AutomaticKeepAliveClientMixin<
   final _controller = StreamController<SwipeRefreshState>.broadcast();
   final ScrollController _scrollController = ScrollController();
   String currentPackageId = '';
-
   Stream<SwipeRefreshState> get _stream => _controller.stream;
+  BuildContext? mContext;
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -772,7 +775,7 @@ class _PackagesState extends State<Packages> with AutomaticKeepAliveClientMixin<
                     if (data.packageId != null) {
                       purchasePackage(data.packageId);
                     } else {
-                      showSnackBar("Package id not found");
+                      Tools.flushBarErrorMessage("Package id not found", mContext!);
                     }
                   },
                   // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
@@ -865,7 +868,7 @@ class _PackagesState extends State<Packages> with AutomaticKeepAliveClientMixin<
       });
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if(allDatum.isTokenValid == false){
         toLogInPage();
@@ -928,7 +931,7 @@ class _PackagesState extends State<Packages> with AutomaticKeepAliveClientMixin<
         data.addAll(listData!);
       });
     } else {
-      showSnackBar(allDatum.message!);
+      Tools.flushBarErrorMessage(allDatum.message!, mContext!);
     }
   }
 
@@ -965,7 +968,7 @@ class _PackagesState extends State<Packages> with AutomaticKeepAliveClientMixin<
       });
     }
 
-    showSnackBar(allDatum.message!);
+    Tools.flushBarSuccessMessage(allDatum.message!, mContext!);
   }
 
   void showSnackBar(String message) {

@@ -45,6 +45,7 @@ class _ZipCartState extends State<ZipCart> {
   Stream<SwipeRefreshState> get _stream => _controller.stream;
   late String totalAmount = '';
   String cartCount = '';
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -87,6 +88,9 @@ class _ZipCartState extends State<ZipCart> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return SafeArea(
         child: Scaffold(
           backgroundColor: const Color(0XffFDF9FF),
@@ -440,7 +444,7 @@ class _ZipCartState extends State<ZipCart> {
     isShimmerLoading = false;
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -492,7 +496,7 @@ class _ZipCartState extends State<ZipCart> {
         .catchError((err) {});
 
     if (response == null) {
-      showSnackBar('failed');
+      Tools.flushBarErrorMessage('failed', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -649,7 +653,7 @@ class _ZipCartState extends State<ZipCart> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       DialogHelper.hideDialog();
 
       return;
@@ -662,14 +666,14 @@ class _ZipCartState extends State<ZipCart> {
     if (allDatum.status == true) {
 
       if(allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarSuccessMessage(allDatum.message.toString(), mContext!);
       }
 
       loadData();
     }
     else{
       if(allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
     }
 
@@ -696,7 +700,7 @@ class _ZipCartState extends State<ZipCart> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       DialogHelper.hideDialog();
       return;
     }
@@ -709,7 +713,7 @@ class _ZipCartState extends State<ZipCart> {
 
       if(allDatum.message != null) {
 
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarSuccessMessage(allDatum.message.toString(), mContext!);
 
       }
 
@@ -719,7 +723,7 @@ class _ZipCartState extends State<ZipCart> {
     }
     else{
       if(allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
     }
 

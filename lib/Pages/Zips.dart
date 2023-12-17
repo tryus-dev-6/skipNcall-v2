@@ -44,6 +44,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
   Stream<SwipeRefreshState> get _stream => _controller.stream;
   late String totalAmount = '';
   String cartCount = '';
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -85,6 +86,9 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -303,7 +307,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -336,7 +340,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
       });
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if (allDatum.isTokenValid == false) {
         toLogInPage();
@@ -378,7 +382,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
         .catchError((err) {});
 
     if (response == null) {
-      showSnackBar('failed');
+      Tools.flushBarErrorMessage('failed', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -535,7 +539,7 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       DialogHelper.hideDialog();
 
       return;

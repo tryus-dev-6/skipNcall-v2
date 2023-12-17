@@ -49,6 +49,7 @@ class _PayableLeadState extends State<PayableLead> {
   Color warmLeadBgColor = Colors.white;
   Color hovLeadBgColor = Colors.white;
   Color rawLeadBgColor = Colors.white;
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -59,6 +60,9 @@ class _PayableLeadState extends State<PayableLead> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -245,9 +249,7 @@ class _PayableLeadState extends State<PayableLead> {
                       if (hovLeadSelected == 0 &&
                           warmLeadSelected == 0 &&
                           rawLeadSelected == 0) {
-                        showSnackBar(
-                            "Please Select At least one item");
-
+                        Tools.flushBarErrorMessage("Please Select At least one item", mContext!);
                         return;
                       }
                       payPayableLead(cardBody);
@@ -348,7 +350,7 @@ class _PayableLeadState extends State<PayableLead> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -371,7 +373,7 @@ class _PayableLeadState extends State<PayableLead> {
         rawLeadPayable = allDatum.rawLeadsCost!;
       });
     } else {
-      showSnackBar(allDatum.message.toString());
+      Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
     }
   }
 
@@ -404,7 +406,7 @@ class _PayableLeadState extends State<PayableLead> {
     body.clear();
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage("failed to get response", mContext!);
       DialogHelper.hideDialog();
       return;
     }
@@ -438,7 +440,7 @@ class _PayableLeadState extends State<PayableLead> {
 
     DialogHelper.hideDialog();
 
-    showSnackBar(allDatum.message.toString());
+    Tools.flushBarSuccessMessage(allDatum.message.toString(), mContext!);
   }
 
   void showSnackBar(String message) {

@@ -46,6 +46,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
 
   Stream<SwipeRefreshState> get _stream => _controller.stream;
   late String totalAmount = '';
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -86,6 +87,9 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -431,7 +435,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
       });
     } else {
       if (allDatum.message != null) {
-        Tools.flushBarErrorMessage(allDatum.message.toString(), context);
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if (allDatum.isTokenValid == false) {
         toLogInPage();
@@ -613,7 +617,7 @@ class _BalanceAndBillingState extends State<BalanceAndBilling>
     if (allDatum.status == true) {
       setState(() {
         loadData();
-        Tools.flushBarSuccessMessage("Successfully balance added", context);
+        Tools.flushBarSuccessMessage("Successfully balance added", mContext!);
         Timer(
             const Duration(seconds: 1),
             () => _scrollController.animateTo(0,

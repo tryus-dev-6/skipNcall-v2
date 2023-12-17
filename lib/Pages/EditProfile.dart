@@ -21,6 +21,7 @@ import '../Util/Constants.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../Util/Tools.dart';
 import 'Login.dart';
 
 class EditProfile extends StatefulWidget {
@@ -43,6 +44,8 @@ class _EditProfileState extends State<EditProfile> {
 
   File? selectedImage;
   String? currentImage;
+
+  BuildContext? mContext;
 
   @override
   void dispose() {
@@ -82,6 +85,9 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+
+    mContext = context;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -330,14 +336,14 @@ class _EditProfileState extends State<EditProfile> {
 
       CommonResponse allDatum = allDataFromJson(responseBody);
 
-      showSnackBar(allDatum.message.toString());
+      Tools.flushBarSuccessMessage(allDatum.message.toString(), mContext!);
 
       successUpload();
 
       debugPrint('successful: $res');
     } else {
       DialogHelper.hideDialog();
-      showSnackBar("Something went wrong");
+      Tools.flushBarErrorMessage("Something went wrong", mContext!);
       debugPrint('Error Status Code: ${response.statusCode}');
       throw Exception('Request failed with status: ${response.statusCode}');
     }
@@ -362,7 +368,7 @@ class _EditProfileState extends State<EditProfile> {
     });
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage("failed to get response", mContext!);
       DialogHelper.hideDialog();
 
       return;
@@ -387,7 +393,7 @@ class _EditProfileState extends State<EditProfile> {
       });
     } else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if(allDatum.isTokenValid == false){
         toLogInPage();

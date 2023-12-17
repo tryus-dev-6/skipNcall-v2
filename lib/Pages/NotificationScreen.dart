@@ -40,6 +40,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   final ScrollController _scrollController = ScrollController();
 
   Stream<SwipeRefreshState> get _stream => _controller.stream;
+  BuildContext? mContext;
 
   @override
   void initState() {
@@ -85,6 +86,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     //   statusBarColor: Colors.white,
     //   statusBarIconBrightness: Brightness.light,
     // ));
+
+    mContext = context;
 
     return Scaffold(
         appBar: AppBar(
@@ -195,7 +198,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     if (response == null) {
-      showSnackBar('failed to get response');
+      Tools.flushBarErrorMessage('failed to get response', mContext!);
       return;
     }
     var res = json.decode(response);
@@ -225,7 +228,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     else {
       if (allDatum.message != null) {
-        showSnackBar(allDatum.message.toString());
+        Tools.flushBarErrorMessage(allDatum.message.toString(), mContext!);
       }
       if(allDatum.isTokenValid == false){
         toLogInPage();
@@ -261,7 +264,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .catchError((err) {});
 
     if (response == null) {
-      showSnackBar('failed');
+      Tools.flushBarErrorMessage("failed", mContext!);
       return;
     }
     var res = json.decode(response);
