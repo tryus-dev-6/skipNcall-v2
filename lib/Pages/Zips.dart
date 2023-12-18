@@ -350,10 +350,15 @@ class _ZipState extends State<Zip> with AutomaticKeepAliveClientMixin<Zip> {
     _controller.sink.add(SwipeRefreshState.hidden);
   }
 
-  void toLogInPage() {
-    SharedPreferencesHelper.removeData(SKIP_N_CALL_USER_USERID);
+  Future<void> toLogInPage() async {
 
-    Get.offAllNamed("/login");
+    String email = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+    String password = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PASSWORD);
+    SharedPreferencesHelper.clearAllData();
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, email);
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PASSWORD, password);
+    Get.offAllNamed('/login');
+
   }
 
   String parseDate(String? inputDate) {

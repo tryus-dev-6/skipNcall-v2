@@ -46,10 +46,27 @@ class _LoginState extends State<Login> {
 
   BuildContext? mContext;
 
+
+  Future<void> getData() async {
+
+    String eM = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+    String pS = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PASSWORD);
+
+    setState(() {
+
+      emailController.text = eM;
+      passwordController.text = pS;
+      usernameController.text = eM;
+
+    });
+
+  }
   @override
   void initState() {
     super.initState();
     isPasswordVisible = true;
+
+    getData();
 
     notificationService.getDeviceToken().then((value) => {
 
@@ -326,6 +343,7 @@ class _LoginState extends State<Login> {
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_ACCESS_TOKEN, commonResponse.token??"");
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, user.email??"");
       SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PHONE, user.phone??"");
+      SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PASSWORD, password);
 
       logInSuccess();
 

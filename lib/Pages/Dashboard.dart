@@ -589,13 +589,15 @@ class _DashboardState extends State<Dashboard> {
         });
   }
 
-  void performLogOut() {
-    //DialogHelper.showLoading();
-    SharedPreferencesHelper.removeData(
-        SKIP_N_CALL_USER_USERID);
-    //DialogHelper.hideDialog();
+  Future<void> performLogOut() async {
 
-    Get.offAllNamed("/login");
+    String email = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+    String password = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PASSWORD);
+    SharedPreferencesHelper.clearAllData();
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, email);
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PASSWORD, password);
+    Get.offAllNamed('/login');
+
   }
 
   Future<void> initiateDashboardInfo() async {
@@ -652,12 +654,16 @@ class _DashboardState extends State<Dashboard> {
     //DialogHelper.hideDialog();
   }
 
-  void toLogInPage() {
+  Future<void> toLogInPage() async {
 
-    SharedPreferencesHelper.removeData(
-        SKIP_N_CALL_USER_USERID);
-
-    Get.offAllNamed("/login");
+    String email = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+    String password = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PASSWORD);
+    SharedPreferencesHelper.clearAllData();
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, email);
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PASSWORD, password);
+    debugPrint(email);
+    debugPrint(password);
+    Get.offAllNamed('/login');
 
   }
 

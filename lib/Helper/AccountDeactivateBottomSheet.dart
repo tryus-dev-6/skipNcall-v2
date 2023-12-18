@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../Api/base_client.dart';
 import '../Model/CommonResponse.dart';
@@ -280,11 +281,8 @@ class _DeactivateAccountDialogState extends State<DeactivateAccountDialog> {
   }
 
   void toLogInPage(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Login(),
-        ), (Route route) => false);
+    SharedPreferencesHelper.clearAllData();
+    Get.offAllNamed('/login');
   }
 
   void successfulDeactivate(String message) {

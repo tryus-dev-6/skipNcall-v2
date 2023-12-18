@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:skip_n_call/Pages/Login.dart';
 
 import '../Api/base_client.dart';
@@ -281,6 +282,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
       DialogHelper.hideDialog();
       if (allDatum.message != null) {
         flushBarErrorMessage(allDatum.message.toString());
+        SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PASSWORD, newPassword);
       }
       if(allDatum.isTokenValid == false) {
 
@@ -314,12 +316,15 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
 
   }
 
-  void toLogInPage() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Login(),
-        ), (Route route) => false);
+  Future<void> toLogInPage() async {
+
+    String email = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_EMAIL);
+    String password = await SharedPreferencesHelper.getData(SKIP_N_CALL_USER_PASSWORD);
+    SharedPreferencesHelper.clearAllData();
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_EMAIL, email);
+    SharedPreferencesHelper.saveData(SKIP_N_CALL_USER_PASSWORD, password);
+    Get.offAllNamed('/login');
+
   }
 
   void successfulUpdate(String message) {
